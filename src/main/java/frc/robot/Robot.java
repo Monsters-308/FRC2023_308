@@ -4,41 +4,51 @@
 
 package frc.robot;
 
+//NAVX
 import com.kauailabs.navx.frc.AHRS;
+
+// Spark motors
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+//LED stuff
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.Counter;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
+
+//import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
+
+//actually important stuff
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
+  private Command m_autonomousCommand;
+  private RobotContainer m_robotContainer;
+
   private AHRS ahrs;
   //private Joystick stick = new Joystick(0);
-  XboxController m_driverController = new XboxController(0);
-  private Command m_autonomousCommand;
-
-  private RobotContainer m_robotContainer;
-  private AddressableLED m_led;
-  AddressableLEDBuffer m_ledBuffer;
-  Counter systemCount;
-
+  //XboxController m_driverController = new XboxController(0);
+  //private AddressableLED m_led;
+  //AddressableLEDBuffer m_ledBuffer;
+  //Counter systemCount;
   public final CANSparkMax m_move = new CANSparkMax(14, MotorType.kBrushless);
-  private RelativeEncoder m_moveEncoder = m_move.getEncoder();
+  //private RelativeEncoder m_moveEncoder = m_move.getEncoder();
+
+
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    systemCount = new Counter();
+    //systemCount = new Counter();
     
     try {
       /***********************************************************************
@@ -62,17 +72,17 @@ public class Robot extends TimedRobot {
     }
 
     // LED stuff
-    m_led = new AddressableLED(0);
+    //m_led = new AddressableLED(0);
     // Reuse buffer
     // Default to a length of 60, start empty output
     // Length is expensive to set, so only set it once, then just update data
-    m_ledBuffer = new AddressableLEDBuffer(60);
-    m_led.setLength(m_ledBuffer.getLength());
+    //m_ledBuffer = new AddressableLEDBuffer(60);
+    //m_led.setLength(m_ledBuffer.getLength());
 
     
     // Set the data
-    m_led.setData(m_ledBuffer);
-    m_led.start();
+    //m_led.setData(m_ledBuffer);
+    //m_led.start();
 
     // Motor related stuff
     m_move.restoreFactoryDefaults();  
@@ -80,14 +90,16 @@ public class Robot extends TimedRobot {
     m_move.setIdleMode(IdleMode.kBrake);
   }
 
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    SmartDashboard.updateValues();
     // Fill the buffer with a rainbow
 
-    rainbow((int)ahrs.getFusedHeading());
+    //rainbow((int)ahrs.getFusedHeading());
     // Set the LEDs
-    m_led.setData(m_ledBuffer);
+    //m_led.setData(m_ledBuffer);
   }
 
   @Override
@@ -126,7 +138,7 @@ public class Robot extends TimedRobot {
     
    
     
-    SmartDashboard.putBoolean("B button pressed", m_driverController.getBButton());
+    //SmartDashboard.putBoolean("B button pressed", m_driverController.getBButton());
     
     
     /* Display 6-axis Processed Angle Data */
@@ -240,6 +252,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {}
 
+  /*
   private void rainbow(int m_rainbowFirstPixelHue) {
     // For every pixel
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
@@ -254,4 +267,5 @@ public class Robot extends TimedRobot {
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
   }
+  */
 }

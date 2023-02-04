@@ -18,10 +18,10 @@ package frc.robot;
  */
 public final class Constants {
     public static final class DriveConstants {
-        public static final int kLeftMotor1Port = 2;
-        public static final int kLeftMotor2Port = 1;
-        public static final int kRightMotor1Port = 4;
-        public static final int kRightMotor2Port = 3;
+        public static final int kLeftMotor1Port = 1;
+        public static final int kLeftMotor2Port = 2;
+        public static final int kRightMotor1Port = 3;
+        public static final int kRightMotor2Port = 4;
         // Wheel diameter * pi / gear ratio
         public static final double kEncoderConversionFactor = 6 * Math.PI / 9.52;
         public static final double kAutonDriveSpeed = 0.3;
@@ -66,20 +66,6 @@ public final class Constants {
         public static final int kIntakeSensorPort = 0;
 
         public static final double kIndexMotorSpeed = 0.5;
-    }
-
-    public static final class HangConstants {
-        public static final int kLeftStaticArmPort = 6;
-        public static final int kRightStaticArmPort = 9;
-        public static final int kLeftRotatingArmPort = 13;
-        public static final int kRightRotatingArmPort = 14;
-        public static final int kUpperLeftSwitchPort = 7; // change when we know the port // 7 5
-        public static final int kLowerLeftSwitchPort = 8; // change when we know the port // 8 6
-        public static final int kUpperRightSwitchPort = 5; // change when we know the port
-        public static final int kLowerRightSwitchPort = 6; // change when we know the port
-
-        public static final double kHangMotorSpeed = 1.0;
-        public static final double kRotHangMotorSpeed = 0.75;
     }
 
     public static final class IOConstants {
