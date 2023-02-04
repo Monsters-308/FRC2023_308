@@ -6,24 +6,25 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
   private AHRS ahrs;
-  private Joystick stick = new Joystick(0);
+  //private Joystick stick = new Joystick(0);
+  XboxController m_driverController = new XboxController(0);
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -60,14 +61,15 @@ public class Robot extends TimedRobot {
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
     }
 
+    // LED stuff
     m_led = new AddressableLED(0);
-    System.out.println("hello");
     // Reuse buffer
     // Default to a length of 60, start empty output
     // Length is expensive to set, so only set it once, then just update data
     m_ledBuffer = new AddressableLEDBuffer(60);
     m_led.setLength(m_ledBuffer.getLength());
 
+    
     // Set the data
     m_led.setData(m_ledBuffer);
     m_led.start();
@@ -121,22 +123,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    boolean zero_yaw_pressed = stick.getTrigger();
-    if (zero_yaw_pressed) {
-      ahrs.zeroYaw();
-      System.out.print("trolled");
-    }
-
-    if (stick.getRawButton(1)) {
-      // Drive motor for test bed
-      m_move.set(1);
-
-    }
-    else{
-      m_move.set(0);
-    }
-
+    
+   
+    
+    SmartDashboard.putBoolean("B button pressed", m_driverController.getBButton());
+    
+    
     /* Display 6-axis Processed Angle Data */
+    /* 
     SmartDashboard.putBoolean("IMU_Connected", ahrs.isConnected());
     SmartDashboard.putBoolean("IMU_IsCalibrating", ahrs.isCalibrating());
     SmartDashboard.putNumber("IMU_Yaw", ahrs.getYaw());
@@ -144,24 +138,27 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("IMU_Roll", ahrs.getRoll());
 
     /* Testing to see if roborio is getting input from controller */
-    SmartDashboard.putBoolean("A button pressed", stick.getRawButton(1));
+    //SmartDashboard.putBoolean("A button pressed", stick.getRawButton(1));
 
     /* Display tilt-corrected, Magnetometer-based heading (requires */
     /* magnetometer calibration to be useful) */
-
+    /* 
     SmartDashboard.putNumber("IMU_CompassHeading", ahrs.getCompassHeading());
 
     /* Display 9-axis Heading (requires magnetometer calibration to be useful) */
+    /*
     SmartDashboard.putNumber("IMU_FusedHeading", ahrs.getFusedHeading());
 
     /* These functions are compatible w/the WPI Gyro Class, providing a simple */
     /* path for upgrading from the Kit-of-Parts gyro to the navx MXP */
 
+    /*
     SmartDashboard.putNumber("IMU_TotalYaw", ahrs.getAngle());
     SmartDashboard.putNumber("IMU_YawRateDPS", ahrs.getRate());
 
     /* Display Processed Acceleration Data (Linear Acceleration, Motion Detect) */
 
+    /*
     SmartDashboard.putNumber("IMU_Accel_X", ahrs.getWorldLinearAccelX());
     SmartDashboard.putNumber("IMU_Accel_Y", ahrs.getWorldLinearAccelY());
     SmartDashboard.putBoolean("IMU_IsMoving", ahrs.isMoving());
@@ -173,6 +170,7 @@ public class Robot extends TimedRobot {
     /* of these errors due to single (velocity) integration and especially */
     /* double (displacement) integration. */
 
+    /*
     SmartDashboard.putNumber("Velocity_X", ahrs.getVelocityX());
     SmartDashboard.putNumber("Velocity_Y", ahrs.getVelocityY());
     SmartDashboard.putNumber("Displacement_X", ahrs.getDisplacementX());
@@ -183,6 +181,7 @@ public class Robot extends TimedRobot {
     /* for advanced users. Before using this data, please consider whether */
     /* the processed data (see above) will suit your needs. */
 
+    /*
     SmartDashboard.putNumber("RawGyro_X", ahrs.getRawGyroX());
     SmartDashboard.putNumber("RawGyro_Y", ahrs.getRawGyroY());
     SmartDashboard.putNumber("RawGyro_Z", ahrs.getRawGyroZ());
@@ -197,11 +196,13 @@ public class Robot extends TimedRobot {
 
     /* Omnimount Yaw Axis Information */
     /* For more info, see http://navx-mxp.kauailabs.com/installation/omnimount */
+    /*
     AHRS.BoardYawAxis yaw_axis = ahrs.getBoardYawAxis();
     SmartDashboard.putString("YawAxisDirection", yaw_axis.up ? "Up" : "Down");
     SmartDashboard.putNumber("YawAxis", yaw_axis.board_axis.getValue());
 
     /* Sensor Board Information */
+    /*
     SmartDashboard.putString("FirmwareVersion", ahrs.getFirmwareVersion());
 
     /* Quaternion Data */
@@ -209,18 +210,21 @@ public class Robot extends TimedRobot {
     /* orientation data. All of the Yaw, Pitch and Roll Values can be derived */
     /* from the Quaternions. If interested in motion processing, knowledge of */
     /* Quaternions is highly recommended. */
+    /*
     SmartDashboard.putNumber("QuaternionW", ahrs.getQuaternionW());
     SmartDashboard.putNumber("QuaternionX", ahrs.getQuaternionX());
     SmartDashboard.putNumber("QuaternionY", ahrs.getQuaternionY());
     SmartDashboard.putNumber("QuaternionZ", ahrs.getQuaternionZ());
 
     /* Connectivity Debugging Support */
+    /*
     SmartDashboard.putNumber("IMU_Byte_Count", ahrs.getByteCount());
     SmartDashboard.putNumber("IMU_Update_Count", ahrs.getUpdateCount());
     SmartDashboard.putNumber("IMU Rate", ahrs.getRate());
 
-    SmartDashboard.putNumber("Tick Count", systemCount.get());
+    SmartDashboard.putNumber("Tick Count", systemCount.get());*/
   }
+
 
   @Override
   public void teleopExit() {}
