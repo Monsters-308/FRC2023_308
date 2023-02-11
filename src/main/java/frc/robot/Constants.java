@@ -18,19 +18,22 @@ package frc.robot;
  */
 public final class Constants {
     public static final class ChassisConstants {
-        public static final int kLeftFrontPort = 2;
-        public static final int kRightFrontPort = 1;
-        public static final int kRightRearPort = 4;
-        public static final int kLeftRearPort = 3;
+        public static final int kLeftFrontPort = 1;
+        public static final int kRightFrontPort = 2;
+        public static final int kRightRearPort = 3;
+        public static final int kLeftRearPort = 4;
 
         public static final int kCurrentLimit = 40; // 40A current limit for motors eventhough it could be higher but not higher than 50A as the rating is 40A @80%
 
         public static final double kAutoRotationSpeed = 0.2; // speed to rotate for auto aim
         public static final double kEncoderConversionFactor = 6 * Math.PI / 9.52;
 
+        public static final double kOffBalanceAngleThresholdDegrees = 10;
+        public static final double kOonBalanceAngleThresholdDegrees  = 5;
+
     }
 
-    public static final class OIConstants {
+    public static final class IOConstants {
         public static final int kDriverPort = 0;
         public static final int kCoDriverPort = 1;
     }

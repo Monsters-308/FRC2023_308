@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
-import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.IOConstants;
 
 import frc.robot.commands.chassis.DefaultDrive;
 
@@ -36,23 +36,24 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Chassis m_chassisSubsystem = new Chassis();
 
-  XboxController m_driverController = new XboxController(OIConstants.kDriverPort);
+  XboxController m_driverController = new XboxController(IOConstants.kDriverPort);
 
-  SendableChooser<Command> m_autonChooser = new SendableChooser<>();
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureBindings();
+
+
+    //
     m_chassisSubsystem.setDefaultCommand(
       new DefaultDrive(m_chassisSubsystem,
       () -> -m_driverController.getLeftY(),
-      () -> m_driverController.getLeftX(),
-      () -> m_driverController.getRightX()));
+      () -> m_driverController.getRightX(),
+      () -> m_driverController.getAButton())
+      );
+      //() how much should the robot move forward or backwards, add to speed
 
   }
-  
-
 
 
   /**

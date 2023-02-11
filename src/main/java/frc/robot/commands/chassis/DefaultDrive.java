@@ -2,27 +2,32 @@ package frc.robot.commands.chassis;
 
 import frc.robot.subsystems.Chassis;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DefaultDrive extends CommandBase {
     private final Chassis m_drive;
-    private final DoubleSupplier m_ySpeed;
     private final DoubleSupplier m_xSpeed;
-    private final DoubleSupplier m_zSpeed;
+    private final DoubleSupplier m_zRotation;
+    private final BooleanSupplier m_autoBalance;
     
-    public DefaultDrive(Chassis sybsystem, DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier zSpeed){
-        m_drive = sybsystem;
-        m_ySpeed = ySpeed;
+    public DefaultDrive(Chassis subsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation, BooleanSupplier autoBalance){
+        m_drive = subsystem;
         m_xSpeed = xSpeed;
-        m_zSpeed = zSpeed;
+        m_zRotation = zRotation;
+        m_autoBalance = autoBalance;
         addRequirements(m_drive);
     }
 
+
     @Override
     public void execute(){
-        m_drive.drive(m_xSpeed.getAsDouble(), m_ySpeed.getAsDouble(), m_zSpeed.getAsDouble());
+        if(!m_autoBalance.getAsBoolean()){
+            m_drive.drive(m_xSpeed.getAsDouble(), m_zRotation.getAsDouble());
+        }
+        
     }
 
 }
