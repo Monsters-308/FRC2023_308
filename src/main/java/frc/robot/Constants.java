@@ -17,71 +17,23 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final class DriveConstants {
-        public static final int kLeftMotor1Port = 1;
-        public static final int kLeftMotor2Port = 2;
-        public static final int kRightMotor1Port = 3;
-        public static final int kRightMotor2Port = 4;
-        // Wheel diameter * pi / gear ratio
+    public static final class ChassisConstants {
+        public static final int kLeftFrontPort = 2;
+        public static final int kRightFrontPort = 1;
+        public static final int kRightRearPort = 4;
+        public static final int kLeftRearPort = 3;
+
+        public static final int kCurrentLimit = 40; // 40A current limit for motors eventhough it could be higher but not higher than 50A as the rating is 40A @80%
+
+        public static final double kAutoRotationSpeed = 0.2; // speed to rotate for auto aim
         public static final double kEncoderConversionFactor = 6 * Math.PI / 9.52;
-        public static final double kAutonDriveSpeed = 0.3;
-        public static final double kSlowModeMultiplier = 0.5;
+
     }
 
-    public static final class ShooterConstants {
-        public static final int kShooterMotorCANPort = 11;
-        public static final int kHelperMotorCANPort = 7;
-        public static final int kBackspinMotorPort = 5;
-
-        public static final double kF = 0.05;
-        public static final double kD = 5.0;
-        public static final double kI = 0.001;
-        public static final double kP = 0.1;
-        public static final int kIzone = 300;
-        public static final int kUnitsPerRotation = 2048;
-
-        public static final double kShooterSpeed = 0.40; //at 44% power, the shooter was at 2000-2100 RMP
-        public static final double kShooterLowGoalSpeed = 0.3;
-        public static final double kHelperMotorSpeed = 0.5;
-        public static final double kBackspinMotorSpeed = 0.5;
-        public static final double kShooterReverseSpeed = -0.4;
-        public static final double kShooterSpeedRPM = 2000;
-
-        public static final double kRampTimeSec = 1;
-        public static final double kMaxIndexTimeSec = 1;
-        public static final double kMaxRampTime = 2;
-        public static final double kMaxReleaseTimeSec = 0.15;
+    public static final class OIConstants {
+        public static final int kDriverPort = 0;
+        public static final int kCoDriverPort = 1;
     }
 
-    public static final class IntakeConstants {
-        public static final int kIntakeMotorPort = 10;
-
-        public static final double kIntakeMotorSpeed = 0.7;
-    }
-
-    public static final class IndexConstants {
-        public static final int kIndexMotorPort = 8;
-        public static final int kHighSensorPort = 2;
-        public static final int kLowSensorPort = 1;
-        public static final int kIntakeSensorPort = 0;
-
-        public static final double kIndexMotorSpeed = 0.5;
-    }
-
-    public static final class IOConstants {
-        public static final int kControllerDrivePort = 0;
-        public static final int kControllerCoPort = 1;
-        public static final double kTriggerThreshold = 0.5;
-    }
-
-    public static final class LEDConstants {
-        public static final int kLEDPWMPort = 0;
-        public static final int kLEDCount = 240; // 79 and 240
-    }
-
-    public static final class PneumaticsConstants {
-        public static final int kControlModulePort = 17;
-        public static final int kIntakePistonPort = 6;
-        public static final int kHangPistonPort = 7;
-    }
+    
 }

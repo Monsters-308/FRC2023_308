@@ -4,34 +4,24 @@
 
 package frc.robot;
 
-// Shuffleboard stuff
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-// Command stuff
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands; // probably not usefull
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
-// Commands
-import frc.robot.commands.drive.ArcadeDrive;
-import frc.robot.commands.drive.DefaultDrive;
-import frc.robot.commands.drive.DriveDistance;
-import frc.robot.commands.drive.DriveTurn2;
-import frc.robot.commands.drive.StopDrive;
-
-// controller stuff
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import static frc.robot.Constants.IOConstants;
 
-// subsystems
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants.OIConstants;
 
+import frc.robot.commands.chassis.DefaultDrive;
+
+import frc.robot.subsystems.Chassis;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -43,34 +33,25 @@ import frc.robot.subsystems.DriveSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  // The robot's subsystems and commands are defined here...
+  private final Chassis m_chassisSubsystem = new Chassis();
 
-  XboxController m_driverController = new XboxController(IOConstants.kControllerDrivePort);
+  XboxController m_driverController = new XboxController(OIConstants.kDriverPort);
 
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(m_driverController);
-  
-  SendableChooser<Command> m_driveChooser = new SendableChooser<Command>();
-  
-  /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
+  SendableChooser<Command> m_autonChooser = new SendableChooser<>();
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Configure the button bindings
     configureBindings();
-
-
-    m_driveChooser.addOption("Tank Drive",
-              new DefaultDrive(m_driveSubsystem, m_driverController::getLeftY, m_driverController::getRightY,
-                      m_driverController::getRightBumper));
-    m_driveChooser.setDefaultOption("Arcade Drive",
-              new ArcadeDrive(m_driveSubsystem, m_driverController::getLeftY, m_driverController::getRightX,
-                      m_driverController::getRightBumper)); 
-    
-    SmartDashboard.updateValues();
-              
-              
-
+    m_chassisSubsystem.setDefaultCommand(
+      new DefaultDrive(m_chassisSubsystem,
+      () -> -m_driverController.getLeftY(),
+      () -> m_driverController.getLeftX(),
+      () -> m_driverController.getRightX()));
 
   }
-
+  
 
 
 
