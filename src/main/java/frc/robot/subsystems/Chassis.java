@@ -5,7 +5,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ChassisConstants;
@@ -13,16 +14,20 @@ import frc.robot.Constants.ChassisConstants;
 public class Chassis extends SubsystemBase {
     
     private final CANSparkMax m_leftFront = new CANSparkMax(ChassisConstants.kLeftFrontPort, MotorType.kBrushless);
+    private final CANSparkMax m_leftRear = new CANSparkMax(ChassisConstants.kLeftRearPort, MotorType.kBrushless);
+    MotorControllerGroup m_left = new MotorControllerGroup(m_leftFront, m_leftRear);
+
     private final CANSparkMax m_rightFront = new CANSparkMax(ChassisConstants.kRightFrontPort, MotorType.kBrushless);
     private final CANSparkMax m_rightRear = new CANSparkMax(ChassisConstants.kRightRearPort, MotorType.kBrushless);
-    private final CANSparkMax m_leftRear = new CANSparkMax(ChassisConstants.kLeftRearPort, MotorType.kBrushless);
+    MotorControllerGroup m_right = new MotorControllerGroup(m_rightFront, m_rightRear);
+    
 
     private RelativeEncoder m_leftFrontEncoder = m_leftFront.getEncoder();
     private RelativeEncoder m_rightFrontEncoder = m_rightFront.getEncoder();
     private RelativeEncoder m_rightRearEncoder = m_rightRear.getEncoder();
     private RelativeEncoder m_leftRearEncoder = m_leftRear.getEncoder();
 
-    private final MecanumDrive m_drive = new MecanumDrive(m_leftFront, m_leftRear, m_rightFront, m_rightRear);
+    private final DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
     public Chassis(){
         m_leftFront.restoreFactoryDefaults();
@@ -45,8 +50,8 @@ public class Chassis extends SubsystemBase {
 
     }
 
-    public void drive(double ySpeed, double xSpeed, double zRotation){
-        m_drive.driveCartesian(ySpeed, xSpeed, zRotation);
+    public void drive(double xSpeed, double zRotation){
+        m_drive.arcadeDrive(xSpeed, zRotation);
 
 
     }
