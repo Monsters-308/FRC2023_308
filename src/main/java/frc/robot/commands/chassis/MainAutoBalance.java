@@ -6,24 +6,22 @@ package frc.robot.commands.chassis;
 //NAVX
 import com.kauailabs.navx.frc.AHRS;
 
-import frc.robot.subsystems.Chassis;
+//Subsystem
+import frc.robot.subsystems.ChassisSubsystem;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+//Constants
 import frc.robot.Constants.ChassisConstants;
-
-//static final double kOffBalanceAngleThresholdDegrees = 10;
-//static final double kOonBalanceAngleThresholdDegrees  = 5;
 
 //actually important stuff
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-class MainAutoBalance extends CommandBase {
-    private final Chassis m_drive;
+
+public class MainAutoBalance extends CommandBase {
+    private final ChassisSubsystem m_drive;
 
     static private AHRS NavX2;
 
-    public MainAutoBalance(Chassis subsystem, AHRS Nav){
+    public MainAutoBalance(ChassisSubsystem subsystem, AHRS Nav){
         m_drive = subsystem;
         NavX2 = Nav; 
     }
@@ -32,8 +30,8 @@ class MainAutoBalance extends CommandBase {
     public void execute() {
 
         // double xAxisRate            = stick.getX();
+        //returns the pitch as a number from -180 to 180
         double pitchAngleDegrees    = NavX2.getPitch();
-
         boolean autoBalanceXMode = false;
 
         if ( !autoBalanceXMode && 
@@ -54,6 +52,10 @@ class MainAutoBalance extends CommandBase {
         if ( autoBalanceXMode ) {
             double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
             // xAxisRate = Math.sin(pitchAngleRadians) * -1;
+
+            if((pitchAngleRadians > 1) || (pitchAngleRadians < -1)){
+                pitchAngleRadians = 1/0;
+            }
             m_drive.drive(pitchAngleRadians, 0);
 
         }

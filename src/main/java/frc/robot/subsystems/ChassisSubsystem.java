@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ChassisConstants;
 
-public class Chassis extends SubsystemBase {
+public class ChassisSubsystem extends SubsystemBase {
     
     private final CANSparkMax m_leftFront = new CANSparkMax(ChassisConstants.kLeftFrontPort, MotorType.kBrushless);
     private final CANSparkMax m_leftRear = new CANSparkMax(ChassisConstants.kLeftRearPort, MotorType.kBrushless);
@@ -22,6 +22,7 @@ public class Chassis extends SubsystemBase {
     MotorControllerGroup m_right = new MotorControllerGroup(m_rightFront, m_rightRear);
     
 
+    //Get Encoders
     private RelativeEncoder m_leftFrontEncoder = m_leftFront.getEncoder();
     private RelativeEncoder m_rightFrontEncoder = m_rightFront.getEncoder();
     private RelativeEncoder m_rightRearEncoder = m_rightRear.getEncoder();
@@ -29,19 +30,24 @@ public class Chassis extends SubsystemBase {
 
     private final DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
-    public Chassis(){
+    public ChassisSubsystem(){
         m_leftFront.restoreFactoryDefaults();
         m_rightFront.restoreFactoryDefaults();
         m_rightRear.restoreFactoryDefaults();
         m_leftRear.restoreFactoryDefaults();
+
+        //Bruh why tf did Vex not have this feature?
         m_leftFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
+
         m_leftFront.setIdleMode(IdleMode.kCoast);
         m_rightFront.setIdleMode(IdleMode.kCoast);
         m_rightRear.setIdleMode(IdleMode.kCoast);
         m_leftRear.setIdleMode(IdleMode.kCoast);
+        
+        //Maybe make constants for this?
         m_leftFront.setInverted(false);
         m_leftRear.setInverted(false);
         m_rightFront.setInverted(true);
@@ -52,8 +58,6 @@ public class Chassis extends SubsystemBase {
 
     public void drive(double xSpeed, double zRotation){
         m_drive.arcadeDrive(xSpeed, zRotation);
-
-
     }
 
     public double getAverageEncoderDistanceInches(){
