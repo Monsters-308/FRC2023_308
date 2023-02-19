@@ -18,27 +18,44 @@ package frc.robot;
  */
 public final class Constants {
     public static final class ChassisConstants {
-        public static final int kLeftFrontPort = 1;
-        public static final int kRightFrontPort = 2;
-        public static final int kRightRearPort = 3;
-        public static final int kLeftRearPort = 4;
+        public static final int kLeftFrontPort = 5;
+        public static final int kRightFrontPort = 4;
+        public static final int kRightRearPort = 2;
+        public static final int kLeftRearPort = 3;
 
         public static final int kCurrentLimit = 40; // 40A current limit for motors 
 
         public static final double kAutoRotationSpeed = 0.2; // speed to rotate for auto aim
         public static final double kEncoderConversionFactor = 6 * Math.PI / 9.52; //Figure this out later
 
-        public static final double kOffBalanceAngleThresholdDegrees = 10;
-        public static final double kOonBalanceAngleThresholdDegrees  = 5;
+        public static final double kOffBalanceAngleThresholdDegrees = 2;
+        public static final double kOonBalanceAngleThresholdDegrees  = 1;
 
     }
 
     public static final class ArmConstants {
-        public static final int kMotorPort = 0;
+        public static final int kMotorPort = 21;
 
         public static final int kCurrentLimit = 40;
 
-        public static final double kEncoderConversionFactor = 6 * Math.PI / 9.52; //figure this out later
+        //public static final double kEncoderConversionFactor = 6 * Math.PI / 9.52; //figure this out later
+
+        public static final int kPotPort = 0;
+
+        public static final double kRotationSpeed = 0.3;
+
+        public static final double kAngleTolerance = 2;
+
+
+        public static final int kBottomPosition = 0;
+        public static final int kMiddlePosition = 20;
+        public static final int kTopPosition = 40;
+        public static final int kLoadingPosition = 45;
+
+
+    }
+
+    public static final class ClawConstants {
 
     }
 

@@ -9,6 +9,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.concurrent.TimeUnit;
+
+//camera imports
+import edu.wpi.first.cameraserver.CameraServer;
 
 //NAVX
 import com.kauailabs.navx.frc.AHRS;
@@ -23,6 +29,11 @@ import frc.robot.commands.chassis.MainAutoBalance;
 
 //Subsystems go here
 import frc.robot.subsystems.ChassisSubsystem;
+
+//pneumatic stuff
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 
 //command stuff
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,12 +59,23 @@ public class RobotContainer {
   
   XboxController m_driverController = new XboxController(IOConstants.kDriverPort);
   
-  private AHRS ahrs;
+  //Ask Marcus about whether or not this should be public
+  public AHRS ahrs;
 
+  public double kInitialPitchOffset = 0;
+
+  
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
+    Compressor m_compressor = new Compressor(10,PneumaticsModuleType.CTREPCM);
+    Solenoid m_intakeDeploy = new Solenoid(10,PneumaticsModuleType.CTREPCM,4);
 
+    
+
+    m_compressor.getCurrent();
+    m_intakeDeploy.set(false);
+    System.out.println(m_compressor.getPressure());
     //Enable the NavX
     try {
       ahrs = new AHRS(SPI.Port.kMXP);
@@ -63,16 +85,26 @@ public class RobotContainer {
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
     }
 
+    try {
+      TimeUnit.SECONDS.sleep(2);
+      kInitialPitchOffset = ahrs.getPitch();
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    // //set up camera stuff
+    // CameraServer.startAutomaticCapture();
+
     // Configure the button bindings
     configureBindings();
 
     m_chassisSubsystem.setDefaultCommand(
       new DefaultDrive(m_chassisSubsystem,
       () -> -m_driverController.getLeftY(),
-      () -> m_driverController.getRightX(),
-      () -> m_driverController.getAButton())
-      );
-        
+      () -> m_driverController.getRightX())
+    );
+      
 
   }
 
@@ -86,15 +118,26 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
   private void configureBindings() {
-    // All of this is deprecated but whatever
+
+
+    //MAIN DRIVER BUTTONS:
     new JoystickButton(m_driverController,Button.kA.value)
         .onTrue(
-          new MainAutoBalance(m_chassisSubsystem, ahrs)
+          new MainAutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset)
+        )
+        .onFalse(
+          new DefaultDrive(m_chassisSubsystem,
+          () -> -m_driverController.getLeftY(),
+          () -> m_driverController.getRightX())
         );
+    
 
     
-  }
 
+    //CO DRIVER BUTTONS:
+
+
+  }
 
 
   /**

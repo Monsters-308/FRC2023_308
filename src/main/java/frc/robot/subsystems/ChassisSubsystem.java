@@ -1,15 +1,19 @@
 package frc.robot.subsystems;
 
+//Motor stuff
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+
+//Constants
+import frc.robot.Constants.ChassisConstants;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ChassisConstants;
 
 public class ChassisSubsystem extends SubsystemBase {
     
@@ -41,23 +45,45 @@ public class ChassisSubsystem extends SubsystemBase {
         m_rightFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
+        
 
-        m_leftFront.setIdleMode(IdleMode.kCoast);
+        /*m_leftFront.setIdleMode(IdleMode.kCoast);
         m_rightFront.setIdleMode(IdleMode.kCoast);
         m_rightRear.setIdleMode(IdleMode.kCoast);
-        m_leftRear.setIdleMode(IdleMode.kCoast);
+        m_leftRear.setIdleMode(IdleMode.kCoast);*/
+        
+        m_leftFront.setIdleMode(IdleMode.kBrake);
+        m_rightFront.setIdleMode(IdleMode.kBrake);
+        m_rightRear.setIdleMode(IdleMode.kBrake);
+        m_leftRear.setIdleMode(IdleMode.kBrake);
         
         //Maybe make constants for this?
-        m_leftFront.setInverted(false);
-        m_leftRear.setInverted(false);
-        m_rightFront.setInverted(true);
-        m_rightRear.setInverted(true);
+        m_leftFront.setInverted(true);
+        m_leftRear.setInverted(true);
+        m_rightFront.setInverted(false);
+        m_rightRear.setInverted(false);
 
 
     }
 
     public void drive(double xSpeed, double zRotation){
-        m_drive.arcadeDrive(xSpeed, zRotation);
+
+        //Safety mode
+        /*if(xSpeed>0.5){
+            xSpeed = 0.5;
+        }
+        if(xSpeed<-0.5){
+            xSpeed = -0.5;
+        }
+
+        if(zRotation>0.5){
+            zRotation = 0.5;
+        }
+        if(zRotation<-0.5){
+            zRotation = -0.5;
+        }*/
+
+        m_drive.arcadeDrive(xSpeed*.75, zRotation*.75);
     }
 
     public double getAverageEncoderDistanceInches(){
@@ -114,6 +140,7 @@ public class ChassisSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("RR_Speed",m_rightRear.get());
         SmartDashboard.putNumber("LR_Speed",m_leftRear.get());
         SmartDashboard.putNumber("AveragePosition",this.getAverageEcoderPosition());
+
     }
 
 }

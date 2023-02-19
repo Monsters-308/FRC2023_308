@@ -1,76 +1,84 @@
 package frc.robot.subsystems;
 
+//motor stuff
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+//import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup; //just in case we have 2 motors for the arm
 
+//Constants
 import frc.robot.Constants.ArmConstants;
 
-//import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup; //just in case we have 2 motors for the arm
+//Potentiometer
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class ArmSubsystem extends SubsystemBase {
     
-    private final CANSparkMax m_armMotor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushless);
+    private final CANSparkMax m_armMotor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushed);
 
-    //Get Encoders
-    private RelativeEncoder m_armEncoder = m_armMotor.getEncoder();
+    // Ask build team about potentiometer range.
+    private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort, 180, 0);
+
 
     public ArmSubsystem(){
         m_armMotor.restoreFactoryDefaults();
 
-        //Bruh why tf did Vex not have this feature?
         m_armMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
 
-        m_leftFront.setIdleMode(IdleMode.kCoast);
-        m_rightFront.setIdleMode(IdleMode.kCoast);
-        m_rightRear.setIdleMode(IdleMode.kCoast);
-        m_leftRear.setIdleMode(IdleMode.kCoast);
+        m_armMotor.setIdleMode(IdleMode.kBrake); //Ask marcus about this
         
-        //Maybe make constants for this?
-        m_leftFront.setInverted(false);
-        m_leftRear.setInverted(false);
-        m_rightFront.setInverted(true);
-        m_rightRear.setInverted(true);
-
+        m_armMotor.setInverted(false);
 
     }
+    
+    
 
-    public void drive(double xSpeed, double zRotation){
-        m_drive.arcadeDrive(xSpeed, zRotation);
+    public void gotoAngle(double degrees){
+        while((pot.get() > degrees+ArmConstants.kAngleTolerance) || (pot.get() < degrees-ArmConstants.kAngleTolerance)){
+            
+            if(pot.get() > degrees+ArmConstants.kAngleTolerance){
+                m_armMotor.set(-ArmConstants.kRotationSpeed);
+            }
+            else if(pot.get() < degrees-ArmConstants.kAngleTolerance){
+                m_armMotor.set(ArmConstants.kRotationSpeed);
+            }
+        }
+        m_armMotor.set(0);
     }
 
-    public double getAverageEncoderDistanceInches(){
-        return ChassisConstants.kEncoderConversionFactor * (m_leftFrontEncoder.getPosition()+m_rightFrontEncoder.getPosition())/2;
+
+    //I'll probably have to modify this if Mr. Mallot adds his spacesensor thingy
+    public void bottomLevel(){
+        gotoAngle(ArmConstants.kBottomPosition);
     }
 
-    public double getAverageEcoderPosition(){
-        return(m_leftFrontEncoder.getPosition() + ((-1.0)*m_rightFrontEncoder.getPosition())) / 2.0;
+    public void middleLevel(){
+        gotoAngle(ArmConstants.kMiddlePosition);
     }
 
-    public double getLeftFrontEncoder(){
-        return m_leftFrontEncoder.getPosition();
+    public void topLevel(){
+        gotoAngle(ArmConstants.kTopPosition);
     }
 
-    public void resetEncoders(){
-        m_leftFrontEncoder.setPosition(0.0);
+    //This might not be necessary
+    public void loadingLevel(){
+        gotoAngle(ArmConstants.kLoadingPosition);
     }
+
+
 
     //This is called every 20ms
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("LF_Enc",m_leftFrontEncoder.getPosition());
-        SmartDashboard.putNumber("RF_Enc",m_rightFrontEncoder.getPosition());
-        SmartDashboard.putNumber("RR_Enc",m_rightRearEncoder.getPosition());
-        SmartDashboard.putNumber("LR_Enc",m_leftRearEncoder.getPosition());
-        SmartDashboard.putNumber("LF_Speed",m_leftFront.get());
-        SmartDashboard.putNumber("RF_Speed",m_rightFront.get());
-        SmartDashboard.putNumber("RR_Speed",m_rightRear.get());
-        SmartDashboard.putNumber("LR_Speed",m_leftRear.get());
-        SmartDashboard.putNumber("AveragePosition",this.getAverageEcoderPosition());
+        SmartDashboard.putNumber("LF_Speed",m_armMotor.get());
+
+        //This should scale the voltage so that it goes from 0-180 degrees
+        System.out.println(pot.get());
     }
 
 }

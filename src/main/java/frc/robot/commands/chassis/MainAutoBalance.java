@@ -21,17 +21,24 @@ public class MainAutoBalance extends CommandBase {
 
     static private AHRS NavX2;
 
-    public MainAutoBalance(ChassisSubsystem subsystem, AHRS Nav){
+    final double kInitialPitchOffset;
+
+    public MainAutoBalance(ChassisSubsystem subsystem, AHRS Nav, double pitchOffset){
         m_drive = subsystem;
-        NavX2 = Nav; 
+        NavX2 = Nav;
+        kInitialPitchOffset = pitchOffset; 
+        addRequirements(m_drive);
     }
 
     @Override
     public void execute() {
 
-        // double xAxisRate            = stick.getX();
         //returns the pitch as a number from -180 to 180
-        double pitchAngleDegrees    = NavX2.getPitch();
+        double pitchAngleDegrees = NavX2.getPitch() - kInitialPitchOffset;
+        //System.out.println("Pitch offset: " + kInitialPitchOffset);
+        System.out.println("Pitch with initial offset: " + pitchAngleDegrees);
+
+        //I'm pretty sure this will have to be moved outside of this function.
         boolean autoBalanceXMode = false;
 
         if ( !autoBalanceXMode && 
@@ -46,19 +53,43 @@ public class MainAutoBalance extends CommandBase {
         }
         
         // Control drive system automatically, 
-        // driving in reverse direction of pitch/roll angle,
+        // driving in direction of pitch/roll angle,
         // with a magnitude based upon the angle
         
         if ( autoBalanceXMode ) {
             double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
-            // xAxisRate = Math.sin(pitchAngleRadians) * -1;
+            double xAxisSpeed = Math.sin(pitchAngleRadians) ;
+            
+            //I don't know how slow, but we need to significantly slow down the autobalance once we know it is working.
+            xAxisSpeed *= 1;
 
-            if((pitchAngleRadians > 1) || (pitchAngleRadians < -1)){
-                pitchAngleRadians = 1/0;
-            }
-            m_drive.drive(pitchAngleRadians, 0);
+            System.out.println("xAxisSpeed: " + xAxisSpeed);
+            
+            m_drive.drive(xAxisSpeed, 0);
+           
+            //System.out.println("Auto Balance speed: " + xAxisSpeed);
 
         }
 
+        //If the robot is balanced, it should tell the motors to stop moving.
+        else{
+            m_drive.drive(0, 0);
+        }
+
     }
+
+
+    //This is for if DefaultDrive doesn't tell the motors to stop moving so the robot doesn't crash into a wall.
+    //I swear to fucking god if the robot takes off again I will throw it out a window and onto Mr. Mallot's car.
+    @Override
+    public void end(boolean interrupted){
+        System.out.println("AutoBalance has ended.");
+        m_drive.drive(0, 0);
+    }
+
+    /*@Override
+    public InterruptionBehavior getInterruptionBehavior(){
+         
+    }*/
+
 }

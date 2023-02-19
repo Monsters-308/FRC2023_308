@@ -7,6 +7,12 @@ package frc.robot;
 // Shuffleboard thing (I think)
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/*import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SPI;*/
+
+
+
 //actually important stuff
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +22,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+
+  //private AHRS ahrs;
+
 
   @Override
   public void robotInit() {
@@ -59,11 +68,19 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    //Enable the NavX
+    /*try {
+      ahrs = new AHRS(SPI.Port.kMXP);
+      // ahrs = new AHRS(SerialPort.Port.kUSB1);
+      ahrs.enableLogging(true);
+    } catch (RuntimeException ex) {
+      DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
+    }*/
   }
 
   @Override
   public void teleopPeriodic() {
-  
+    //System.out.println("initial pitch: " + (ahrs.getPitch()+89));
   }
 
 
