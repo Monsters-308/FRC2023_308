@@ -1,9 +1,13 @@
 package frc.robot.commands.chassis;
 
+//Subsystem
 import frc.robot.subsystems.ChassisSubsystem;
 
-import java.util.function.BooleanSupplier;
+//ShuffleBoard
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.function.DoubleSupplier;
+
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -13,7 +17,6 @@ public class DefaultDrive extends CommandBase {
     private final DoubleSupplier m_zRotation;
     
     public DefaultDrive(ChassisSubsystem subsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation){
-        System.out.println("another DefaultDrive instance has been created.");
         m_drive = subsystem;
         m_xSpeed = xSpeed;
         m_zRotation = zRotation;
@@ -28,7 +31,6 @@ public class DefaultDrive extends CommandBase {
 
     @Override
     public void end(boolean interrupted){
-        System.out.println("DefaultDrive has ended.");
         m_drive.drive(0, 0);
     }
 

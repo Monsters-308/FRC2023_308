@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-//motor stuff
+//Motor stuff
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -12,17 +12,19 @@ import frc.robot.Constants.ArmConstants;
 //Potentiometer
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
-
+//Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
     
     private final CANSparkMax m_armMotor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushed);
 
     // Ask build team about potentiometer range.
-    private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort, 180, 0);
+    // When not given a range, it will return the voltage
+    private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort/* , 333, 0*/);
 
 
     public ArmSubsystem(){
@@ -30,7 +32,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         m_armMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
 
-        m_armMotor.setIdleMode(IdleMode.kBrake); //Ask marcus about this
+        m_armMotor.setIdleMode(IdleMode.kBrake);
         
         m_armMotor.setInverted(false);
 
@@ -70,6 +72,17 @@ public class ArmSubsystem extends SubsystemBase {
         gotoAngle(ArmConstants.kLoadingPosition);
     }
 
+    public void up(){
+        m_armMotor.set(0.6);
+    }
+
+    public void down(){
+        m_armMotor.set(-0.6);
+    }
+
+    public void stop(){
+        m_armMotor.set(0.0);
+    }
 
 
     //This is called every 20ms
@@ -78,7 +91,8 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("LF_Speed",m_armMotor.get());
 
         //This should scale the voltage so that it goes from 0-180 degrees
-        System.out.println(pot.get());
+        SmartDashboard.putNumber("pot position", pot.get());
+        
     }
 
 }

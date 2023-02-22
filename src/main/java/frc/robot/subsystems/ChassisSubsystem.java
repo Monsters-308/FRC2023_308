@@ -46,7 +46,6 @@ public class ChassisSubsystem extends SubsystemBase {
         m_rightRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         
-
         /*m_leftFront.setIdleMode(IdleMode.kCoast);
         m_rightFront.setIdleMode(IdleMode.kCoast);
         m_rightRear.setIdleMode(IdleMode.kCoast);
@@ -62,9 +61,30 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear.setInverted(true);
         m_rightFront.setInverted(false);
         m_rightRear.setInverted(false);
+        
+        //Make sure all encoders work in the same direction
+        /*m_leftFrontEncoder.setInverted(false);
+        m_leftRearEncoder.setInverted(false);
+        m_rightFrontEncoder.setInverted(false);
+        m_rightRearEncoder.setInverted(false);*/
 
 
     }
+
+    public void setBrakeMode(){
+        m_leftFront.setIdleMode(IdleMode.kBrake);
+        m_rightFront.setIdleMode(IdleMode.kBrake);
+        m_rightRear.setIdleMode(IdleMode.kBrake);
+        m_leftRear.setIdleMode(IdleMode.kBrake);
+    }
+
+    public void setCoastMode(){
+        m_leftFront.setIdleMode(IdleMode.kCoast);
+        m_rightFront.setIdleMode(IdleMode.kCoast);
+        m_rightRear.setIdleMode(IdleMode.kCoast);
+        m_leftRear.setIdleMode(IdleMode.kCoast);
+    }
+
 
     public void drive(double xSpeed, double zRotation){
 
@@ -90,11 +110,21 @@ public class ChassisSubsystem extends SubsystemBase {
         return ChassisConstants.kEncoderConversionFactor * (m_leftFrontEncoder.getPosition()+m_rightFrontEncoder.getPosition())/2;
     }
 
-    public double getAverageEcoderPosition(){
-        return(m_leftFrontEncoder.getPosition() + ((-1.0)*m_rightFrontEncoder.getPosition())) / 2.0;
+    //Im pretty sure all of our encoders are running in the same direction, so change this probably
+    public double getAverageEncoderPosition(){
+        //return(m_leftFrontEncoder.getPosition() + ((-1.0)*m_rightFrontEncoder.getPosition())) / 2.0;
+        return (m_leftFrontEncoder.getPosition() + m_leftRearEncoder.getPosition() + 
+            m_rightFrontEncoder.getPosition() + m_rightRearEncoder.getPosition()) / 4;
     }
 
-    public double getLeftFrontEncoder(){
+    public double getAverageEncoderRotation(){
+        return (m_leftFrontEncoder.getPosition() + m_leftRearEncoder.getPosition() + 
+           (-m_rightFrontEncoder.getPosition()) + (-m_rightRearEncoder.getPosition())) / 4;
+    }
+
+
+    //What purpose do these functions actually serve?
+    /*public double getLeftFrontEncoder(){
         return m_leftFrontEncoder.getPosition();
     }
     public double getRightFrontEncoder(){
@@ -105,20 +135,7 @@ public class ChassisSubsystem extends SubsystemBase {
     }
     public double getLeftRearEncoder(){
         return m_leftRearEncoder.getPosition();
-    }
-    // public void setRightFrontEncoderInverted(){
-    //     m_rightFrontEncoder.setInverted(true);
-    // }
-
-    // public void setRightRearEncoderInverted(){
-    //     m_rightRearEncoder.setInverted(true);
-    // }
-    // public void setLeftFrontEncoderInverted(){
-    //     m_rightFrontEncoder.setInverted(false);
-    // }
-    // public void setLeftRearEncoderInverted(){
-    //     m_rightFrontEncoder.setInverted(true);
-    // }
+    }*/
 
 
     public void resetEncoders(){
@@ -139,7 +156,7 @@ public class ChassisSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("RF_Speed",m_rightFront.get());
         SmartDashboard.putNumber("RR_Speed",m_rightRear.get());
         SmartDashboard.putNumber("LR_Speed",m_leftRear.get());
-        SmartDashboard.putNumber("AveragePosition",this.getAverageEcoderPosition());
+        SmartDashboard.putNumber("AveragePosition",this.getAverageEncoderPosition());
 
     }
 

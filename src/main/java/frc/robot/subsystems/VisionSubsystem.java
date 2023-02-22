@@ -7,12 +7,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class vision extends SubsystemBase {
+public class VisionSubsystem extends SubsystemBase {
 
     private final DoubleSubscriber sd;
     double value;
 
-    public vision(){
+    public VisionSubsystem(){
         // Initialize NetworkTables
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         //inst.startClient("10.30.80.2"); 
@@ -24,7 +24,7 @@ public class vision extends SubsystemBase {
         sd = smartDashboardTable.getDoubleTopic("dsTime").subscribe(0.0);
     }
 
-    
+
     @Override
     public void periodic(){
 

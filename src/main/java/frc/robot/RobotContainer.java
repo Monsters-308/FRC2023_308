@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+//Controller stuff
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+
+//Shuffleboard stuff
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,17 +26,17 @@ import edu.wpi.first.wpilibj.SPI;
 
 //constants
 import frc.robot.Constants.IOConstants;
+
+//Commands
 import frc.robot.commands.chassis.DefaultDrive;
 import frc.robot.commands.chassis.MainAutoBalance;
-
+import frc.robot.commands.auton.AutonTest;
 
 //Subsystems go here
 import frc.robot.subsystems.ChassisSubsystem;
-
-//pneumatic stuff
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 //command stuff
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +46,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -54,28 +60,26 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+  
+  //Subsystems:
   private final ChassisSubsystem m_chassisSubsystem = new ChassisSubsystem();
+  private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
+  private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
+  //private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   
+  //Controllers:
   XboxController m_driverController = new XboxController(IOConstants.kDriverPort);
+  XboxController m_coDriverController = new XboxController(IOConstants.kCoDriverPort);
   
-  //Ask Marcus about whether or not this should be public
-  public AHRS ahrs;
+  public AHRS ahrs; //Ask Marcus about whether or not this should be public
 
   public double kInitialPitchOffset = 0;
 
-  
+
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
-    Compressor m_compressor = new Compressor(10,PneumaticsModuleType.CTREPCM);
-    Solenoid m_intakeDeploy = new Solenoid(10,PneumaticsModuleType.CTREPCM,4);
-
     
-
-    m_compressor.getCurrent();
-    m_intakeDeploy.set(false);
-    System.out.println(m_compressor.getPressure());
     //Enable the NavX
     try {
       ahrs = new AHRS(SPI.Port.kMXP);
@@ -85,14 +89,15 @@ public class RobotContainer {
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
     }
 
+    //Get the initial pitch of the NavX (Since the board isn't mounted horizonally)
     try {
       TimeUnit.SECONDS.sleep(2);
-      kInitialPitchOffset = ahrs.getPitch();
+      kInitialPitchOffset = ahrs.getYaw();
     } catch (InterruptedException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
+    
     // //set up camera stuff
     // CameraServer.startAutomaticCapture();
 
@@ -104,6 +109,7 @@ public class RobotContainer {
       () -> -m_driverController.getLeftY(),
       () -> m_driverController.getRightX())
     );
+    
       
 
   }
@@ -126,7 +132,7 @@ public class RobotContainer {
           new MainAutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset)
         )
         .onFalse(
-          new DefaultDrive(m_chassisSubsystem,
+          new DefaultDrive(m_chassisSubsystem, //this isn't the most elagant solution but whatever
           () -> -m_driverController.getLeftY(),
           () -> m_driverController.getRightX())
         );
@@ -135,7 +141,34 @@ public class RobotContainer {
     
 
     //CO DRIVER BUTTONS:
+    
+    new JoystickButton(m_driverController,Button.kB.value)
+      .onTrue(
+        new InstantCommand(m_clawSubsystem::toggleSolenoid,m_clawSubsystem)
+     );
 
+    new JoystickButton(m_driverController,Button.kX.value)
+     .onTrue(
+       new InstantCommand(m_armSubsystem::up,m_armSubsystem)
+    )
+    .onFalse(
+       new InstantCommand(m_armSubsystem::stop,m_armSubsystem)
+    );
+
+    new JoystickButton(m_driverController,Button.kY.value)
+    .onTrue(
+      new InstantCommand(m_armSubsystem::down,m_armSubsystem)
+   )
+   .onFalse(
+      new InstantCommand(m_armSubsystem::stop,m_armSubsystem)
+   );
+
+     /*new JoystickButton(m_coDriverController, )
+     .onTrue(
+       new InstantCommand(m_clawSubsystem::toggleSolenoid,m_clawSubsystem)
+      );*/
+
+   
 
   }
 
@@ -146,6 +179,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return new AutonTest(m_chassisSubsystem);
   }
 }

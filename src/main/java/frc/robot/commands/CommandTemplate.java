@@ -3,15 +3,14 @@ our minds trying to remember the sintax.
 In the future we can just duplicate this file and remove this comment.
 */
 
-
 package frc.robot.commands;
 
-//Import any subsystems your robot interacts with below here
-//Example below: 
-import frc.robot.subsystems.ChassisSubsystem;
-
+//Import subsystem(s) this command interacts with below
+import frc.robot.subsystems.SubsystemTemplate; //example
 
 //Import any other files below here:
+import edu.wpi.first.wpilibj2.command.Command;
+
 
 
 //Import this so you can make this class a command
@@ -20,20 +19,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class CommandTemplate extends CommandBase {
 
     //Import any instance variables that are passed into the file below here, such as the subsystem(s) your command interacts with.
-    //Example below: 
-    private final ChassisSubsystem m_drive;
+    private final SubsystemTemplate m_subsystem; //example
 
     //If you want to contoll whether or not the command has ended, you should store it in some sort of variable:
     private boolean m_complete = false;
 
     //Class Constructor
-    public CommandTemplate(ChassisSubsystem subsystem){
-        m_drive = subsystem;
+    public CommandTemplate(SubsystemTemplate subsystem){
+        m_subsystem = subsystem;
         
         //If your command interacts with any subsystem(s), you should pass them into "addRequirements()"
-        //This function makes it so your command will only run once these subsystems are free from other commands.
+        //This function makes it so your command will only run once these subsystem(s) are free from other commands.
         //This is really important as it will stop scenarios where two commands try to controll a motor at the same time.
-        addRequirements(m_drive);
+        addRequirements(m_subsystem);
     }
 
 
@@ -42,12 +40,13 @@ public class CommandTemplate extends CommandBase {
     
 
     /*This function is called once when the command is schedueled.
-     * If you are overriding "isFinished()", you should probably use this to set m_complete to false.
+     * If you are overriding "isFinished()", you should probably use this to set m_complete to false in case a command object is 
+     * called a second time.
      */
     //When not overridden, this function is blank.
     @Override
     public void initialize(){
-        
+        m_complete = false;
     }
 
     /*This function is called repeatedly when the schedueler's "run()" function is called.
@@ -70,11 +69,43 @@ public class CommandTemplate extends CommandBase {
         
     }
 
-    /*This function is called while the   */
+    /*This function is called while the command is running. It is called after each time the "execute()" function is ran.
+     * Once this function returns true, "end(boolean interrupted)" is ran and the command ends.
+     * This fuction is used to tell the robot when the command has ended.
+     * It is recommended that you don't use this for commands that should run continuously, such as drive commands.
+    */
     //When not overridden, this function returns false.
     @Override
     public boolean isFinished(){
         return m_complete;
     }
+
+
+
+    /*In addition to the four lifecycle methods described above, each Command also has some properties defined by getter methods.*/
+
+
+
+    /*This function tells the robot whether or not the command can run if the robot is disabled.
+     * For our purposes, we should probably never change this.
+     */
+    //When not overridden, this function returns false.
+    @Override
+    public boolean runsWhenDisabled(){
+        return false;
+    }
+
+    /*This function allows you to specify what a command does when another command that uses the same subsystem is scheduled.
+     * The default behavior, Command.InterruptBehavior.kCancelSelf, will make the command cancel itself so the other command can run.
+     * You can also return Command.InterruptBehavior.kCancelIncoming, which will cancel the incoming command.
+     * You can also specify the interruption behavior for any command by appending it with ".withInterruptBehavior()", which makes this
+     *  function kind of useless :/
+     */
+    //When not overridden, this function returns Command.InterruptionBehavior.kCancelSelf
+    @Override
+    public Command.InterruptionBehavior getInterruptionBehavior(){
+        return Command.InterruptionBehavior.kCancelSelf;
+    }
+
 
 }
