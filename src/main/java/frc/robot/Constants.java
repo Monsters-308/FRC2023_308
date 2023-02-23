@@ -17,6 +17,7 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
     public static final class ChassisConstants {
         public static final int kLeftFrontPort = 5;
         public static final int kRightFrontPort = 4;
@@ -35,27 +36,41 @@ public final class Constants {
         
 
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
-        public static final double kOffBalanceAngleThresholdDegrees = 2;
-        public static final double kOnBalanceAngleThresholdDegrees = 2;
+        public static final double kOffBalanceAngleThresholdDegrees = 2;//
+        public static final double kOnBalanceAngleThresholdDegrees = 2;//
 
     }
 
     public static final class ArmConstants {
-        public static final int kMotorPort = 21;
 
+        public static final int kMotorPort = 21;
         public static final int kCurrentLimit = 40;
+        //public static final double kRotationSpeed = 0.2;
 
         public static final int kPotPort = 0;
 
-        public static final double kRotationSpeed = 0.2;
+        public static final double kAngleTolerance = 4;//
 
-        public static final double kAngleTolerance = 0.2;
+        public static final double kMaxAngle = 180;//
+        public static final double kMinAngle = 1;
 
+        //Position: the angle to set the arm to
+        public static final double kBottomPosition = 0;//
+        public static final double kMiddlePosition = 20;//
+        public static final double kTopPosition = 40;//
+        public static final double kLoadingPosition = 45;//
 
-        public static final int kBottomPosition = 0;
-        public static final int kMiddlePosition = 20;
-        public static final int kTopPosition = 40;
-        public static final int kLoadingPosition = 45;
+        //speed: the speed at which to move the arm at when going to a level
+        public static final double kBottomSpeed = 0.2;//
+        public static final double kMiddleSpeed = 0.4;//
+        public static final double kTopSpeed = 0.6;//
+        public static final double kLoadingSpeed = 0.6;//
+
+        //offset: the power needed to keep the arm from falling down
+        public static final double kBottomOffset = 0;
+        public static final double kMiddleOffset = 0.4;//
+        public static final double kTopOffset = 0.6;//
+        public static final double kLoadingOffset = 0.6;//
 
 
     }
@@ -69,6 +84,8 @@ public final class Constants {
     public static final class IOConstants {
         public static final int kDriverPort = 0;
         public static final int kCoDriverPort = 1;
+
+        public static final double kTriggerThreshold = 0.5;
     }
 
     

@@ -8,6 +8,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+// button mapping
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 //Shuffleboard stuff
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -45,8 +49,7 @@ import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
+
 
 
 
@@ -127,6 +130,8 @@ public class RobotContainer {
 
 
     //MAIN DRIVER BUTTONS:
+
+    //Right trigger: autobalance
     new JoystickButton(m_driverController,Button.kA.value)
         .onTrue(
           new MainAutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset)
@@ -140,37 +145,75 @@ public class RobotContainer {
 
     
 
-    //CO DRIVER BUTTONS:
-    
-    new JoystickButton(m_driverController,Button.kB.value)
-      .onTrue(
-        new InstantCommand(m_clawSubsystem::toggleSolenoid,m_clawSubsystem)
-     );
 
-    new JoystickButton(m_driverController,Button.kX.value)
-     .onTrue(
-       new InstantCommand(m_armSubsystem::up,m_armSubsystem)
-    )
-    .onFalse(
-       new InstantCommand(m_armSubsystem::stop,m_armSubsystem)
+    //CO DRIVER BUTTONS:
+
+
+    //Dpad left: bottom
+    new POVButton(m_driverController, 270)
+      .onTrue(
+        new InstantCommand(m_armSubsystem::bottomLevel, m_armSubsystem)
+      );
+
+
+    
+    //Dpad up: middle
+    new POVButton(m_driverController, 0)
+    .onTrue(
+      new InstantCommand(m_armSubsystem::middleLevel, m_armSubsystem)
     );
 
-    new JoystickButton(m_driverController,Button.kY.value)
+
+
+    //Dpad right: top
+    new POVButton(m_driverController, 90)
     .onTrue(
-      new InstantCommand(m_armSubsystem::down,m_armSubsystem)
-   )
-   .onFalse(
-      new InstantCommand(m_armSubsystem::stop,m_armSubsystem)
-   );
+      new InstantCommand(m_armSubsystem::topLevel, m_armSubsystem)
+    );
 
-     /*new JoystickButton(m_coDriverController, )
-     .onTrue(
-       new InstantCommand(m_clawSubsystem::toggleSolenoid,m_clawSubsystem)
-      );*/
 
-   
+
+    //Dpad down: loading
+    new POVButton(m_driverController, 180)
+    .onTrue(
+      new InstantCommand(m_armSubsystem::loadingLevel, m_armSubsystem)
+    );
+
+
+
+    //Right trigger: manual up
+    new Trigger(() -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
+      .onTrue(
+       new InstantCommand(m_armSubsystem::up, m_armSubsystem)
+      );
+      // .onFalse(
+      //  new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
+      // );
+
+
+
+    //Left trigger: manual down
+    new Trigger(() -> m_driverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
+    .onTrue(
+      new InstantCommand(m_armSubsystem::down, m_armSubsystem)
+    );
+    // .onFalse(
+    //   new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
+    // );
+
+
+
+    //A button: toggle claw (B if it's one controller)
+    new JoystickButton(m_driverController,Button.kB.value)
+      .onTrue(
+        new InstantCommand(m_clawSubsystem::toggleSolenoid, m_clawSubsystem)
+      );
+
+    
+
 
   }
+
 
 
   /**
