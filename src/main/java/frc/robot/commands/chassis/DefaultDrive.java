@@ -10,6 +10,7 @@ import java.util.function.DoubleSupplier;
 
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class DefaultDrive extends CommandBase {
     private final ChassisSubsystem m_drive;
@@ -23,6 +24,11 @@ public class DefaultDrive extends CommandBase {
         addRequirements(m_drive);
     }
 
+    
+    /*@Override
+    public void initialize(){
+        m_drive.resetEncoders();
+    }*/
 
     @Override
     public void execute(){

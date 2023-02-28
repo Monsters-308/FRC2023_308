@@ -35,6 +35,7 @@ public class ChassisSubsystem extends SubsystemBase {
     private final DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
     public ChassisSubsystem(){
+        SmartDashboard.putNumber("driftOffset", 0);
         m_leftFront.restoreFactoryDefaults();
         m_rightFront.restoreFactoryDefaults();
         m_rightRear.restoreFactoryDefaults();
@@ -57,17 +58,13 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear.setIdleMode(IdleMode.kBrake);
         
         //Maybe make constants for this?
-        m_leftFront.setInverted(true);
-        m_leftRear.setInverted(true);
-        m_rightFront.setInverted(false);
-        m_rightRear.setInverted(false);
-        
-        //Make sure all encoders work in the same direction
-        /*m_leftFrontEncoder.setInverted(false);
-        m_leftRearEncoder.setInverted(false);
-        m_rightFrontEncoder.setInverted(false);
-        m_rightRearEncoder.setInverted(false);*/
+        m_leftFront.setInverted(false);
+        m_leftRear.setInverted(false);
+        m_rightFront.setInverted(true);
+        m_rightRear.setInverted(true);
 
+
+        resetEncoders();
 
     }
 
@@ -102,24 +99,26 @@ public class ChassisSubsystem extends SubsystemBase {
         if(zRotation<-0.5){
             zRotation = -0.5;
         }*/
-
-        m_drive.arcadeDrive(xSpeed*.75, zRotation*.75);
+        
+        //m_drive.arcadeDrive(xSpeed*.75, -(zRotation+ChassisConstants.kdriftOffset)*.75);
+        m_drive.arcadeDrive(xSpeed*.75, -(zRotation+SmartDashboard.getNumber("driftOffset", 0))*.75);
+        SmartDashboard.putNumber("offset check", SmartDashboard.getNumber("driftOffset", 0));
     }
+
 
     public double getAverageEncoderDistanceInches(){
-        return ChassisConstants.kEncoderConversionFactor * (m_leftFrontEncoder.getPosition()+m_rightFrontEncoder.getPosition())/2;
+        return ChassisConstants.kEncoderConversionFactor * (m_leftRearEncoder.getPosition() + m_rightFrontEncoder.getPosition() + m_rightRearEncoder.getPosition())/3;
+        //return getAverageEncoderPosition() * 6.25;
     }
 
-    //Im pretty sure all of our encoders are running in the same direction, so change this probably
     public double getAverageEncoderPosition(){
         //return(m_leftFrontEncoder.getPosition() + ((-1.0)*m_rightFrontEncoder.getPosition())) / 2.0;
-        return (m_leftFrontEncoder.getPosition() + m_leftRearEncoder.getPosition() + 
-            m_rightFrontEncoder.getPosition() + m_rightRearEncoder.getPosition()) / 4;
+        return (m_leftRearEncoder.getPosition() + m_rightFrontEncoder.getPosition() + m_rightRearEncoder.getPosition()) / 3;
     }
 
+    //This will be used for autoturn to figure out the rotation of the robot
     public double getAverageEncoderRotation(){
-        return (m_leftFrontEncoder.getPosition() + m_leftRearEncoder.getPosition() + 
-           (-m_rightFrontEncoder.getPosition()) + (-m_rightRearEncoder.getPosition())) / 4;
+        return (m_leftRearEncoder.getPosition() + (-m_rightFrontEncoder.getPosition()) + (-m_rightRearEncoder.getPosition())) / 3;
     }
 
 
@@ -148,15 +147,19 @@ public class ChassisSubsystem extends SubsystemBase {
     //This is called every 20ms
     @Override
     public void periodic(){
+        //all of our encoders should be running in the same direction
         SmartDashboard.putNumber("LF_Enc",m_leftFrontEncoder.getPosition());
         SmartDashboard.putNumber("RF_Enc",m_rightFrontEncoder.getPosition());
         SmartDashboard.putNumber("RR_Enc",m_rightRearEncoder.getPosition());
         SmartDashboard.putNumber("LR_Enc",m_leftRearEncoder.getPosition());
+
         SmartDashboard.putNumber("LF_Speed",m_leftFront.get());
         SmartDashboard.putNumber("RF_Speed",m_rightFront.get());
         SmartDashboard.putNumber("RR_Speed",m_rightRear.get());
         SmartDashboard.putNumber("LR_Speed",m_leftRear.get());
+
         SmartDashboard.putNumber("AveragePosition",this.getAverageEncoderPosition());
+        SmartDashboard.putNumber("AveragePosition(inch)",this.getAverageEncoderDistanceInches());
 
     }
 

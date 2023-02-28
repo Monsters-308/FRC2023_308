@@ -5,7 +5,7 @@ import frc.robot.subsystems.ChassisSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DriveDistance extends CommandBase{
+public class DriveDistanceInches extends CommandBase{
     private final ChassisSubsystem m_drive;
     private double m_distance;
     private double m_speed;
@@ -13,7 +13,7 @@ public class DriveDistance extends CommandBase{
     private boolean m_complete = false;
     
     //inches must be positive; if you want to go in reverse, set speed to negative number.
-    public DriveDistance(double inches, double speed, ChassisSubsystem subsystem){
+    public DriveDistanceInches(double inches, double speed, ChassisSubsystem subsystem){
         m_distance = inches;
         m_speed = speed;
         m_drive = subsystem;
@@ -23,6 +23,7 @@ public class DriveDistance extends CommandBase{
     @Override
     public void initialize(){
         m_complete = false;
+
         start_encoders = m_drive.getAverageEncoderDistanceInches();
     }
 

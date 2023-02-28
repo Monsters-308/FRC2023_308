@@ -44,12 +44,10 @@ public class MainAutoBalance extends CommandBase {
         
         //System.out.println("Pitch offset: " + kInitialPitchOffset);
         SmartDashboard.putNumber("Pitch with initial offset:", pitchAngleDegrees);
-        SmartDashboard.putNumber("Pitch with without offset:", NavX2.getPitch());
-        SmartDashboard.putNumber("Altitude", NavX2.getAltitude());
+        SmartDashboard.putNumber("Pitch (without offset):", NavX2.getPitch());
         SmartDashboard.putNumber("Angle", NavX2.getAngle());
         SmartDashboard.putNumber("AngleAdjusment", NavX2.getAngleAdjustment());
         SmartDashboard.putNumber("RawX", NavX2.getRawGyroX());
-        SmartDashboard.putNumber("RawXWorld", NavX2.getWorldLinearAccelX());
         SmartDashboard.putNumber("XVelocity", NavX2.getVelocityX());
         SmartDashboard.putNumber("Roll", NavX2.getRoll());
         SmartDashboard.putNumber("Yaw", NavX2.getYaw());
@@ -81,7 +79,7 @@ public class MainAutoBalance extends CommandBase {
             //If we go too slow, the robot will struggle to get over the charge pad since the ramp will make it slide downwards.
             //Brake mode SHOULD fix the latter issue, but it didn't seem to help that much.
             //We might want to consider using a cubic function instead of a sine function.
-            xAxisSpeed *= 5;
+            xAxisSpeed *= 2;
 
             //System.out.println("xAxisSpeed: " + xAxisSpeed);
             

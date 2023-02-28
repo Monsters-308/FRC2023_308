@@ -25,11 +25,13 @@ public class ArmSubsystem extends SubsystemBase {
     // Ask build team about potentiometer range.
     // When not given a range, it will return the voltage
     // Forget voltages, I'm just gonna use angles so i don't have to deal with long decimels
-    private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort , 333, 0);
+    private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort , 333, -92);
 
     private double gravityOffset = 0; //this represents the motor speed required to stop the 
 
-    private double desiredAngle = 2;
+    private double desiredAngle = 5; //this represents the angle the arm WANTS to be at
+
+    private double previousAngle; //this is mainly for testing purposes for now
 
 
     public ArmSubsystem(){
@@ -37,9 +39,12 @@ public class ArmSubsystem extends SubsystemBase {
 
         m_armMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
 
-        m_armMotor.setIdleMode(IdleMode.kBrake);
+        m_armMotor.setIdleMode(IdleMode.kCoast);
         
         m_armMotor.setInverted(false);
+
+
+        previousAngle = pot.get();
 
     }
     
@@ -49,9 +54,9 @@ public class ArmSubsystem extends SubsystemBase {
         if(pot.get() > ArmConstants.kMaxAngle){
             m_armMotor.set(0.1); //setting it to zero will make it fall too quickly
         }
-        else if((pot.get() < ArmConstants.kMinAngle) && (speed < 0)){
+        /*else if((pot.get() < ArmConstants.kMinAngle) && (speed < 0)){
             m_armMotor.set(0);
-        }
+        }*/
         else{
             m_armMotor.set(speed);
         }
@@ -99,14 +104,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     //These three are mainly for debugging purposes rn
     public void up(){
-        desiredAngle += 0.5;
+        desiredAngle += 5;
         if (desiredAngle > ArmConstants.kMaxAngle){
             desiredAngle = ArmConstants.kMaxAngle;
         }
     }
 
     public void down(){
-        desiredAngle -= 0.5;
+        desiredAngle -= 5;
         if (desiredAngle < 0){
             desiredAngle = 0;
         }
@@ -118,6 +123,13 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
 
+        //calculate the angular velocity of the motor in degrees per second 
+        double angularVelocity = (pot.get()-previousAngle)*50;
+
+        previousAngle = pot.get();
+
+
+        
         //stabalization function
 
         /* Version1:
@@ -127,15 +139,16 @@ public class ArmSubsystem extends SubsystemBase {
          *      So basically it's a slower version of the "goto" function.
          */
 
-        if(getCurrentCommand() == null){
+        if(this.getCurrentCommand() == null){
             //while((pot.get() > desiredAngle+1) || (pot.get() < desiredAngle-1)){
-            if(pot.get() > desiredAngle+1){
-                gravityOffset -= 0.02;
+            if(pot.get() > desiredAngle+ArmConstants.kStabalizationTolerance){
+                gravityOffset -= 0.001;
             }
-            else if(pot.get() < desiredAngle-1){
-                gravityOffset += 0.02;
-            }
+            else if(pot.get() < desiredAngle-ArmConstants.kStabalizationTolerance){
+                gravityOffset += 0.001;
+            } 
         }
+        
         setSafe(gravityOffset);
 
         SmartDashboard.putNumber("Gravity Offset", gravityOffset); 
@@ -143,6 +156,8 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Desired angle", desiredAngle); 
 
         SmartDashboard.putNumber("pot position", pot.get());
+
+        SmartDashboard.putNumber("velocity(deg/s)", angularVelocity);
 
 
     }

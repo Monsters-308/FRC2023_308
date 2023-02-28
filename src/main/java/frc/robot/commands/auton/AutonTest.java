@@ -2,15 +2,29 @@ package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.chassis.DriveDistance;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+
+//Commands
+import frc.robot.commands.chassis.DriveDistanceInches;
+import frc.robot.commands.chassis.DriveDistanceRotations;
+
+//subsystems
 import frc.robot.subsystems.ChassisSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
 public class AutonTest extends SequentialCommandGroup{
 
-    public AutonTest(ChassisSubsystem subsystem){
+    public AutonTest(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem){
         addCommands(
-            new DriveDistance(180, 0.5, subsystem)
+            new SequentialCommandGroup(
+                //new InstantCommand(clawSubsystem::openClaw, clawSubsystem),
+                new DriveDistanceRotations(148, -0.6, chassisSubsystem)
+                
+            )
         );
     }
     
