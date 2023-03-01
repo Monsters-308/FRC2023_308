@@ -43,7 +43,11 @@ public void periodic() {
       break;
 
     case BLINK:
+    rainbow();
+    break;
+
     case FRENZY:
+    rainbow();
     break;
 
     case SOLID:
@@ -52,6 +56,7 @@ public void periodic() {
     
     default:
       blink(LEDColor);
+      break;
   }
 }
   

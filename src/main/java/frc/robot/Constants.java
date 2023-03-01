@@ -68,14 +68,14 @@ public final class Constants {
 
         //speed: the speed at which to move the arm at when going to a level
         public static final double kBottomSpeed = 0.2;//
-        public static final double kMiddleSpeed = 0.4;//
+        public static final double kMiddleSpeed = 0.6;//
         public static final double kTopSpeed = 0.6;//
         public static final double kLoadingSpeed = 0.6;//
 
         //offset: the power needed to keep the arm from falling down
         public static final double kBottomOffset = 0;
-        public static final double kMiddleOffset = 0.4;//
-        public static final double kTopOffset = 0.6;//
+        public static final double kMiddleOffset = 0.3;//
+        public static final double kTopOffset = 0.3;//
         public static final double kLoadingOffset = 0.6;//
 
 

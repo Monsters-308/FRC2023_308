@@ -29,9 +29,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private double gravityOffset = 0; //this represents the motor speed required to stop the 
 
-    private double desiredAngle = 5; //this represents the angle the arm WANTS to be at
-
-    private double previousAngle; //this is mainly for testing purposes for now
+    private double desiredAngle = 5;
 
 
     public ArmSubsystem(){
@@ -39,12 +37,11 @@ public class ArmSubsystem extends SubsystemBase {
 
         m_armMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
 
-        m_armMotor.setIdleMode(IdleMode.kCoast);
+        m_armMotor.setIdleMode(IdleMode.kBrake);
         
         m_armMotor.setInverted(false);
 
-
-        previousAngle = pot.get();
+        setSafe(-0.2);
 
     }
     
@@ -104,17 +101,24 @@ public class ArmSubsystem extends SubsystemBase {
 
     //These three are mainly for debugging purposes rn
     public void up(){
-        desiredAngle += 5;
-        if (desiredAngle > ArmConstants.kMaxAngle){
-            desiredAngle = ArmConstants.kMaxAngle;
-        }
+        m_armMotor.setIdleMode(IdleMode.kCoast);
+        setSafe(0.8);
     }
 
     public void down(){
-        desiredAngle -= 5;
-        if (desiredAngle < 0){
-            desiredAngle = 0;
+        m_armMotor.setIdleMode(IdleMode.kCoast);
+        setSafe(-0.3);
+    }
+
+    public void stop(){
+        m_armMotor.setIdleMode(IdleMode.kBrake);
+        if(pot.get() < 10){
+            setSafe(-0.2);  
         }
+        else{
+            setSafe(0.2);            
+        }
+
     }
 
 
@@ -123,13 +127,6 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void periodic(){
 
-        //calculate the angular velocity of the motor in degrees per second 
-        double angularVelocity = (pot.get()-previousAngle)*50;
-
-        previousAngle = pot.get();
-
-
-        
         //stabalization function
 
         /* Version1:
@@ -139,25 +136,22 @@ public class ArmSubsystem extends SubsystemBase {
          *      So basically it's a slower version of the "goto" function.
          */
 
-        if(this.getCurrentCommand() == null){
+        //if(getCurrentCommand() == null){
             //while((pot.get() > desiredAngle+1) || (pot.get() < desiredAngle-1)){
-            if(pot.get() > desiredAngle+ArmConstants.kStabalizationTolerance){
+            /*if(pot.get() > desiredAngle+5){
                 gravityOffset -= 0.001;
             }
-            else if(pot.get() < desiredAngle-ArmConstants.kStabalizationTolerance){
+            else if((pot.get() < desiredAngle-5) && (gravityOffset < 0.6)){
                 gravityOffset += 0.001;
-            } 
-        }
-        
-        setSafe(gravityOffset);
+            }*/
+        //}
+        //setSafe(gravityOffset);
 
         SmartDashboard.putNumber("Gravity Offset", gravityOffset); 
 
         SmartDashboard.putNumber("Desired angle", desiredAngle); 
 
         SmartDashboard.putNumber("pot position", pot.get());
-
-        SmartDashboard.putNumber("velocity(deg/s)", angularVelocity);
 
 
     }

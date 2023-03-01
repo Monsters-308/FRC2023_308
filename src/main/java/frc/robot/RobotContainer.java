@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.concurrent.TimeUnit;
 
 //camera imports
-//import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cameraserver.CameraServer;
 
 //NAVX
 import com.kauailabs.navx.frc.AHRS;
@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj.SPI;
 
 //constants
 import frc.robot.Constants.IOConstants;
-import frc.robot.Constants.LEDState;
 
 //Commands
 import frc.robot.commands.chassis.DefaultDrive;
@@ -69,16 +68,15 @@ public class RobotContainer {
   //Subsystems:
   private final ChassisSubsystem m_chassisSubsystem = new ChassisSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
-  //private final LEDSubsystem m_LedSubsystem;
   private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
-  
   //private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+  private final LEDSubsystem m_LEDSubsystem = new LEDSubsystem();
   
   //Controllers:
   XboxController m_driverController = new XboxController(IOConstants.kDriverPort);
   XboxController m_coDriverController = new XboxController(IOConstants.kCoDriverPort);
   
-  private AHRS ahrs; //Ask Marcus about whether or not this should be public
+  public AHRS ahrs; //Ask Marcus about whether or not this should be public
 
   public double kInitialPitchOffset = 0;
 
@@ -86,28 +84,24 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
+    
     //Enable the NavX
     try {
       ahrs = new AHRS(SPI.Port.kMXP);
       // ahrs = new AHRS(SerialPort.Port.kUSB1);
       ahrs.enableLogging(true);
-      //this.m_LedSubsystem = new LEDSubsystem(ahrs);
     } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
-
     }
-
-
 
     //Get the initial pitch of the NavX (Since the board isn't mounted horizonally)
     try {
-      TimeUnit.SECONDS.sleep(1);
+      TimeUnit.SECONDS.sleep(2);
       kInitialPitchOffset = ahrs.getYaw();
     } catch (InterruptedException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
     
     // //set up camera stuff
     // CameraServer.startAutomaticCapture();
@@ -115,15 +109,10 @@ public class RobotContainer {
     // Configure the button bindings
     configureBindings();
 
-
     m_chassisSubsystem.setDefaultCommand(
-    new ParallelCommandGroup(  
       new DefaultDrive(m_chassisSubsystem,
-        () -> -m_driverController.getLeftY(),
-        () -> m_driverController.getRightX())
-
-      //new InstantCommand(() -> m_LedSubsystem.changeLEDState(LEDState.SOLID), m_LedSubsystem)
-      )
+      () -> -m_driverController.getLeftY(),
+      () -> m_driverController.getRightX())
     );
     
       
@@ -145,23 +134,15 @@ public class RobotContainer {
     //MAIN DRIVER BUTTONS:
 
     //Right trigger: autobalance
-    new JoystickButton(m_driverController,Button.kB.value)
+    new JoystickButton(m_driverController, Button.kA.value)
         .onTrue(
-          new ParallelCommandGroup(
-            new MainAutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset)
-            //new InstantCommand(() -> m_LedSubsystem.changeLEDState(LEDState.SOLID), m_LedSubsystem)            
-          )          
+          new MainAutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset)
         )
         .onFalse(
-          new ParallelCommandGroup(
-            new DefaultDrive(m_chassisSubsystem, //this isn't the most elagant solution but whatever
-              () -> -m_driverController.getLeftY(),
-              () -> m_driverController.getRightX())
-            //new InstantCommand(() -> m_LedSubsystem.changeLEDState(LEDState.SOLID), m_LedSubsystem)
-          )
+          new DefaultDrive(m_chassisSubsystem, //this isn't the most elagant solution but whatever
+          () -> -m_driverController.getLeftY(),
+          () -> m_driverController.getRightX())
         );
-
-
     
 
     
@@ -171,27 +152,28 @@ public class RobotContainer {
 
 
     //Dpad left: bottom
-    /*new POVButton(m_driverController, 270)
+    /*new POVButton(m_coDriverController, 270)
       .onTrue(
         new InstantCommand(m_armSubsystem::bottomLevel, m_armSubsystem)
       );
 
 
-    
+    */
     //Dpad up: middle
-    new POVButton(m_driverController, 0)
+    new POVButton(m_coDriverController, 0)
     .onTrue(
       new InstantCommand(m_armSubsystem::middleLevel, m_armSubsystem)
     );
 
+     
 
 
     //Dpad right: top
-    new POVButton(m_driverController, 90)
+    new POVButton(m_coDriverController, 90)
     .onTrue(
       new InstantCommand(m_armSubsystem::topLevel, m_armSubsystem)
     );
-
+    /* 
 
 
     //Dpad down: loading
@@ -204,46 +186,40 @@ public class RobotContainer {
     */
 
     //Right trigger: manual up
-    new Trigger(() -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
+    new Trigger(() -> m_coDriverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
       .onTrue(
        new InstantCommand(m_armSubsystem::up, m_armSubsystem)
+      )
+      .onFalse(
+       new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
       );
-      // .onFalse(
-      //  new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
-      // );
 
 
 
     //Left trigger: manual down
-    new Trigger(() -> m_driverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
+    new Trigger(() -> m_coDriverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
     .onTrue(
       new InstantCommand(m_armSubsystem::down, m_armSubsystem)
+    )
+    .onFalse(
+      new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
     );
-    // .onFalse(
-    //   new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
-    // );
 
 
 
     //A button: toggle claw (B if it's one controller)
-    new JoystickButton(m_driverController,Button.kB.value)
+    new JoystickButton(m_coDriverController, Button.kA.value)
       .onTrue(
         new InstantCommand(m_clawSubsystem::toggleClaw, m_clawSubsystem)
       );
-    
-    
+
+
     //X button: toggle wrist 
-    new JoystickButton(m_driverController,Button.kX.value)
+    new JoystickButton(m_coDriverController,Button.kX.value)
     .onTrue(
       new InstantCommand(m_clawSubsystem::toggleWrist, m_clawSubsystem)
     );
 
-
-    //Y button: reset encoders (for debugging purposes)
-    new JoystickButton(m_driverController,Button.kY.value)
-      .onTrue(
-        new InstantCommand(m_chassisSubsystem::resetEncoders, m_chassisSubsystem)
-      );
     
 
 
