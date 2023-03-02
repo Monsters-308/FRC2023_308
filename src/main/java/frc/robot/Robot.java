@@ -22,7 +22,6 @@ public class Robot extends TimedRobot {
 
   }
 
-
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
@@ -76,21 +75,4 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
-
-  /*
-  private void rainbow(int m_rainbowFirstPixelHue) {
-    // For every pixel
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      // Calculate the hue - hue is easier for rainbows because the color
-      // shape is a circle so only one value needs to precess
-      final int hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
-      // Set the value
-      m_ledBuffer.setHSV(i, hue, 255, 128);
-    }
-    // Increase by to make the rainbow "move"
-    m_rainbowFirstPixelHue += 3;
-    // Check bounds
-    m_rainbowFirstPixelHue %= 180;
-  }
-  */
 }

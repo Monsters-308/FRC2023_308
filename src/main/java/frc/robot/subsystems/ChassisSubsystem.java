@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-//Motor stuff
+//Motor Libraries
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -23,8 +23,7 @@ public class ChassisSubsystem extends SubsystemBase {
 
     private final CANSparkMax m_rightFront = new CANSparkMax(ChassisConstants.kRightFrontPort, MotorType.kBrushless);
     private final CANSparkMax m_rightRear = new CANSparkMax(ChassisConstants.kRightRearPort, MotorType.kBrushless);
-    MotorControllerGroup m_right = new MotorControllerGroup(m_rightFront, m_rightRear);
-    
+    MotorControllerGroup m_right = new MotorControllerGroup(m_rightFront, m_rightRear);    
 
     //Get Encoders
     private RelativeEncoder m_leftFrontEncoder = m_leftFront.getEncoder();
@@ -43,31 +42,22 @@ public class ChassisSubsystem extends SubsystemBase {
         m_rightRear.restoreFactoryDefaults();
         m_leftRear.restoreFactoryDefaults();
 
-        //Bruh why tf did Vex not have this feature?
         m_leftFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
-        
-        /*m_leftFront.setIdleMode(IdleMode.kCoast);
-        m_rightFront.setIdleMode(IdleMode.kCoast);
-        m_rightRear.setIdleMode(IdleMode.kCoast);
-        m_leftRear.setIdleMode(IdleMode.kCoast);*/
         
         m_leftFront.setIdleMode(IdleMode.kBrake);
         m_rightFront.setIdleMode(IdleMode.kBrake);
         m_rightRear.setIdleMode(IdleMode.kBrake);
         m_leftRear.setIdleMode(IdleMode.kBrake);
         
-        //Maybe make constants for this?
         m_leftFront.setInverted(false);
         m_leftRear.setInverted(false);
         m_rightFront.setInverted(true);
         m_rightRear.setInverted(true);
 
-
         resetEncoders();
-
     }
 
     public void setBrakeMode(){
@@ -84,35 +74,13 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear.setIdleMode(IdleMode.kCoast);
     }
 
-
     public void drive(double xSpeed, double zRotation){
-
-        //Safety mode
-        /*if(xSpeed>0.5){
-            xSpeed = 0.5;
-        }
-        if(xSpeed<-0.5){
-            xSpeed = -0.5;
-        }
-
-        if(zRotation>0.5){
-            zRotation = 0.5;
-        }
-        if(zRotation<-0.5){
-            zRotation = -0.5;
-        }*/
-        
-        //m_drive.arcadeDrive(xSpeed*.75, -(zRotation+ChassisConstants.kdriftOffset)*.75);
-
-
         if(xSpeed>0){
             zRotation += SmartDashboard.getNumber("driftOffset", 0);
         }
         else if (xSpeed<0){
             zRotation -= SmartDashboard.getNumber("driftOffset", 0);
         }
-
-
         m_drive.arcadeDrive(xSpeed*.9, -zRotation * .9);
 
         SmartDashboard.putNumber("offset check", SmartDashboard.getNumber("driftOffset", 0));
@@ -121,11 +89,9 @@ public class ChassisSubsystem extends SubsystemBase {
 
     public double getAverageEncoderDistanceInches(){
         return ChassisConstants.kEncoderConversionFactor * (m_leftRearEncoder.getPosition() + m_rightFrontEncoder.getPosition() + m_rightRearEncoder.getPosition())/3;
-        //return getAverageEncoderPosition() * 6.25;
     }
 
     public double getAverageEncoderPosition(){
-        //return(m_leftFrontEncoder.getPosition() + ((-1.0)*m_rightFrontEncoder.getPosition())) / 2.0;
         return (m_leftRearEncoder.getPosition() + m_rightFrontEncoder.getPosition() + m_rightRearEncoder.getPosition()) / 3;
     }
 
@@ -133,22 +99,6 @@ public class ChassisSubsystem extends SubsystemBase {
     public double getAverageEncoderRotation(){
         return (m_leftRearEncoder.getPosition() + (-m_rightFrontEncoder.getPosition()) + (-m_rightRearEncoder.getPosition())) / 3;
     }
-
-
-    //What purpose do these functions actually serve?
-    /*public double getLeftFrontEncoder(){
-        return m_leftFrontEncoder.getPosition();
-    }
-    public double getRightFrontEncoder(){
-        return m_rightFrontEncoder.getPosition();
-    }
-    public double getRightRearEncoder(){
-        return m_rightRearEncoder.getPosition();
-    }
-    public double getLeftRearEncoder(){
-        return m_leftRearEncoder.getPosition();
-    }*/
-
 
     public void resetEncoders(){
         m_leftFrontEncoder.setPosition(0.0);
@@ -173,7 +123,5 @@ public class ChassisSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("AveragePosition",this.getAverageEncoderPosition());
         SmartDashboard.putNumber("AveragePosition(inch)",this.getAverageEncoderDistanceInches());
-
     }
-
 }

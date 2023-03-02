@@ -1,16 +1,8 @@
 package frc.robot.commands.chassis;
 
-//Subsystem
 import frc.robot.subsystems.ChassisSubsystem;
-
-//ShuffleBoard
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import java.util.function.DoubleSupplier;
-
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class DefaultDrive extends CommandBase {
     private final ChassisSubsystem m_drive;
@@ -24,7 +16,6 @@ public class DefaultDrive extends CommandBase {
         addRequirements(m_drive);
     }
 
-    
     @Override
     public void initialize(){
         m_drive.setCoastMode();
@@ -39,5 +30,4 @@ public class DefaultDrive extends CommandBase {
     public void end(boolean interrupted){
         m_drive.drive(0, 0);
     }
-
 }

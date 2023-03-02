@@ -1,8 +1,6 @@
 package frc.robot.commands.chassis;
 
 import frc.robot.subsystems.ChassisSubsystem;
-
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DriveDistanceRotations extends CommandBase{
@@ -38,23 +36,12 @@ public class DriveDistanceRotations extends CommandBase{
             else{
                 m_drive.drive(m_speed,0.0);
             }
-    
-        // }else{
-        //     if(Math.abs(m_drive.getAverageEncoderDistanceInches()-start_encoders)<=m_distance){
-        //         m_drive.drive(0.0,0.0,0.0);
-        //         m_complete = true;
-        //     }else{
-        //         m_drive.drive(m_speed,0.0,0.0);
-        //     }
-    
-        // }
     }
 
     @Override
     public void end(boolean interrupted){
         m_drive.drive(0.0, 0.0);
     }
-
 
     @Override
     public boolean isFinished(){

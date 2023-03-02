@@ -25,11 +25,7 @@ public final class Constants {
         public static final int kLeftRearPort = 4;
 
         public static final int kCurrentLimit = 40; // 40A current limit for motors 
-
-        //public static final double kAutoRotationSpeed = 0.2; // speed to rotate for auto aim
-
         public static final double kdriftOffset = 0; // account for drift when driving straight
-
 
         public static final double kWheelDiameter = 6.25;
         public static final double kGearRatio = 16.444;
@@ -40,7 +36,6 @@ public final class Constants {
         //((diameter of drive train * pi) / (diameter of wheels * pi)) / 360 = number of rotations for wheels for the robot to spin 1 degree
         public static final double kEndcoderRotationConversionFactor = ((23.5 * Math.PI) / (kWheelDiameter * Math.PI)/kGearRatio) / 360;
         
-
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
         public static final double kOffBalanceAngleThresholdDegrees = 60;//
         public static final double kOnBalanceAngleThresholdDegrees = 40;//
@@ -50,7 +45,6 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-
         public static final int kMotorPort = 21;
         public static final int kCurrentLimit = 30;
 
@@ -79,33 +73,27 @@ public final class Constants {
         public static final double kMiddleOffset = 0.3;//
         public static final double kTopOffset = 0.3;//
         public static final double kLoadingOffset = 0.6;//
-
-
     }
 
     public static final class ClawConstants {
-        public static final int kModuleID = 10; //HOPEFULLY we never have to change this
+        public static final int kModuleID = 10; //Same ID as the compressor
         public static final int kClawPistonChannel = 0;
         public static final int kWristPistonChannel = 7;
-
     }
 
     public static final class IOConstants {
         public static final int kDriverPort = 0;
         public static final int kCoDriverPort = 1;
-
         public static final double kTriggerThreshold = 0.5;
     }
 
     public enum LEDState {
-        NONE,
-        RAINBOW,
-        FRENZY,
-        SOLID,
-        PULSE,
-        STREAK,
-        BLINK
+        NONE, //Turn LEDs off
+        RAINBOW, //Static rainbow hew across LEDs
+        FRENZY, //Fast flashing?
+        SOLID, //Static single color
+        PULSE, //Flip between two colors at blink speed
+        STREAK, //One per LED color moves down the strip
+        BLINK //Single color turns on and off
     }
-
-    
 }
