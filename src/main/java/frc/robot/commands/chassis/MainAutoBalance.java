@@ -3,38 +3,76 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.commands.chassis;
 
+//ShuffleBoard
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 //NAVX
 import com.kauailabs.navx.frc.AHRS;
 
-import frc.robot.subsystems.Chassis;
+//Subsystem
+import frc.robot.subsystems.ChassisSubsystem;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+//Constants
 import frc.robot.Constants.ChassisConstants;
 
-//static final double kOffBalanceAngleThresholdDegrees = 10;
-//static final double kOonBalanceAngleThresholdDegrees  = 5;
 
 //actually important stuff
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-class MainAutoBalance extends CommandBase {
-    private final Chassis m_drive;
+public class MainAutoBalance extends CommandBase {
+    private final ChassisSubsystem m_drive;
 
-    static private AHRS NavX2;
+    private AHRS NavX2;
 
-    public MainAutoBalance(Chassis subsystem, AHRS Nav){
+    final double kInitialPitchOffset;
+
+    //I'm pretty sure this is supposed to be outside of this function.
+    boolean autoBalanceXMode = false;
+
+
+    public MainAutoBalance(ChassisSubsystem subsystem, AHRS Nav, double pitchOffset){
         m_drive = subsystem;
-        NavX2 = Nav; 
+        NavX2 = Nav;
+        kInitialPitchOffset = pitchOffset; 
+        addRequirements(m_drive);
+
+        //NavX2.calibrate();// WHY????????
     }
+
+
+    @Override
+    public void initialize(){
+        m_drive.setBrakeMode();
+    }
+
 
     @Override
     public void execute() {
+        
 
-        // double xAxisRate            = stick.getX();
-        double pitchAngleDegrees    = NavX2.getPitch();
+        double pitchAngleDegrees = NavX2.getYaw() - kInitialPitchOffset;
+        
+        // //System.out.println("Pitch offset: " + kInitialPitchOffset);
+        // SmartDashboard.putNumber("Pitch with initial offset:", pitchAngleDegrees);
 
-        boolean autoBalanceXMode = false;
+        
+
+        // //SmartDashboard.putNumber("Angle", NavX2.getAngle());
+        // //SmartDashboard.putNumber("AngleAdjusment", NavX2.getAngleAdjustment());
+        // //SmartDashboard.putNumber("RawX", NavX2.getRawGyroX());
+
+        // SmartDashboard.putNumber("XAcceleration", NavX2.getWorldLinearAccelX());
+        // SmartDashboard.putNumber("YAcceleration", NavX2.getWorldLinearAccelY());
+        // SmartDashboard.putNumber("ZAcceleration", NavX2.getWorldLinearAccelZ());
+
+
+        // SmartDashboard.putNumber("XVelocity", NavX2.getVelocityX());
+        // SmartDashboard.putNumber("YVelocity", NavX2.getVelocityY());
+        // SmartDashboard.putNumber("ZVelocity", NavX2.getVelocityZ());
+        
+
+
+
 
         if ( !autoBalanceXMode && 
             (Math.abs(pitchAngleDegrees) >= 
@@ -43,20 +81,48 @@ class MainAutoBalance extends CommandBase {
         }
         else if ( autoBalanceXMode && 
                 (Math.abs(pitchAngleDegrees) <= 
-                Math.abs(ChassisConstants.kOonBalanceAngleThresholdDegrees))) {
+                Math.abs(ChassisConstants.kOnBalanceAngleThresholdDegrees))) {
             autoBalanceXMode = false;
         }
         
         // Control drive system automatically, 
-        // driving in reverse direction of pitch/roll angle,
+        // driving in direction of pitch angle,
         // with a magnitude based upon the angle
         
         if ( autoBalanceXMode ) {
             double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
-            // xAxisRate = Math.sin(pitchAngleRadians) * -1;
-            m_drive.drive(pitchAngleRadians, 0);
+            double xAxisSpeed = Math.sin(pitchAngleRadians) ;
+            
+            //If we go too fast, the robot will go over the center of the pad and keep rocking back and forth.
+            //If we go too slow, the robot will struggle to get over the charge pad since the ramp will make it slide downwards.
+            //Brake mode SHOULD fix the latter issue, but it didn't seem to help that much.
+            //We might want to consider using a cubic function instead of a sine function.
+            xAxisSpeed *= ChassisConstants.kAutoBalanceMultiplier;
+            
+            m_drive.drive(xAxisSpeed, 0);
+
+            SmartDashboard.putNumber("AutoBalanceSpeed", xAxisSpeed);
 
         }
 
+        //If the robot is balanced, it should tell the motors to stop moving.
+        else{
+            m_drive.drive(0, 0);
+        }
+
     }
+
+
+    //This is for if DefaultDrive doesn't tell the motors to stop moving so the robot doesn't crash into a wall.
+    //I swear to fucking god if the robot takes off again I will throw it out a window and onto Mr. Mallot's car.
+    @Override
+    public void end(boolean interrupted){
+        m_drive.drive(0, 0);
+    }
+
+    /*@Override
+    public InterruptionBehavior getInterruptionBehavior(){
+         
+    }*/
+
 }

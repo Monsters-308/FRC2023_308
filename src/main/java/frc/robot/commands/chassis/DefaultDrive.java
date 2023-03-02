@@ -1,33 +1,43 @@
 package frc.robot.commands.chassis;
 
-import frc.robot.subsystems.Chassis;
+//Subsystem
+import frc.robot.subsystems.ChassisSubsystem;
 
-import java.util.function.BooleanSupplier;
+//ShuffleBoard
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.function.DoubleSupplier;
 
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class DefaultDrive extends CommandBase {
-    private final Chassis m_drive;
+    private final ChassisSubsystem m_drive;
     private final DoubleSupplier m_xSpeed;
     private final DoubleSupplier m_zRotation;
-    private final BooleanSupplier m_autoBalance;
     
-    public DefaultDrive(Chassis subsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation, BooleanSupplier autoBalance){
+    public DefaultDrive(ChassisSubsystem subsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation){
         m_drive = subsystem;
         m_xSpeed = xSpeed;
         m_zRotation = zRotation;
-        m_autoBalance = autoBalance;
         addRequirements(m_drive);
     }
 
+    
+    @Override
+    public void initialize(){
+        m_drive.setCoastMode();
+    }
 
     @Override
     public void execute(){
-        if(!m_autoBalance.getAsBoolean()){
-            m_drive.drive(m_xSpeed.getAsDouble(), m_zRotation.getAsDouble());
-        }
-        
+        m_drive.drive(m_xSpeed.getAsDouble(), m_zRotation.getAsDouble());
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        m_drive.drive(0, 0);
     }
 
 }

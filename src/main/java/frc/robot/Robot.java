@@ -4,34 +4,16 @@
 
 package frc.robot;
 
-//NAVX
-import com.kauailabs.navx.frc.AHRS;
-
-// Spark motors
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
-
-//import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
 
 //actually important stuff
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-
-  private AHRS ahrs;
-  public final CANSparkMax m_move = new CANSparkMax(14, MotorType.kBrushless);
 
 
   @Override
@@ -79,12 +61,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
-    
-  
-  
-  }
-
+  public void teleopPeriodic() {}
 
   @Override
   public void teleopExit() {}
