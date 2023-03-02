@@ -56,6 +56,7 @@ public class AutoTurn extends CommandBase {
     @Override
     public void initialize(){
         m_complete = false;
+        m_drive.setBrakeMode();
         m_drive.resetEncoders();
     }
 

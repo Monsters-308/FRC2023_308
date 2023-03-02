@@ -23,22 +23,23 @@ public class ClawSubsystem extends SubsystemBase {
 
     public ClawSubsystem(){
         //closeClaw();
+        //wristUp();
     }
 
 
-    public void toggleClaw(){
-        m_claw.toggle();
-    }
     public void openClaw(){
-        m_claw.set(true);
+        m_claw.set(false);
     }
     public void closeClaw(){
-        m_claw.set(false);
+        m_claw.set(true);
+    }
+    public void toggleClaw(){
+        m_claw.toggle();
     }
 
 
     public void wristUp(){
-        m_claw.set(true);
+        //m_claw.set(true);
         m_wrist.set(false);
     }
     public void wristDown(){

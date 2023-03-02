@@ -25,10 +25,10 @@ public class DefaultDrive extends CommandBase {
     }
 
     
-    /*@Override
+    @Override
     public void initialize(){
-        m_drive.resetEncoders();
-    }*/
+        m_drive.setCoastMode();
+    }
 
     @Override
     public void execute(){

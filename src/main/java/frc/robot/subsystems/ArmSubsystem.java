@@ -22,7 +22,6 @@ public class ArmSubsystem extends SubsystemBase {
     
     private final CANSparkMax m_armMotor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushed);
 
-    // Ask build team about potentiometer range.
     // When not given a range, it will return the voltage
     // Forget voltages, I'm just gonna use angles so i don't have to deal with long decimels
     private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort , 333, -92);
@@ -49,7 +48,10 @@ public class ArmSubsystem extends SubsystemBase {
     //USE THIS INSTEAF OF .set() to prevent arm from breaking
     private void setSafe(double speed){
         if(pot.get() > ArmConstants.kMaxAngle){
-            m_armMotor.set(0.1); //setting it to zero will make it fall too quickly
+            m_armMotor.set(0.2); //setting it to zero will make it fall too quickly
+        }
+        else if(speed < -0.5){
+            m_armMotor.set(-0.5);
         }
         /*else if((pot.get() < ArmConstants.kMinAngle) && (speed < 0)){
             m_armMotor.set(0);
@@ -63,12 +65,12 @@ public class ArmSubsystem extends SubsystemBase {
     //We COULD just set the motor speed to the offset and let it reach its maximum that way, but that will be slow
     //By having a separate speed, we can let the arm quickly go to the level it needs to go to and then stabilize.
     public void gotoAngle(double degrees, double speed, double offset){
-        desiredAngle = degrees;
+        //desiredAngle = degrees;
 
         while((pot.get() > degrees+ArmConstants.kAngleTolerance) || (pot.get() < degrees-ArmConstants.kAngleTolerance)){
             
             if(pot.get() > degrees+ArmConstants.kAngleTolerance){
-                setSafe(-speed);
+                setSafe(-0.3);
             }
             else if(pot.get() < degrees-ArmConstants.kAngleTolerance){
                 setSafe(speed);
@@ -76,7 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
             
         }
         setSafe(offset);
-        gravityOffset = offset;
+        //gravityOffset = offset;
     }
 
 
@@ -137,7 +139,6 @@ public class ArmSubsystem extends SubsystemBase {
          */
 
         //if(getCurrentCommand() == null){
-            //while((pot.get() > desiredAngle+1) || (pot.get() < desiredAngle-1)){
             /*if(pot.get() > desiredAngle+5){
                 gravityOffset -= 0.001;
             }

@@ -24,6 +24,8 @@ public class DriveDistanceRotations extends CommandBase{
     public void initialize(){
         m_complete = false;
 
+        m_drive.setBrakeMode();
+
         start_encoders = m_drive.getAverageEncoderPosition();
     }
 

@@ -24,6 +24,8 @@ public class DriveDistanceInches extends CommandBase{
     public void initialize(){
         m_complete = false;
 
+        m_drive.setBrakeMode();
+
         start_encoders = m_drive.getAverageEncoderDistanceInches();
     }
 

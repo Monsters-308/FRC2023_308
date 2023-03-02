@@ -35,6 +35,8 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.chassis.DefaultDrive;
 import frc.robot.commands.chassis.MainAutoBalance;
 import frc.robot.commands.auton.AutonTest;
+import frc.robot.commands.auton.AutonSide;
+import frc.robot.commands.auton.AutonMiddle;
 
 //Subsystems go here
 import frc.robot.subsystems.ChassisSubsystem;
@@ -42,6 +44,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.NavSubsystem;
 
 //command stuff
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,6 +72,7 @@ public class RobotContainer {
   private final ChassisSubsystem m_chassisSubsystem = new ChassisSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
   private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
+  private final NavSubsystem m_navSubsystem;
   //private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final LEDSubsystem m_LEDSubsystem = new LEDSubsystem();
   
@@ -102,9 +106,11 @@ public class RobotContainer {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+
+    m_navSubsystem = new NavSubsystem(ahrs, kInitialPitchOffset);
     
     // //set up camera stuff
-    // CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
 
     // Configure the button bindings
     configureBindings();
@@ -133,8 +139,8 @@ public class RobotContainer {
 
     //MAIN DRIVER BUTTONS:
 
-    //Right trigger: autobalance
-    new JoystickButton(m_driverController, Button.kA.value)
+    //Right bumper: autobalance
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(
           new MainAutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset)
         )
@@ -144,21 +150,24 @@ public class RobotContainer {
           () -> m_driverController.getRightX())
         );
     
-
+    //Left bumper: auto aim?
     
+
+
+
 
 
     //CO DRIVER BUTTONS:
 
 
     //Dpad left: bottom
-    /*new POVButton(m_coDriverController, 270)
+    new POVButton(m_coDriverController, 270)
       .onTrue(
         new InstantCommand(m_armSubsystem::bottomLevel, m_armSubsystem)
       );
 
 
-    */
+    
     //Dpad up: middle
     new POVButton(m_coDriverController, 0)
     .onTrue(
@@ -181,12 +190,12 @@ public class RobotContainer {
     .onTrue(
       new InstantCommand(m_armSubsystem::loadingLevel, m_armSubsystem)
     );
-
-
     */
 
-    //Right trigger: manual up
-    new Trigger(() -> m_coDriverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
+
+
+    //Right bumper: manual up
+    new JoystickButton(m_coDriverController, Button.kRightBumper.value)
       .onTrue(
        new InstantCommand(m_armSubsystem::up, m_armSubsystem)
       )
@@ -196,8 +205,8 @@ public class RobotContainer {
 
 
 
-    //Left trigger: manual down
-    new Trigger(() -> m_coDriverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
+    //Left bumper: manual down
+    new JoystickButton(m_coDriverController, Button.kLeftBumper.value)
     .onTrue(
       new InstantCommand(m_armSubsystem::down, m_armSubsystem)
     )
@@ -233,6 +242,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
   public Command getAutonomousCommand() {
-    return new AutonTest(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
+    return new AutonMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
   }
 }

@@ -24,33 +24,35 @@ public final class Constants {
         public static final int kRightRearPort = 5;
         public static final int kLeftRearPort = 4;
 
-        public static final double kWheelDiameter = 6.25;
-        public static final double kGearRatio = 16.444;
-
         public static final int kCurrentLimit = 40; // 40A current limit for motors 
 
         //public static final double kAutoRotationSpeed = 0.2; // speed to rotate for auto aim
 
         public static final double kdriftOffset = 0; // account for drift when driving straight
+
+
+        public static final double kWheelDiameter = 6.25;
+        public static final double kGearRatio = 16.444;
         
         // Wheel diameter * pi / gear ratio
         public static final double kEncoderConversionFactor = kWheelDiameter * Math.PI / kGearRatio;
 
         //((diameter of drive train * pi) / (diameter of wheels * pi)) / 360 = number of rotations for wheels for the robot to spin 1 degree
-        public static final double kEndcoderRotationConversionFactor = ((23.5 * Math.PI) / (kWheelDiameter * Math.PI)) / 360;
+        public static final double kEndcoderRotationConversionFactor = ((23.5 * Math.PI) / (kWheelDiameter * Math.PI)/kGearRatio) / 360;
         
 
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
-        public static final double kOffBalanceAngleThresholdDegrees = 10;//
-        public static final double kOnBalanceAngleThresholdDegrees = 10;//
+        public static final double kOffBalanceAngleThresholdDegrees = 60;//
+        public static final double kOnBalanceAngleThresholdDegrees = 40;//
+
+        public static final double kAutoBalanceMultiplier = 0.6;
 
     }
 
     public static final class ArmConstants {
 
         public static final int kMotorPort = 21;
-        public static final int kCurrentLimit = 40;
-        //public static final double kRotationSpeed = 0.2;
+        public static final int kCurrentLimit = 30;
 
         public static final int kPotPort = 0;
 
@@ -73,7 +75,7 @@ public final class Constants {
         public static final double kLoadingSpeed = 0.6;//
 
         //offset: the power needed to keep the arm from falling down
-        public static final double kBottomOffset = 0;
+        public static final double kBottomOffset = -0.2;
         public static final double kMiddleOffset = 0.3;//
         public static final double kTopOffset = 0.3;//
         public static final double kLoadingOffset = 0.6;//

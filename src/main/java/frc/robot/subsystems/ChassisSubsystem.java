@@ -34,8 +34,10 @@ public class ChassisSubsystem extends SubsystemBase {
 
     private final DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
+
     public ChassisSubsystem(){
         SmartDashboard.putNumber("driftOffset", 0);
+
         m_leftFront.restoreFactoryDefaults();
         m_rightFront.restoreFactoryDefaults();
         m_rightRear.restoreFactoryDefaults();
@@ -101,7 +103,18 @@ public class ChassisSubsystem extends SubsystemBase {
         }*/
         
         //m_drive.arcadeDrive(xSpeed*.75, -(zRotation+ChassisConstants.kdriftOffset)*.75);
-        m_drive.arcadeDrive(xSpeed*.75, -(zRotation+SmartDashboard.getNumber("driftOffset", 0))*.75);
+
+
+        if(xSpeed>0){
+            zRotation += SmartDashboard.getNumber("driftOffset", 0);
+        }
+        else if (xSpeed<0){
+            zRotation -= SmartDashboard.getNumber("driftOffset", 0);
+        }
+
+
+        m_drive.arcadeDrive(xSpeed*.9, -zRotation * .9);
+
         SmartDashboard.putNumber("offset check", SmartDashboard.getNumber("driftOffset", 0));
     }
 

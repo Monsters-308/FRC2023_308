@@ -22,39 +22,57 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class MainAutoBalance extends CommandBase {
     private final ChassisSubsystem m_drive;
 
-    private AHRS NavX2; //Why is this static?
+    private AHRS NavX2;
 
     final double kInitialPitchOffset;
+
+    //I'm pretty sure this is supposed to be outside of this function.
+    boolean autoBalanceXMode = false;
+
 
     public MainAutoBalance(ChassisSubsystem subsystem, AHRS Nav, double pitchOffset){
         m_drive = subsystem;
         NavX2 = Nav;
         kInitialPitchOffset = pitchOffset; 
         addRequirements(m_drive);
-        NavX2.calibrate();
+
+        //NavX2.calibrate();// WHY????????
     }
+
+
+    @Override
+    public void initialize(){
+        m_drive.setBrakeMode();
+    }
+
 
     @Override
     public void execute() {
-
-        //returns the pitch as a number from -180 to 180
         
 
         double pitchAngleDegrees = NavX2.getYaw() - kInitialPitchOffset;
         
-        //System.out.println("Pitch offset: " + kInitialPitchOffset);
-        SmartDashboard.putNumber("Pitch with initial offset:", pitchAngleDegrees);
-        SmartDashboard.putNumber("Pitch (without offset):", NavX2.getPitch());
-        SmartDashboard.putNumber("Angle", NavX2.getAngle());
-        SmartDashboard.putNumber("AngleAdjusment", NavX2.getAngleAdjustment());
-        SmartDashboard.putNumber("RawX", NavX2.getRawGyroX());
-        SmartDashboard.putNumber("XVelocity", NavX2.getVelocityX());
-        SmartDashboard.putNumber("Roll", NavX2.getRoll());
-        SmartDashboard.putNumber("Yaw", NavX2.getYaw());
+        // //System.out.println("Pitch offset: " + kInitialPitchOffset);
+        // SmartDashboard.putNumber("Pitch with initial offset:", pitchAngleDegrees);
+
+        
+
+        // //SmartDashboard.putNumber("Angle", NavX2.getAngle());
+        // //SmartDashboard.putNumber("AngleAdjusment", NavX2.getAngleAdjustment());
+        // //SmartDashboard.putNumber("RawX", NavX2.getRawGyroX());
+
+        // SmartDashboard.putNumber("XAcceleration", NavX2.getWorldLinearAccelX());
+        // SmartDashboard.putNumber("YAcceleration", NavX2.getWorldLinearAccelY());
+        // SmartDashboard.putNumber("ZAcceleration", NavX2.getWorldLinearAccelZ());
 
 
-        //I'm pretty sure this will have to be moved outside of this function.
-        boolean autoBalanceXMode = false;
+        // SmartDashboard.putNumber("XVelocity", NavX2.getVelocityX());
+        // SmartDashboard.putNumber("YVelocity", NavX2.getVelocityY());
+        // SmartDashboard.putNumber("ZVelocity", NavX2.getVelocityZ());
+        
+
+
+
 
         if ( !autoBalanceXMode && 
             (Math.abs(pitchAngleDegrees) >= 
@@ -68,7 +86,7 @@ public class MainAutoBalance extends CommandBase {
         }
         
         // Control drive system automatically, 
-        // driving in direction of pitch/roll angle,
+        // driving in direction of pitch angle,
         // with a magnitude based upon the angle
         
         if ( autoBalanceXMode ) {
@@ -79,11 +97,10 @@ public class MainAutoBalance extends CommandBase {
             //If we go too slow, the robot will struggle to get over the charge pad since the ramp will make it slide downwards.
             //Brake mode SHOULD fix the latter issue, but it didn't seem to help that much.
             //We might want to consider using a cubic function instead of a sine function.
-            xAxisSpeed *= 2;
-
-            //System.out.println("xAxisSpeed: " + xAxisSpeed);
+            xAxisSpeed *= ChassisConstants.kAutoBalanceMultiplier;
             
-            //m_drive.drive(xAxisSpeed, 0);
+            m_drive.drive(xAxisSpeed, 0);
+
             SmartDashboard.putNumber("AutoBalanceSpeed", xAxisSpeed);
 
         }
