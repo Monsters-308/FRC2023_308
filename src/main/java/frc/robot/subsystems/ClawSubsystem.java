@@ -6,26 +6,21 @@ import frc.robot.Constants.ClawConstants;
 //Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-//pneumatic stuff
+//pneumatic libraries
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
 
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClawSubsystem extends SubsystemBase {
-    
-    Compressor m_compressor = new Compressor(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM); //probably useless but whatever
+    //Defining the compressor might not be necessary for using it. It's also not giving out values when calling getPressure() on it
+    Compressor m_compressor = new Compressor(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM);
     Solenoid m_claw = new Solenoid(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM, ClawConstants.kClawPistonChannel);
     Solenoid m_wrist = new Solenoid(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM, ClawConstants.kWristPistonChannel);
 
-    public ClawSubsystem(){
-        //closeClaw();
-        //wristUp();
-    }
-
+    public ClawSubsystem(){}
 
     public void openClaw(){
         m_claw.set(false);
@@ -37,7 +32,6 @@ public class ClawSubsystem extends SubsystemBase {
         m_claw.toggle();
     }
 
-
     public void wristUp(){
         //m_claw.set(true);
         m_wrist.set(false);
@@ -46,16 +40,8 @@ public class ClawSubsystem extends SubsystemBase {
         m_wrist.set(true);
     }
     public void toggleWrist(){
-        if(m_wrist.get()){
-            wristUp();
-        }
-        else{
-            wristDown();
-        }
+        m_wrist.toggle();
     }
-
-
-
 
     //This is called every 20ms
     @Override

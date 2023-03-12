@@ -26,12 +26,11 @@ public final class Constants {
 
         public static final int kCurrentLimit = 40; // 40A current limit for motors 
 
-        //public static final double kAutoRotationSpeed = 0.2; // speed to rotate for auto aim
+        //public static final double kAutoRotationSpeed = 0.4; // speed to rotate for auto aim
 
         public static final double kdriftOffset = 0; // account for drift when driving straight
 
-
-        public static final double kWheelDiameter = 6.25;
+        public static final double kWheelDiameter = 7.5;
         public static final double kGearRatio = 16.444;
         
         // Wheel diameter * pi / gear ratio
@@ -42,52 +41,48 @@ public final class Constants {
         
 
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
-        public static final double kOffBalanceAngleThresholdDegrees = 60;//
-        public static final double kOnBalanceAngleThresholdDegrees = 40;//
+        public static final double kOffBalanceAngleThresholdDegrees = 2.5;//
+        public static final double kOnBalanceAngleThresholdDegrees = 2.5;//
 
         public static final double kAutoBalanceMultiplier = 0.6;
 
     }
 
     public static final class ArmConstants {
-
         public static final int kMotorPort = 21;
         public static final int kCurrentLimit = 30;
 
         public static final int kPotPort = 0;
 
+        //Note: constants marked with "//" are constants we still need to figure out
         public static final double kAngleTolerance = 10;//
-        public static final double kStabalizationTolerance = 5;//
 
         public static final double kMaxAngle = 180;
         public static final double kMinAngle = 0;
 
         //Position: the angle to set the arm to
-        public static final double kBottomPosition = 5;//
-        public static final double kMiddlePosition = 128;//
-        public static final double kTopPosition = 151;//
-        public static final double kLoadingPosition = 45;//
+        public static final double kBottomPosition = 5;
+        public static final double kMiddlePosition = 128;
+        public static final double kTopPosition = 151;
+        //public static final double kLoadingPosition = 45;//
 
         //speed: the speed at which to move the arm at when going to a level
-        public static final double kBottomSpeed = 0.2;//
+        public static final double kBottomSpeed = -0.3;
         public static final double kMiddleSpeed = 0.6;//
-        public static final double kTopSpeed = 0.6;//
-        public static final double kLoadingSpeed = 0.6;//
+        public static final double kTopSpeed = 0.7;//
+        //public static final double kLoadingSpeed = 0.6;//
 
         //offset: the power needed to keep the arm from falling down
         public static final double kBottomOffset = -0.2;
-        public static final double kMiddleOffset = 0.3;//
-        public static final double kTopOffset = 0.3;//
-        public static final double kLoadingOffset = 0.6;//
-
-
+        public static final double kMiddleOffset = 0.2;
+        public static final double kTopOffset = 0.2;
+        //public static final double kLoadingOffset = 0.6;//
     }
 
     public static final class ClawConstants {
-        public static final int kModuleID = 10; //HOPEFULLY we never have to change this
+        public static final int kModuleID = 10; //The ID for the PCM in the canbus.
         public static final int kClawPistonChannel = 0;
         public static final int kWristPistonChannel = 7;
-
     }
 
     public static final class IOConstants {
@@ -96,16 +91,4 @@ public final class Constants {
 
         public static final double kTriggerThreshold = 0.5;
     }
-
-    public enum LEDState {
-        NONE,
-        RAINBOW,
-        FRENZY,
-        SOLID,
-        PULSE,
-        STREAK,
-        BLINK
-    }
-
-    
 }

@@ -1,12 +1,13 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands.chassis;
 
-//ShuffleBoard
+//ShuffleBoard library
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-//NAVX
+//NAVX library
 import com.kauailabs.navx.frc.AHRS;
 
 //Subsystem
@@ -16,63 +17,30 @@ import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.Constants.ChassisConstants;
 
 
-//actually important stuff
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class MainAutoBalance extends CommandBase {
+public class AutoBalance extends CommandBase {
     private final ChassisSubsystem m_drive;
-
     private AHRS NavX2;
-
-    final double kInitialPitchOffset;
-
-    //I'm pretty sure this is supposed to be outside of this function.
+    private final double kInitialPitchOffset;
     boolean autoBalanceXMode = false;
 
+    public AutoBalance(ChassisSubsystem subsystem, AHRS Nav, double pitchOffset){
+        this.m_drive = subsystem;
+        this.NavX2 = Nav;
+        this.kInitialPitchOffset = pitchOffset; 
 
-    public MainAutoBalance(ChassisSubsystem subsystem, AHRS Nav, double pitchOffset){
-        m_drive = subsystem;
-        NavX2 = Nav;
-        kInitialPitchOffset = pitchOffset; 
         addRequirements(m_drive);
-
-        //NavX2.calibrate();// WHY????????
     }
-
 
     @Override
     public void initialize(){
         m_drive.setBrakeMode();
     }
 
-
     @Override
     public void execute() {
-        
-
         double pitchAngleDegrees = NavX2.getYaw() - kInitialPitchOffset;
-        
-        // //System.out.println("Pitch offset: " + kInitialPitchOffset);
-        // SmartDashboard.putNumber("Pitch with initial offset:", pitchAngleDegrees);
-
-        
-
-        // //SmartDashboard.putNumber("Angle", NavX2.getAngle());
-        // //SmartDashboard.putNumber("AngleAdjusment", NavX2.getAngleAdjustment());
-        // //SmartDashboard.putNumber("RawX", NavX2.getRawGyroX());
-
-        // SmartDashboard.putNumber("XAcceleration", NavX2.getWorldLinearAccelX());
-        // SmartDashboard.putNumber("YAcceleration", NavX2.getWorldLinearAccelY());
-        // SmartDashboard.putNumber("ZAcceleration", NavX2.getWorldLinearAccelZ());
-
-
-        // SmartDashboard.putNumber("XVelocity", NavX2.getVelocityX());
-        // SmartDashboard.putNumber("YVelocity", NavX2.getVelocityY());
-        // SmartDashboard.putNumber("ZVelocity", NavX2.getVelocityZ());
-        
-
-
-
 
         if ( !autoBalanceXMode && 
             (Math.abs(pitchAngleDegrees) >= 
@@ -102,27 +70,17 @@ public class MainAutoBalance extends CommandBase {
             m_drive.drive(xAxisSpeed, 0);
 
             SmartDashboard.putNumber("AutoBalanceSpeed", xAxisSpeed);
-
         }
 
         //If the robot is balanced, it should tell the motors to stop moving.
         else{
             m_drive.drive(0, 0);
         }
-
     }
 
-
     //This is for if DefaultDrive doesn't tell the motors to stop moving so the robot doesn't crash into a wall.
-    //I swear to fucking god if the robot takes off again I will throw it out a window and onto Mr. Mallot's car.
     @Override
     public void end(boolean interrupted){
         m_drive.drive(0, 0);
     }
-
-    /*@Override
-    public InterruptionBehavior getInterruptionBehavior(){
-         
-    }*/
-
 }

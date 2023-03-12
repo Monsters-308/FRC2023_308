@@ -2,13 +2,22 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import frc.robot.Constants.LEDState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 
 public class LEDSubsystem extends SubsystemBase {
-  
+  public enum LEDState {
+    //These comments were added in by Marcus
+    NONE, //Turn LEDs off
+    RAINBOW, //Static rainbow hew across LEDs
+    FRENZY, //Fast flashing?
+    SOLID, //Static single color
+    PULSE, //Flip between two colors at blink speed
+    STREAK, //One per LED color moves down the strip
+    BLINK //Single color turns on and off
+}
+
     private LEDState m_ledMode;
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
