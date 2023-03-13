@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+//Controller libraries
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -27,6 +28,18 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 
 //Constants
+import frc.robot.Constants.IOConstants;
+
+//Commands
+import frc.robot.commands.chassis.DefaultDrive;
+import frc.robot.commands.chassis.AutoBalance;
+import frc.robot.commands.chassis.AutoBalanceStutter;
+import frc.robot.commands.auton.AutonTest;
+import frc.robot.commands.auton.AutonSide;
+import frc.robot.commands.auton.AutonMiddle;
+
+//Subsystems
+import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -56,7 +69,7 @@ import java.util.concurrent.TimeUnit;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
+  
   //Subsystems:
   private final ChassisSubsystem m_chassisSubsystem = new ChassisSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
@@ -64,12 +77,12 @@ public class RobotContainer {
   private final NavSubsystem m_navSubsystem;
   //private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   //private final LEDSubsystem m_LEDSubsystem = new LEDSubsystem();
-
-
+  
+  
   //Controllers:
   XboxController m_driverController = new XboxController(IOConstants.kDriverPort);
   XboxController m_coDriverController = new XboxController(IOConstants.kCoDriverPort);
-
+  
   //NavX:
   public AHRS ahrs;
   public double kInitialPitchOffset = 0;
@@ -79,7 +92,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
-
+    
     //Enable the NavX
     try {
       ahrs = new AHRS(SPI.Port.kMXP);
@@ -99,7 +112,7 @@ public class RobotContainer {
 
     //Pass NavX and initial pitch into Nav subsystem
     m_navSubsystem = new NavSubsystem(ahrs, kInitialPitchOffset);
-
+    
     //Start-up of USB cameras for drivers
     CameraServer.startAutomaticCapture();
 
@@ -111,7 +124,7 @@ public class RobotContainer {
       () -> -m_driverController.getLeftY(),
       () -> m_driverController.getRightX())
     );
-
+    
     //Make it so we can select the auton mode from shuffleboard
     /*m_autonChooser.addOption("AutonMiddle",new AutonMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
     m_autonChooser.addOption("AutonSide",new AutonSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
@@ -120,6 +133,7 @@ public class RobotContainer {
 
     //Shuffleboard.getTab("Autonomous").add(m_autonChooser).withSize(2,1);
   }
+
 
   /**
      * Use this method to define your button->command mappings. Buttons can be
@@ -133,9 +147,9 @@ public class RobotContainer {
 
 
     //Use this for when we get LED code working:
-    //new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLINK))
+    //new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLINK)) 
 
-    /**
+    /** 
     * MAIN DRIVER BUTTONS:
     */
 
@@ -157,21 +171,21 @@ public class RobotContainer {
         () -> -m_driverController.getLeftY(),
         () -> m_driverController.getRightX())
       );
-
+    
     //TODO: add auto aim with limelight
-    //Left bumper: auto aim
-
+    //Left bumper: auto aim 
+    
     //Y button: reset encoders (for testing purposes)
     new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(
           //not setting requirements should prevent "Differential drive not updated enough"
-          new InstantCommand(m_chassisSubsystem::resetEncoders)
-          //new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLINK))
+          new InstantCommand(m_chassisSubsystem::resetEncoders) 
+          //new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLINK)) 
         );
 
 
     /**
-     * CO-DRIVER BUTTONS
+     * CO-DRIVER BUTTONS 
      */
 
     //Dpad left: Set arm to bottom
@@ -194,13 +208,14 @@ public class RobotContainer {
     .onTrue(
       new InstantCommand(m_armSubsystem::topLevel, m_armSubsystem)
     );*/
-
-    /*
+    
+    /* 
     //Dpad down: We might use this for a separate loading level or something
     new POVButton(m_driverController, 180)
     .onTrue(
       new InstantCommand(m_armSubsystem::loadingLevel, m_armSubsystem)
-    );*/
+    );
+    */
 
     //Right bumper: Raise the arm up manually
     new JoystickButton(m_coDriverController, Button.kRightBumper.value)
@@ -220,13 +235,13 @@ public class RobotContainer {
         new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
       );
 
-    //A button: Toggle claw
+    //A button: Toggle claw 
     new JoystickButton(m_coDriverController, Button.kA.value)
       .onTrue(
         new InstantCommand(m_clawSubsystem::toggleClaw, m_clawSubsystem)
       );
 
-    //X button: Toggle wrist (move claw up or down)
+    //X button: Toggle wrist (move claw up or down) 
     new JoystickButton(m_coDriverController,Button.kX.value)
       .onTrue(
         new InstantCommand(m_clawSubsystem::toggleWrist, m_clawSubsystem)

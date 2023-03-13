@@ -9,14 +9,13 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class VisionSubsystem extends SubsystemBase {
 
     private final DoubleSubscriber sd;
     double value;
 
-    /**
-     * STUB: Add LimeLight items here
-     */
     public VisionSubsystem(){
         // Initialize NetworkTables
         NetworkTableInstance inst = NetworkTableInstance.getDefault();

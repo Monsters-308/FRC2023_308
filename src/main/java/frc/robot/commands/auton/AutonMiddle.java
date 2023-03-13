@@ -16,7 +16,7 @@ import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class AutonMiddle extends SequentialCommandGroup{
-
+ 
     public AutonMiddle(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem){
         addCommands(
             new SequentialCommandGroup(
@@ -26,7 +26,7 @@ public class AutonMiddle extends SequentialCommandGroup{
                 new WaitCommand(1),
                 new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
                 new WaitCommand(1),
-
+                
                 new DriveDistanceRotations(15, 0.4, chassisSubsystem),
                 new WaitCommand(1),
                 new InstantCommand(clawSubsystem::openClaw, clawSubsystem),
@@ -36,5 +36,5 @@ public class AutonMiddle extends SequentialCommandGroup{
             )
         );
     }
-
+    
 }
