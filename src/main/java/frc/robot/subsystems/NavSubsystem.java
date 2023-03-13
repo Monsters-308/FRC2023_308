@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 //NAVX
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -25,18 +24,12 @@ public class NavSubsystem extends SubsystemBase {
         double offsetYaw = NavX2.getYaw() - kInitialPitchOffset;
 
         double yawChange = offsetYaw-previousYaw;
-        
+
         SmartDashboard.putNumber("Yaw with initial offset:", offsetYaw);
         SmartDashboard.putNumber("Change in yaw:", yawChange);
-        
         SmartDashboard.putNumber("Pitch", NavX2.getPitch());
         SmartDashboard.putNumber("Roll", NavX2.getRoll());
         SmartDashboard.putNumber("Yaw", NavX2.getYaw());
-
-        SmartDashboard.putNumber("XAcceleration", NavX2.getWorldLinearAccelX());
-        SmartDashboard.putNumber("YAcceleration", NavX2.getWorldLinearAccelY());
-        SmartDashboard.putNumber("ZAcceleration", NavX2.getWorldLinearAccelZ());
-
         SmartDashboard.putNumber("XVelocity", NavX2.getVelocityX());
         SmartDashboard.putNumber("YVelocity", NavX2.getVelocityY());
         SmartDashboard.putNumber("ZVelocity", NavX2.getVelocityZ());

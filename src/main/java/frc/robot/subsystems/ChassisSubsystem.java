@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ChassisSubsystem extends SubsystemBase {
-    
+
     private final CANSparkMax m_leftFront = new CANSparkMax(ChassisConstants.kLeftFrontPort, MotorType.kBrushless);
     private final CANSparkMax m_leftRear = new CANSparkMax(ChassisConstants.kLeftRearPort, MotorType.kBrushless);
     MotorControllerGroup m_left = new MotorControllerGroup(m_leftFront, m_leftRear);
@@ -45,18 +45,12 @@ public class ChassisSubsystem extends SubsystemBase {
         m_rightFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
-        
-        /*m_leftFront.setIdleMode(IdleMode.kCoast);
-        m_rightFront.setIdleMode(IdleMode.kCoast);
-        m_rightRear.setIdleMode(IdleMode.kCoast);
-        m_leftRear.setIdleMode(IdleMode.kCoast);*/
-        
+
         m_leftFront.setIdleMode(IdleMode.kBrake);
         m_rightFront.setIdleMode(IdleMode.kBrake);
         m_rightRear.setIdleMode(IdleMode.kBrake);
         m_leftRear.setIdleMode(IdleMode.kBrake);
-        
-        //Maybe make constants for this?
+
         m_leftFront.setInverted(false);
         m_leftRear.setInverted(false);
         m_rightFront.setInverted(true);
@@ -94,7 +88,7 @@ public class ChassisSubsystem extends SubsystemBase {
         if(zRotation<-0.5){
             zRotation = -0.5;
         }*/
-        
+
         //Drift offset code
         // if(xSpeed>0){
         //     zRotation += SmartDashboard.getNumber("driftOffset", 0);

@@ -24,7 +24,7 @@ public final class Constants {
         public static final int kRightRearPort = 5;
         public static final int kLeftRearPort = 4;
 
-        public static final int kCurrentLimit = 40; // 40A current limit for motors 
+        public static final int kCurrentLimit = 40; // 40A current limit for motors
 
         //public static final double kAutoRotationSpeed = 0.4; // speed to rotate for auto aim
 
@@ -32,13 +32,12 @@ public final class Constants {
 
         public static final double kWheelDiameter = 7.5;
         public static final double kGearRatio = 16.444;
-        
+
         // Wheel diameter * pi / gear ratio
         public static final double kEncoderConversionFactor = kWheelDiameter * Math.PI / kGearRatio;
 
         //((diameter of drive train * pi) / (diameter of wheels * pi)) / 360 = number of rotations for wheels for the robot to spin 1 degree
         public static final double kEndcoderRotationConversionFactor = ((23.5 * Math.PI) / (kWheelDiameter * Math.PI)/kGearRatio) / 360;
-        
 
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
         public static final double kOffBalanceAngleThresholdDegrees = 2.5;//
@@ -88,7 +87,6 @@ public final class Constants {
     public static final class IOConstants {
         public static final int kDriverPort = 0;
         public static final int kCoDriverPort = 1;
-
         public static final double kTriggerThreshold = 0.5;
     }
 }

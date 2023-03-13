@@ -1,8 +1,6 @@
 package frc.robot.commands.chassis;
 
 import frc.robot.subsystems.ChassisSubsystem;
-
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DriveDistanceRotations extends CommandBase{
@@ -11,7 +9,7 @@ public class DriveDistanceRotations extends CommandBase{
     private double m_speed;
     private double start_encoders;
     private boolean m_complete = false;
-    
+
     //inches must be positive; if you want to go in reverse, set speed to negative number.
     public DriveDistanceRotations(double rotations, double speed, ChassisSubsystem subsystem){
         m_distance = rotations;
