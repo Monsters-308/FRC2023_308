@@ -19,7 +19,6 @@ import frc.robot.subsystems.ChassisSubsystem;
 //Constants
 import frc.robot.Constants.ChassisConstants;
 
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoBalanceStutter extends CommandBase {
@@ -44,7 +43,6 @@ public class AutoBalanceStutter extends CommandBase {
     @Override
     public void execute() {
         double pitchAngleDegrees = NavX2.getYaw() - kInitialPitchOffset;
-
         if ( !autoBalanceXMode && 
             (Math.abs(pitchAngleDegrees) >= 
             Math.abs(ChassisConstants.kOffBalanceAngleThresholdDegrees))) {

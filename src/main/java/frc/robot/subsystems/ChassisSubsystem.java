@@ -46,17 +46,11 @@ public class ChassisSubsystem extends SubsystemBase {
         m_rightRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         
-        /*m_leftFront.setIdleMode(IdleMode.kCoast);
-        m_rightFront.setIdleMode(IdleMode.kCoast);
-        m_rightRear.setIdleMode(IdleMode.kCoast);
-        m_leftRear.setIdleMode(IdleMode.kCoast);*/
-        
         m_leftFront.setIdleMode(IdleMode.kBrake);
         m_rightFront.setIdleMode(IdleMode.kBrake);
         m_rightRear.setIdleMode(IdleMode.kBrake);
         m_leftRear.setIdleMode(IdleMode.kBrake);
         
-        //Maybe make constants for this?
         m_leftFront.setInverted(false);
         m_leftRear.setInverted(false);
         m_rightFront.setInverted(true);

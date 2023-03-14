@@ -134,7 +134,6 @@ public class RobotContainer {
     //Shuffleboard.getTab("Autonomous").add(m_autonChooser).withSize(2,1);
   }
 
-
   /**
      * Use this method to define your button->command mappings. Buttons can be
      * created by
@@ -183,7 +182,6 @@ public class RobotContainer {
           //new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLINK)) 
         );
 
-
     /**
      * CO-DRIVER BUTTONS 
      */
@@ -214,8 +212,7 @@ public class RobotContainer {
     new POVButton(m_driverController, 180)
     .onTrue(
       new InstantCommand(m_armSubsystem::loadingLevel, m_armSubsystem)
-    );
-    */
+    );*/
 
     //Right bumper: Raise the arm up manually
     new JoystickButton(m_coDriverController, Button.kRightBumper.value)

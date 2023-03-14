@@ -4,7 +4,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-//import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup; //just in case we have 2 motors for the arm
 
 //Constants
 import frc.robot.Constants.ArmConstants;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
 //Shuffleboard library
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -39,7 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
     
 
-    //USE THIS INSTEAF OF .set() to prevent arm from breaking
+    //This helps ensure the arm safely lowers and raises to prevent itself from breaking
     private void setSafe(double speed){
         //Stop the arm from going too high
         if(pot.get() > ArmConstants.kMaxAngle){

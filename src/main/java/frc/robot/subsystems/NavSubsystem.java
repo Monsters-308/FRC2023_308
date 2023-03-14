@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 //NAVX
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
