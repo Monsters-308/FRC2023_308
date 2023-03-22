@@ -1,3 +1,8 @@
+/**
+ * This is the old side auton from Milford.
+ * Semi-consistently places low and then backs up out of the community.
+ * Robot must be started in front of the loading zone.
+ */
 package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;

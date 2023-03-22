@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 //Shuffleboard library
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -38,7 +39,7 @@ public class ArmSubsystem extends SubsystemBase {
     
 
     //This helps ensure the arm safely lowers and raises to prevent itself from breaking
-    private void setSafe(double speed){
+    public void setSafe(double speed){
         //Stop the arm from going too high
         if(pot.get() > ArmConstants.kMaxAngle){
             m_armMotor.set(0.2); //setting it to zero will make it fall
@@ -56,8 +57,8 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
     
-    //This needs to be debugged and turned into its own command
-    public void gotoAngle(double degrees, double speed, double offset){
+    //This has been turned into a command
+    /*public void gotoAngle(double degrees, double speed, double offset){
         while((pot.get() > degrees+ArmConstants.kAngleTolerance) || (pot.get() < degrees-ArmConstants.kAngleTolerance)){
             
             if(pot.get() > degrees+ArmConstants.kAngleTolerance){
@@ -69,25 +70,7 @@ public class ArmSubsystem extends SubsystemBase {
         }
 
         stop();
-    }
-
-    public void bottomLevel(){
-        gotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomSpeed, ArmConstants.kBottomOffset);
-    }
-
-    public void middleLevel(){
-        gotoAngle(ArmConstants.kMiddlePosition, ArmConstants.kMiddleSpeed, ArmConstants.kMiddleOffset);
-    }
-
-    public void topLevel(){
-        gotoAngle(ArmConstants.kTopPosition, ArmConstants.kTopSpeed, ArmConstants.kTopOffset);
-    }
-
-    //This might not be necessary
-    /*public void loadingLevel(){
-        gotoAngle(ArmConstants.kLoadingPosition, ArmConstants.kLoadingSpeed, ArmConstants.kLoadingOffset);
     }*/
-
 
     //These three are used for manual control of the arm
     public void up(){
@@ -108,8 +91,21 @@ public class ArmSubsystem extends SubsystemBase {
         else{
             // Setting the arm to 0.2 seems to be strong enough to stop the arm from falling back down,
             // so I'm thinking about no longer using a "gravity offset" parameter in the gotoAngle function.
-            setSafe(0.2);            
+            setSafe(0.3);            
         }
+    }
+
+    //These three are getters/setters for commands
+    public void setCoast(){
+        m_armMotor.setIdleMode(IdleMode.kCoast);
+    }
+
+    public void setBrake(){
+        m_armMotor.setIdleMode(IdleMode.kBrake);
+    }
+
+    public double getPot(){
+        return pot.get();
     }
 
 

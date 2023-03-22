@@ -40,7 +40,7 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void execute() {
-        double pitchAngleDegrees = NavX2.getYaw() - kInitialPitchOffset;
+        double pitchAngleDegrees = -NavX2.getPitch();
 
         if ( !autoBalanceXMode && 
             (Math.abs(pitchAngleDegrees) >= 

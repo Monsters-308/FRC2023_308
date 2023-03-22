@@ -10,23 +10,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class NavSubsystem extends SubsystemBase {
     private AHRS NavX2;
     private final double kInitialPitchOffset;
-    private double previousYaw = 0;
+    private double previousPitch = 0;
 
-    public NavSubsystem(AHRS Nav, double yawOffset){
+    public NavSubsystem(AHRS Nav, double pitchOffset){
         NavX2 = Nav;
-        kInitialPitchOffset = yawOffset;
+        kInitialPitchOffset = pitchOffset;
     }
 
     //This is called every 20ms
     @Override
     public void periodic(){
 
-        double offsetYaw = NavX2.getYaw() - kInitialPitchOffset;
+        double offsetPitch = NavX2.getPitch() - kInitialPitchOffset;
 
-        double yawChange = offsetYaw-previousYaw;
+        double pitchChange = offsetPitch-previousPitch;
         
-        SmartDashboard.putNumber("Yaw with initial offset:", offsetYaw);
-        SmartDashboard.putNumber("Change in yaw:", yawChange);
+        SmartDashboard.putNumber("Pitch with initial offset:", offsetPitch);
+        SmartDashboard.putNumber("Change in pitch:", pitchChange);
         
         SmartDashboard.putNumber("Pitch", NavX2.getPitch());
         SmartDashboard.putNumber("Roll", NavX2.getRoll());
@@ -40,6 +40,6 @@ public class NavSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("YVelocity", NavX2.getVelocityY());
         SmartDashboard.putNumber("ZVelocity", NavX2.getVelocityZ());
 
-        previousYaw = offsetYaw;
+        previousPitch = offsetPitch;
     }
 }
