@@ -2,9 +2,6 @@ package frc.robot.commands.chassis;
 
 import frc.robot.subsystems.ChassisSubsystem;
 
-//ShuffleBoard library
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 //Suppliers (for lambda functions)
 import java.util.function.DoubleSupplier;
 import java.util.function.BooleanSupplier;

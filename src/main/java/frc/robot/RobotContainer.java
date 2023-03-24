@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 //Shuffleboard libraries
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //Camera library
 import edu.wpi.first.cameraserver.CameraServer;
@@ -52,8 +52,8 @@ import frc.robot.subsystems.NavSubsystem;
 
 //Command libraries
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+//import edu.wpi.first.wpilibj2.command.Commands;
+//import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
@@ -81,7 +81,7 @@ public class RobotContainer {
   private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
   private final NavSubsystem m_navSubsystem;
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-  //private final LEDSubsystem m_LEDSubsystem = new LEDSubsystem();
+  private final LEDSubsystem m_LEDSubsystem = new LEDSubsystem();
   
   
   //Controllers:
@@ -108,13 +108,13 @@ public class RobotContainer {
     }
 
     //Get the initial pitch of the NavX (Since the robot will be slightly tilted)
-    try {
+    /*try {
       TimeUnit.SECONDS.sleep(2);
       kInitialPitchOffset = ahrs.getPitch();
     } 
     catch (InterruptedException e) {
       DriverStation.reportError("An error in getting the navX Pitch: " + e.getMessage(), true);
-    }
+    }*/
 
     //Pass NavX and initial pitch into Nav subsystem
     m_navSubsystem = new NavSubsystem(ahrs, kInitialPitchOffset);
@@ -166,20 +166,24 @@ public class RobotContainer {
 
     new Trigger(() -> m_driverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
         .onTrue(
-          new InstantCommand(m_chassisSubsystem::setBrakeMode, m_chassisSubsystem)
+          new InstantCommand(m_chassisSubsystem::setBrakeMode)
         )
         .onFalse(
-          new InstantCommand(m_chassisSubsystem::setCoastMode, m_chassisSubsystem)
+          new InstantCommand(m_chassisSubsystem::setCoastMode)
         );
         
 
     //Y button: auto aim (high pole)
-    /*new JoystickButton(m_driverController, Button.kLeftBumper.value)
+    /*new JoystickButton(m_driverController, Button.kY.value)
       .whileTrue(
         new AutoAlign(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
       );*/
     
     //A button: auto aim (mide pole)
+    /*new JoystickButton(m_driverController, Button.kA.value)
+      .whileTrue(
+        new AutoAlign(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
+      );*/
 
     //Dpad up: reset encoders (for testing purposes)
     new POVButton(m_driverController, 0)
@@ -204,14 +208,14 @@ public class RobotContainer {
 
 
 
-      // Change LED mode for turbo mode
-      // new JoystickButton(m_driverController, Button.kRightBumper.value)
-      // .onTrue(
-      //   new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLACKWHITE)) 
-      // )
-      // .onFalse(
-      //   new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.RAINBOW)) 
-      // );
+    //Right trigger: Change LED mode for turbo mode (the actual code for turbo mode is handled within DefaultDrive itself).
+    /*new Trigger(() -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
+      .onTrue(
+        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLACKWHITE)) 
+      )
+      .onFalse(
+        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.RAINBOW)) 
+    );*/
 
 
 
