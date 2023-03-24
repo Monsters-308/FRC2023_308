@@ -3,11 +3,8 @@ package frc.robot.commands.chassis;
 import frc.robot.subsystems.ChassisSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/**
- * NOTE: This most likely redundent and could be a consoladated into
- * a single class with a function that does rotations and one for inches - Marcus
- */
 
+//TODO: Get a conversion factor between encoder rotations and inches traveled that's at least somewhat accurate
 public class DriveDistanceInches extends CommandBase{
     private final ChassisSubsystem m_drive;
     private double m_distance;

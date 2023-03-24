@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 //Commands
 import frc.robot.commands.chassis.DriveDistanceInches;
 import frc.robot.commands.chassis.DriveDistanceRotations;
+import frc.robot.commands.arm.ArmGotoAngle;
+
+//Constants
+import frc.robot.Constants.ArmConstants;
 
 //subsystems
 import frc.robot.subsystems.ChassisSubsystem;
@@ -21,8 +25,6 @@ public class AutonTest extends SequentialCommandGroup{
     public AutonTest(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem){
         addCommands(
             new SequentialCommandGroup(
-                //new InstantCommand(clawSubsystem::openClaw, clawSubsystem),
-                new DriveDistanceRotations(148, -0.6, chassisSubsystem)
                 
             )
         );

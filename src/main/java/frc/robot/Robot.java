@@ -19,13 +19,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
   }
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-    
+    CommandScheduler.getInstance().run(); //Runs everything (subsystems, commands, controller inputs, etc)
   }
 
   @Override
@@ -39,6 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    //Gets autonomous command from RobotContainer and runs it
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -54,6 +53,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    //Cancels all current auton commands
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
