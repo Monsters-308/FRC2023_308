@@ -33,6 +33,7 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void wristUp(){
+        //m_claw.set(true);
         m_wrist.set(false);
     }
     public void wristDown(){
@@ -49,4 +50,5 @@ public class ClawSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Wrist Acitvated", m_wrist.get());
         SmartDashboard.putNumber("Pressure",m_compressor.getPressure());
     }
+
 }

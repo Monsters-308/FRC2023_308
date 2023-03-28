@@ -521,149 +521,6 @@
               "_glyph": 148,
               "_showGlyph": false
             }
-          },
-          "3,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/AverageRotation",
-              "_title": "AverageRotation",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Motor speed",
-              "_title": "Motor speed",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
-              "_title": "limelight_PipelineName",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_Interface",
-              "_title": "limelight_Interface",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/limelight_Stream",
-              "_title": "limelight_Stream",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Change in yaw:",
-              "_title": "Change in yaw:",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "0,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Change in pitch:",
-              "_title": "Change in pitch:",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Distence from limelight",
-              "_title": "Distence from limelight",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SUSSY BAKA VALUE",
-              "_title": "SUSSY BAKA VALUE",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/motor speed align",
-              "_title": "motor speed align",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,4": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RR1_Enc",
-              "_title": "RR1_Enc",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
           }
         }
       }
@@ -965,6 +822,19 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
+          "7,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/velocity(deg/s)",
+              "_title": "/SmartDashboard/velocity(deg/s)",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
           "5,2": {
             "size": [
               1,
@@ -1096,6 +966,19 @@
               "_showGlyph": false
             }
           },
+          "4,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Pitch with initial offset:",
+              "_title": "/SmartDashboard/Pitch with initial offset:",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
           "7,2": {
             "size": [
               1,
@@ -1131,19 +1014,6 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Roll",
               "_title": "SmartDashboard/Roll",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw with initial offset:",
-              "_title": "/SmartDashboard/Yaw with initial offset:",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -1218,8 +1088,8 @@
     }
   ],
   "windowGeometry": {
-    "x": -5.599999904632568,
-    "y": 0.800000011920929,
+    "x": -6.400000095367432,
+    "y": 1.600000023841858,
     "width": 1547.199951171875,
     "height": 828.7999877929688
   }

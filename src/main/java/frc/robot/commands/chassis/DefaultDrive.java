@@ -1,6 +1,10 @@
 package frc.robot.commands.chassis;
 
+//Subsystem
 import frc.robot.subsystems.ChassisSubsystem;
+
+//ShuffleBoard library
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //Suppliers (for lambda functions)
 import java.util.function.DoubleSupplier;
@@ -13,13 +17,11 @@ public class DefaultDrive extends CommandBase {
     private final ChassisSubsystem m_drive;
     private final DoubleSupplier m_xSpeed;
     private final DoubleSupplier m_zRotation;
-    private final BooleanSupplier m_turbo;
     
-    public DefaultDrive(ChassisSubsystem subsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation, BooleanSupplier turbo){
+    public DefaultDrive(ChassisSubsystem subsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation){
         m_drive = subsystem;
         m_xSpeed = xSpeed;
         m_zRotation = zRotation;
-        m_turbo = turbo;
         addRequirements(m_drive);
     }
 
@@ -30,7 +32,7 @@ public class DefaultDrive extends CommandBase {
 
     @Override
     public void execute(){
-        m_drive.drive(m_xSpeed.getAsDouble(), m_zRotation.getAsDouble(), m_turbo.getAsBoolean());
+        m_drive.drive(m_xSpeed.getAsDouble(), m_zRotation.getAsDouble());
     }
 
     @Override

@@ -1,8 +1,6 @@
 /*This is a template for how a command should be laid out so we don't lose 
 our minds trying to remember the sintax.
-
-A command is an object that interacts with the subsystems to make the robot do a certain action. The roborio can't run two functions at EXACTLY the same time, so
-if you want to have a function continuously running, you should use the execute() function in a command (or a periodic() function in a subsystem.)
+In the future we can just duplicate this file and remove this comment.
 */
 
 package frc.robot.commands;
@@ -20,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class CommandTemplate extends CommandBase {
 
-    //Create any instance variables that are passed into the file below here, such as the subsystem(s) your command interacts with.
+    //Import any instance variables that are passed into the file below here, such as the subsystem(s) your command interacts with.
     private final SubsystemTemplate m_subsystem; //example
 
     //If you want to contoll whether or not the command has ended, you should store it in some sort of variable:
@@ -42,8 +40,8 @@ public class CommandTemplate extends CommandBase {
     
 
     /*This function is called once when the command is schedueled.
-     * If you are overriding "isFinished()", you should probably use this to set m_complete to false so the command doesn't 
-     * instantly end.
+     * If you are overriding "isFinished()", you should probably use this to set m_complete to false in case a command object is 
+     * called a second time.
      */
     //When not overridden, this function is blank.
     @Override
@@ -71,9 +69,9 @@ public class CommandTemplate extends CommandBase {
         
     }
 
-    /*This fuction is used to tell the robot when the command has ended. 
-     * This function is called after each time the "execute()" function is ran.
+    /*This function is called while the command is running. It is called after each time the "execute()" function is ran.
      * Once this function returns true, "end(boolean interrupted)" is ran and the command ends.
+     * This fuction is used to tell the robot when the command has ended.
      * It is recommended that you don't use this for commands that should run continuously, such as drive commands.
     */
     //When not overridden, this function returns false.
@@ -108,4 +106,6 @@ public class CommandTemplate extends CommandBase {
     public Command.InterruptionBehavior getInterruptionBehavior(){
         return Command.InterruptionBehavior.kCancelSelf;
     }
+
+
 }

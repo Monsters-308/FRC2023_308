@@ -1,79 +1,45 @@
+/**
+ * The limelight code should be put in here - Noah
+ */
+
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionSubsystem extends SubsystemBase {
-    final public NetworkTableEntry ty;
-    final public NetworkTableEntry tx; 
-    final public NetworkTableEntry tl;
-    final public NetworkTableEntry tv;
-    public double distanceFromLimelightToGoalInches;
-    /**
-     * STUB: Add LimeLight items here
-     */
+
+    private final DoubleSubscriber sd;
+    double value;
+
     public VisionSubsystem(){
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-        ty = table.getEntry("ty");
-        tx = table.getEntry("tx");
-        tl = table.getEntry("ty");
-        tv = table.getEntry("tv");
+        // Initialize NetworkTables
+        NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        //inst.startClient("10.30.80.2"); 
+
+        NetworkTable smartDashboardTable = inst.getTable("SmartDashboard");
+
+        // Get a reference to the SmartDashboard table
+        //sd = inst.getTable("SmartDashboard");
+        sd = smartDashboardTable.getDoubleTopic("dsTime").subscribe(0.0);
     }
 
-    //tv = valid targets
-    //tx horizontal offest from crosshair to target
-    //ty vertical offset from crosshair to target
-    //ta = target area 0% to 100%
-
-    public double getX(){
-        return tx.getDouble(0.0);
-    }
-
-    public double getY(){
-        return ty.getDouble(0.0);
-    }
-    
-    public double getTL(){
-        return tl.getDouble(0.0);
-    }
-
-    public double getTV(){
-        return tv.getDouble(0.0);
-    }
-
-    public double getDistance(){
-        return distanceFromLimelightToGoalInches; 
-    }
-
-    
 
     @Override
     public void periodic(){
-        /**
-         * Limelight code test to get range of the photoreflective tape
-         */
-        double targetOffsetAngle_Vertical = ty.getDouble(0.0);
 
+        //while true, or on button press
+        // Retrieve the value of "dsTime" key from the "SmartDashboard" table
+        double value = sd.get();
 
-        // how many degrees back is your limelight rotated from perfectly vertical?
-        double limelightMountAngleDegrees = 5.0;
-
-        // distance from the center of the Limelight lens to the floor
-        double limelightLensHeightInches = 37.0;
-
-        // distance from the target to the floor
-        double goalHeightInches = 43.5;
-
-        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-
-        //calculate distance
-        double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
-        SmartDashboard.putNumber("Distence from limelight",distanceFromLimelightToGoalInches);
-
-
+        // Print the value of "dsTime"
+        System.out.println("value: " + value);
+        
+        // Sleep for 1 second
+        //Thread.sleep(1000);
     }
 }

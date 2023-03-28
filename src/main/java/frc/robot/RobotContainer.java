@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 //Shuffleboard libraries
-//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //Camera library
 import edu.wpi.first.cameraserver.CameraServer;
@@ -29,17 +29,13 @@ import edu.wpi.first.wpilibj.SPI;
 
 //Constants
 import frc.robot.Constants.IOConstants;
-import frc.robot.Constants.ArmConstants;
 
 //Commands
 import frc.robot.commands.chassis.DefaultDrive;
-import frc.robot.commands.vision.AutoAlign;
 import frc.robot.commands.chassis.AutoBalance;
 import frc.robot.commands.auton.AutonTest;
 import frc.robot.commands.auton.AutonSide;
-import frc.robot.commands.auton.AutonStartup;
 import frc.robot.commands.auton.AutonMiddle;
-import frc.robot.commands.arm.ArmGotoAngle;
 
 //Subsystems
 import frc.robot.subsystems.ChassisSubsystem;
@@ -47,20 +43,19 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LEDSubsystem.LEDState;
-import frc.robot.subsystems.VisionSubsystem;
+//import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.NavSubsystem;
 
 //Command libraries
 import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.Commands;
-//import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import java.util.concurrent.TimeUnit;
+
 
 
 
@@ -80,7 +75,7 @@ public class RobotContainer {
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
   private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
   private final NavSubsystem m_navSubsystem;
-  private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+  //private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
   private final LEDSubsystem m_LEDSubsystem = new LEDSubsystem();
   
   
@@ -102,19 +97,18 @@ public class RobotContainer {
     try {
       ahrs = new AHRS(SPI.Port.kMXP);
       ahrs.enableLogging(true);
-    } 
-    catch (RuntimeException ex) {
+    } catch (RuntimeException ex) {
       DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
     }
 
-    //Get the initial pitch of the NavX (Since the robot will be slightly tilted)
-    /*try {
+    //Get the initial pitch of the NavX (Since the board isn't mounted horizonally)
+    try {
       TimeUnit.SECONDS.sleep(2);
-      kInitialPitchOffset = ahrs.getPitch();
-    } 
-    catch (InterruptedException e) {
-      DriverStation.reportError("An error in getting the navX Pitch: " + e.getMessage(), true);
-    }*/
+      //RoboRio is flipped 90 degrees so we now need yaw as to pitch, though I think this wrong - Marcus
+      kInitialPitchOffset = ahrs.getYaw();
+    } catch (InterruptedException e) {
+      DriverStation.reportError("An error in getting the navX Yaw: " + e.getMessage(), true);
+    }
 
     //Pass NavX and initial pitch into Nav subsystem
     m_navSubsystem = new NavSubsystem(ahrs, kInitialPitchOffset);
@@ -128,8 +122,7 @@ public class RobotContainer {
     m_chassisSubsystem.setDefaultCommand(
       new DefaultDrive(m_chassisSubsystem,
       () -> -m_driverController.getLeftY(),
-      () -> m_driverController.getRightX(),
-      () -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
+      () -> m_driverController.getRightX())
     );
     
     //Make it so we can select the auton mode from shuffleboard
@@ -140,6 +133,7 @@ public class RobotContainer {
 
     //Shuffleboard.getTab("Autonomous").add(m_autonChooser).withSize(2,1);
   }
+
 
   /**
      * Use this method to define your button->command mappings. Buttons can be
@@ -155,94 +149,63 @@ public class RobotContainer {
     //Use this for when we get LED code working:
     //new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLINK)) 
 
-
     /** 
     * MAIN DRIVER BUTTONS:
     */
 
-
-    //left trigger: brake mode
-    //NOTE: this probably doesn't work
-
-    new Trigger(() -> m_driverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
+    //Right bumper: Balance mode
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(
-          new InstantCommand(m_chassisSubsystem::setBrakeMode)
+          new InstantCommand(m_chassisSubsystem::setBrakeMode, m_chassisSubsystem)
         )
         .onFalse(
-          new InstantCommand(m_chassisSubsystem::setCoastMode)
+          new InstantCommand(m_chassisSubsystem::setCoastMode, m_chassisSubsystem)
         );
-        
-
-    //Y button: auto aim (high pole)
-    /*new JoystickButton(m_driverController, Button.kY.value)
-      .whileTrue(
-        new AutoAlign(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
-      );*/
     
-    //A button: auto aim (mide pole)
-    /*new JoystickButton(m_driverController, Button.kA.value)
-      .whileTrue(
-        new AutoAlign(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
-      );*/
-
-    //Dpad up: reset encoders (for testing purposes)
-    new POVButton(m_driverController, 0)
+    //TODO: add auto aim with limelight
+    //Left bumper: auto aim 
+    
+    //Y button: reset encoders (for testing purposes)
+    new JoystickButton(m_driverController, Button.kY.value)
         .onTrue(
           //not setting requirements should prevent "Differential drive not updated enough"
           new InstantCommand(m_chassisSubsystem::resetEncoders) 
-        
+          //new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLINK)) 
         );
-    
-    //Dpad down: auto balance (for testing purposes)
-    new POVButton(m_driverController, 180)
-      .whileTrue(
-        //I think if we create a command similar to an autonomous command, we could shove this entire composition into a single file.
-        //However, autobalancing is the last thing we do in autonomous, so that probably wont be necessary.
-        //Even though it's a repeating command, all autonomous commands should automatically be canceled once teleop is enabled.
-        new RepeatCommand(
-          new AutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.5)
-          .andThen(new WaitCommand(0.5))
-          )
-    );
-
-
-
-
-    //Right trigger: Change LED mode for turbo mode (the actual code for turbo mode is handled within DefaultDrive itself).
-    /*new Trigger(() -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
-      .onTrue(
-        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLACKWHITE)) 
-      )
-      .onFalse(
-        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.RAINBOW)) 
-    );*/
-
 
 
     /**
      * CO-DRIVER BUTTONS 
      */
 
-
     //Dpad left: Set arm to bottom
-    new POVButton(m_coDriverController, 270)
+    /*new POVButton(m_coDriverController, 270)
       .onTrue(
-        new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomSpeed, m_armSubsystem)
+        new InstantCommand(m_armSubsystem::bottomLevel, m_armSubsystem)
       );
-    
-    
+    */
+
+    /*
     //Dpad up: Set arm to middle goal
     new POVButton(m_coDriverController, 0)
-      .onTrue(
-        new ArmGotoAngle(ArmConstants.kMiddlePosition, ArmConstants.kMiddleSpeed, m_armSubsystem)
-      );
+    .onTrue(
+      new InstantCommand(m_armSubsystem::middleLevel, m_armSubsystem)
+    );*/
 
-    
+    /*
     //Dpad right: Set arm to top goal
     new POVButton(m_coDriverController, 90)
-      .onTrue(
-        new ArmGotoAngle(ArmConstants.kTopPosition, ArmConstants.kTopSpeed, m_armSubsystem)
-      );
+    .onTrue(
+      new InstantCommand(m_armSubsystem::topLevel, m_armSubsystem)
+    );*/
+    
+    /* 
+    //Dpad down: We might use this for a separate loading level or something
+    new POVButton(m_driverController, 180)
+    .onTrue(
+      new InstantCommand(m_armSubsystem::loadingLevel, m_armSubsystem)
+    );
+    */
 
     //Right bumper: Raise the arm up manually
     new JoystickButton(m_coDriverController, Button.kRightBumper.value)
@@ -253,7 +216,7 @@ public class RobotContainer {
        new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
       );
 
-    //Left bumper: Lower the arm down manually
+    //Left bumper: Lower the arm up manually
     new JoystickButton(m_coDriverController, Button.kLeftBumper.value)
       .onTrue(
         new InstantCommand(m_armSubsystem::down, m_armSubsystem)
@@ -284,6 +247,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //TODO: add a shuffleboard selector that doesn't break the robot
     //return m_autonChooser.getSelected();
-    return new AutonTest(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
+    return new AutonSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
   }
 }
