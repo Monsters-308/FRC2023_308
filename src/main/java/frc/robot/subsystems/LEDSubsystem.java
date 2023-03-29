@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
+//NAVX libraries
+import com.kauailabs.navx.frc.AHRS;
+
 public class LEDSubsystem extends SubsystemBase {
  
   public enum LEDState {
@@ -25,18 +28,20 @@ public class LEDSubsystem extends SubsystemBase {
   private AddressableLED m_led;
   private AddressableLEDBuffer m_ledBuffer;
   private int[] LEDColor = {255,0,0}; //RGB
-  int m_rainbowFirstPixelHue = 0;
-  
+  private int m_rainbowFirstPixelHue = 0;
+  private AHRS ahrs; 
 
-  public LEDSubsystem(){
+  public LEDSubsystem(AHRS navx2){
+    ahrs = navx2;
     // Must be a PWM header, not MXP or DIO
-    m_ledMode = LEDState.RED;
+    m_ledMode = LEDState.RAINBOW;
     m_led = new AddressableLED(0);
 
     // Reuse buffer
     // Default to a length of 60, start empty output
     // Length is expensive to set, so only set it once, then just update data
     m_ledBuffer = new AddressableLEDBuffer(125);
+    
     m_led.setLength(m_ledBuffer.getLength());
 
     // Set the data
@@ -66,9 +71,11 @@ public class LEDSubsystem extends SubsystemBase {
         red(LEDColor);
         break;
       default:
-        red(LEDColor);
+        rainbow();;
         break;
+      
     }
+    m_rainbowFirstPixelHue = (int)ahrs.getYaw();
   }
     
   public void changeLEDState(LEDState mode) {
@@ -84,7 +91,16 @@ public class LEDSubsystem extends SubsystemBase {
   }
   public void green(int[] RGB) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-        m_ledBuffer.setRGB(i, RGB[0], 255, RGB[2]);
+        m_ledBuffer.setRGB(i, RGB[0], 255, 30);
+    }
+
+
+
+    m_led.setData(m_ledBuffer);
+  }
+  public void greenAlign(int ammountGreen) {
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        m_ledBuffer.setRGB(i, 0, ammountGreen, 30);
     }
 
     m_led.setData(m_ledBuffer);

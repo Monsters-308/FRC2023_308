@@ -1,8 +1,3 @@
-/*This is a template for how a command should be laid out so we don't lose 
-our minds trying to remember the sintax.
-In the future we can just duplicate this file and remove this comment.
-*/
-
 package frc.robot.commands.vision;
 
 import frc.robot.subsystems.ChassisSubsystem;
@@ -14,6 +9,7 @@ import frc.robot.subsystems.LEDSubsystem.LEDState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LEDSubsystem;
 
+import frc.robot.Constants.VisionConstants;
 
 //Import this so you can make this class a command
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -53,6 +49,7 @@ public class AutoAlign extends CommandBase {
     //When not overridden, this function is blank.
     @Override
     public void initialize(){
+        m_chassisSubsystem.setBrakeMode();
         m_complete = false;
     }
 
@@ -62,47 +59,92 @@ public class AutoAlign extends CommandBase {
     //When not overridden, this function is blank.
     @Override
     public void execute(){
+        //int greenAmmount = 0;
+        double y = m_visionSubsystem.getY();
         double x = m_visionSubsystem.getX();
         double targets = m_visionSubsystem.getTV();
-        SmartDashboard.putNumber("SUSSY BAKA VALUE", x);
         double forwardSpeed = 0;
         double rotation = 0;
+        SmartDashboard.putNumber("motor speed align targets", x);
 
         if (targets == 0){
             rotation = 0;
             forwardSpeed = 0;
-            SmartDashboard.putNumber("motor speed align", 0);
             m_ledSubsystem.changeLEDState(LEDState.YELLOW);
         }
+        //if targets 
         else{
+            //top level
+            if (y > 0){
+            
+            
             //Rotate so target is in center
-            if (x > 2){
-                rotation = .5;
-                SmartDashboard.putNumber("motor speed align", .5);
+            if (x+1 > 2){
+                rotation = VisionConstants.kRotationSpeed;//.5
             }
-            else if (x < -2){
-                rotation = -.5;
-                SmartDashboard.putNumber("motor speed align", -.5);
+            else if (x+1 < -2){
+                rotation = -VisionConstants.kRotationSpeed;
             }
 
             //Move forwards/backwards
             double distanceFromTarget = m_visionSubsystem.getDistance();
-            if (distanceFromTarget < 50){
-                forwardSpeed = -.4;
-                SmartDashboard.putNumber("motor speed align distance", -.4);
+            if (distanceFromTarget < 54.5){
+                forwardSpeed = (m_visionSubsystem.getDistance() - 55) * 0.2;
             }
-            else if (distanceFromTarget > 60){
-                forwardSpeed = .4;
-                SmartDashboard.putNumber("motor speed align distance", .4);
+          
+            else if (distanceFromTarget > 56){
+                forwardSpeed = (m_visionSubsystem.getDistance() - 55) * 0.2;
             }
+            //forwardSpeed = (m_visionSubsystem.getDistance() - 55) * 0.05;
 
             //Change LED state
-            if(((distanceFromTarget > 50) && (distanceFromTarget < 60)) && ((x < 2) && (x > -2))){
+            if(((distanceFromTarget > 54.5) && (distanceFromTarget < 56.5))){
                 m_ledSubsystem.changeLEDState(LEDState.GREEN);
             }
             else{
                 m_ledSubsystem.changeLEDState(LEDState.RED);
             }
+        }
+
+        //bottom level
+        if (y<0){
+            //Rotate so target is in center
+            if (x+1 > 1){
+                rotation = VisionConstants.kRotationSpeed;//.5
+            }
+            else if (x+1 < -1){
+                rotation = -VisionConstants.kRotationSpeed;
+            }
+
+            //Move forwards/backwards
+            double distanceFromTarget = m_visionSubsystem.getDistance();
+            if (distanceFromTarget < 40){
+                //forwardSpeed = -VisionConstants.kForwardSpeed; //.8
+                forwardSpeed = (m_visionSubsystem.getDistance() - 40) * 0.2;
+            }
+
+            else if (distanceFromTarget > 43){
+                //forwardSpeed = VisionConstants.kForwardSpeed;
+                forwardSpeed = (m_visionSubsystem.getDistance() - 40) * 0.2;
+            }
+
+            //Change LED state
+            if(((distanceFromTarget > 39) && (distanceFromTarget < 43))){
+                m_ledSubsystem.changeLEDState(LEDState.GREEN);
+            }
+            else{
+                m_ledSubsystem.changeLEDState(LEDState.RED);
+            }
+        }
+        }
+        SmartDashboard.putNumber("motor speed align forwardspeed", forwardSpeed);
+        SmartDashboard.putNumber("motor speed align rotation", rotation);
+
+        if (forwardSpeed > 0.7){
+            forwardSpeed = 0.7;
+        }
+        else if (forwardSpeed < -0.7){
+            forwardSpeed = -0.7;
         }
         
         m_chassisSubsystem.drive(forwardSpeed, rotation);
@@ -116,17 +158,7 @@ public class AutoAlign extends CommandBase {
     //When not overridden, this function is blank.
     @Override
     public void end(boolean interrupted){
-        m_ledSubsystem.changeLEDState(LEDState.RED);
-    }
-
-    /*This function is called while the command is running. It is called after each time the "execute()" function is ran.
-     * Once this function returns true, "end(boolean interrupted)" is ran and the command ends.
-     * This fuction is used to tell the robot when the command has ended.
-     * It is recommended that you don't use this for commands that should run continuously, such as drive commands.
-    */
-    //When not overridden, this function returns false.
-    @Override
-    public boolean isFinished(){
-        return m_complete;
+        m_chassisSubsystem.drive(0, 0);
+        m_ledSubsystem.changeLEDState(LEDState.RAINBOW);
     }
 }

@@ -1,6 +1,7 @@
 /**
  * This is the old side auton from Milford.
  * Semi-consistently places low and then backs up out of the community.
+ * Probably won't work anymore since our encoder distances have probably changed with the addition of 2 more motors.
  * Robot must be started in front of the loading zone.
  */
 package frc.robot.commands.auton;
@@ -8,7 +9,7 @@ package frc.robot.commands.auton;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+//import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;

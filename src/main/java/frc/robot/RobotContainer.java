@@ -33,13 +33,16 @@ import frc.robot.Constants.ArmConstants;
 
 //Commands
 import frc.robot.commands.chassis.DefaultDrive;
-import frc.robot.commands.vision.AutoAlign;
 import frc.robot.commands.chassis.AutoBalance;
+import frc.robot.commands.chassis.BrakeDrive;
 import frc.robot.commands.auton.AutonTest;
 import frc.robot.commands.auton.AutonSide;
 import frc.robot.commands.auton.AutonStartup;
 import frc.robot.commands.auton.AutonMiddle;
+import frc.robot.commands.auton.AutonOnePieceSide;
+import frc.robot.commands.auton.AutonOnePieceMiddle;
 import frc.robot.commands.arm.ArmGotoAngle;
+import frc.robot.commands.vision.AutoAlign;
 
 //Subsystems
 import frc.robot.subsystems.ChassisSubsystem;
@@ -81,7 +84,7 @@ public class RobotContainer {
   private final ClawSubsystem m_clawSubsystem = new ClawSubsystem();
   private final NavSubsystem m_navSubsystem;
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
-  private final LEDSubsystem m_LEDSubsystem = new LEDSubsystem();
+  private final LEDSubsystem m_LEDSubsystem;
   
   
   //Controllers:
@@ -108,17 +111,20 @@ public class RobotContainer {
     }
 
     //Get the initial pitch of the NavX (Since the robot will be slightly tilted)
-    /*try {
+    try {
       TimeUnit.SECONDS.sleep(2);
       kInitialPitchOffset = ahrs.getPitch();
     } 
     catch (InterruptedException e) {
       DriverStation.reportError("An error in getting the navX Pitch: " + e.getMessage(), true);
-    }*/
+    }
 
     //Pass NavX and initial pitch into Nav subsystem
     m_navSubsystem = new NavSubsystem(ahrs, kInitialPitchOffset);
     
+    //Pass NavX into LED subsystem so we can have the cool rainbow effect
+    m_LEDSubsystem = new LEDSubsystem(ahrs);
+
     //Start-up of USB cameras for drivers
     CameraServer.startAutomaticCapture();
 
@@ -162,22 +168,18 @@ public class RobotContainer {
 
 
     //left trigger: brake mode
-    //NOTE: this probably doesn't work
-
     new Trigger(() -> m_driverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
-        .onTrue(
-          new InstantCommand(m_chassisSubsystem::setBrakeMode)
-        )
-        .onFalse(
-          new InstantCommand(m_chassisSubsystem::setCoastMode)
-        );
-        
+      .whileTrue(
+        new BrakeDrive(m_chassisSubsystem,
+        () -> -m_driverController.getLeftY(),
+        () -> m_driverController.getRightX())
+      );
 
     //Y button: auto aim (high pole)
-    /*new JoystickButton(m_driverController, Button.kY.value)
+    new JoystickButton(m_driverController, Button.kY.value)
       .whileTrue(
         new AutoAlign(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
-      );*/
+      );
     
     //A button: auto aim (mide pole)
     /*new JoystickButton(m_driverController, Button.kA.value)
@@ -189,8 +191,7 @@ public class RobotContainer {
     new POVButton(m_driverController, 0)
         .onTrue(
           //not setting requirements should prevent "Differential drive not updated enough"
-          new InstantCommand(m_chassisSubsystem::resetEncoders) 
-        
+          new InstantCommand(m_chassisSubsystem::resetEncoders)
         );
     
     //Dpad down: auto balance (for testing purposes)
@@ -200,11 +201,14 @@ public class RobotContainer {
         //However, autobalancing is the last thing we do in autonomous, so that probably wont be necessary.
         //Even though it's a repeating command, all autonomous commands should automatically be canceled once teleop is enabled.
         new RepeatCommand(
-          new AutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.5)
-          .andThen(new WaitCommand(0.5))
+          new AutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.7)
+          .andThen(
+            new BrakeDrive(m_chassisSubsystem,
+            () -> 0,
+            () -> 0).withTimeout(0.5)
+            )
           )
     );
-
 
 
 
@@ -241,7 +245,7 @@ public class RobotContainer {
     //Dpad right: Set arm to top goal
     new POVButton(m_coDriverController, 90)
       .onTrue(
-        new ArmGotoAngle(ArmConstants.kTopPosition, ArmConstants.kTopSpeed, m_armSubsystem)
+        new ArmGotoAngle(ArmConstants.kTopPositionCone, ArmConstants.kTopSpeed, m_armSubsystem)
       );
 
     //Right bumper: Raise the arm up manually
@@ -284,6 +288,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //TODO: add a shuffleboard selector that doesn't break the robot
     //return m_autonChooser.getSelected();
-    return new AutonTest(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
+    return new AutonOnePieceMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs);
   }
 }
