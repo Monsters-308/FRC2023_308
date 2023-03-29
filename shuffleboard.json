@@ -822,45 +822,6 @@
               "_showGlyph": false
             }
           },
-          "3,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LF_Speed",
-              "_title": "/SmartDashboard/LF_Speed",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LR_Enc",
-              "_title": "/SmartDashboard/LR_Enc",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LR_Speed",
-              "_title": "/SmartDashboard/LR_Speed",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "5,0": {
             "size": [
               1,
@@ -874,46 +835,7 @@
               "_showGlyph": false
             }
           },
-          "5,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RF_Speed",
-              "_title": "/SmartDashboard/RF_Speed",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RR_Enc",
-              "_title": "/SmartDashboard/RR_Enc",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RR_Speed",
-              "_title": "/SmartDashboard/RR_Speed",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,3": {
+          "8,1": {
             "size": [
               1,
               1
@@ -926,7 +848,7 @@
               "_showGlyph": false
             }
           },
-          "4,3": {
+          "7,1": {
             "size": [
               1,
               1
@@ -939,14 +861,67 @@
               "_showGlyph": false
             }
           },
-          "8,1": {
+          "5,2": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_title": "driftOffset",
+              "_source0": "network_table:///SmartDashboard/RR2_Enc",
+              "_title": "SmartDashboard/RR2_Enc",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/RR1_Enc",
+              "_title": "SmartDashboard/RR1_Enc",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LR1_Enc",
+              "_title": "SmartDashboard/LR1_Enc",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LR2_Enc",
+              "_title": "SmartDashboard/LR2_Enc",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/AverageRotation",
+              "_title": "SmartDashboard/AverageRotation",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -965,7 +940,7 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "5,2": {
+          "3,3": {
             "size": [
               1,
               1
@@ -978,7 +953,7 @@
               "_showGlyph": false
             }
           },
-          "4,2": {
+          "2,3": {
             "size": [
               1,
               1
@@ -991,7 +966,7 @@
               "_showGlyph": false
             }
           },
-          "6,2": {
+          "4,1": {
             "size": [
               1,
               1
@@ -1000,6 +975,19 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/pot position",
               "_title": "/SmartDashboard/pot position",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Motor speed",
+              "_title": "/SmartDashboard/Motor speed",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -1215,11 +1203,24 @@
           }
         }
       }
+    },
+    {
+      "title": "Limelight",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {}
+      }
     }
   ],
   "windowGeometry": {
-    "x": -5.599999904632568,
-    "y": 0.800000011920929,
+    "x": -8.0,
+    "y": 222.39999389648438,
     "width": 1547.199951171875,
     "height": 828.7999877929688
   }

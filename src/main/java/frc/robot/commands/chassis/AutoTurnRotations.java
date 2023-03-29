@@ -16,7 +16,8 @@ public class AutoTurnRotations extends CommandBase {
     //private double startingRotation; //just in case resetEncoders() causes any issues
     private boolean m_complete = false;
 
-    //Class Constructor
+ 
+    //Speed must be positive; positive rotations is clockwise, negative rotations is counter-clockwise
     public AutoTurnRotations(ChassisSubsystem subsystem, double rotations, double speed){
         m_drive = subsystem;
         m_rotations = rotations;
@@ -35,10 +36,10 @@ public class AutoTurnRotations extends CommandBase {
     @Override
     public void execute(){
         if((m_rotations > 0) && (m_drive.getAverageEncoderRotation() < m_rotations)){
-            m_drive.drive(0.0, -m_speed);
+            m_drive.drive(0.0, m_speed);
         }
         else if((m_rotations < 0) && (m_drive.getAverageEncoderRotation() > m_rotations)){
-            m_drive.drive(0.0, m_speed);
+            m_drive.drive(0.0, -m_speed);
         }
         else{
             m_drive.drive(0.0, 0.0);

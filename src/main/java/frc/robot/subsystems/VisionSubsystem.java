@@ -12,9 +12,7 @@ public class VisionSubsystem extends SubsystemBase {
     final public NetworkTableEntry tl;
     final public NetworkTableEntry tv;
     public double distanceFromLimelightToGoalInches;
-    /**
-     * STUB: Add LimeLight items here
-     */
+
     public VisionSubsystem(){
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
         ty = table.getEntry("ty");
@@ -59,21 +57,27 @@ public class VisionSubsystem extends SubsystemBase {
 
 
         // how many degrees back is your limelight rotated from perfectly vertical?
-        double limelightMountAngleDegrees = 5.0;
+        double limelightMountAngleDegrees = 4;
 
         // distance from the center of the Limelight lens to the floor
-        double limelightLensHeightInches = 37.0;
+        double limelightLensHeightInches = 28.5;
 
         // distance from the target to the floor
-        double goalHeightInches = 43.5;
+        double goalHeightInches;
+
+        if(targetOffsetAngle_Vertical > 0){
+            goalHeightInches = 43.5;
+        }
+        else{
+            goalHeightInches = 24;
+        }
+
 
         double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+        double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
 
         //calculate distance
-        double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
+        distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
         SmartDashboard.putNumber("Distence from limelight",distanceFromLimelightToGoalInches);
-
-
     }
 }

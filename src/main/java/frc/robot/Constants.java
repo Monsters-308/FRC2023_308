@@ -36,52 +36,59 @@ public final class Constants {
          * going to have to completely rework this.
          */
         
-         // 10 rotations = 20.25 inches
-         // 1 rotation = 2.025 inches
         public static final double kWheelDiameter = 7.5;
         public static final double kGearRatio = 16.444;
         
         // Wheel diameter * pi / gear ratio
-        public static final double kEncoderConversionFactor = kWheelDiameter * Math.PI / kGearRatio;
+        //public static final double kInchesToRotationsConversionFactor = kWheelDiameter * Math.PI / kGearRatio;
+        
+        // Distance estimations:
+        // 1 rotation = 2.025 inches
+        // 1 inch = 0.493827 rotations
+        public static final double kInchesToRotationsConversionFactor = 1/2.025;
 
         //((diameter of drive train * pi) / (diameter of wheels * pi)) / 360 = number of rotations for wheels for the robot to spin 1 degree
         public static final double kEndcoderRotationConversionFactor = ((23.5 * Math.PI) / (kWheelDiameter * Math.PI)/kGearRatio) / 360;
         
 
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
+        //NOTE2: idk what the difference between these 2 variables is we just copied this off the internet
         public static final double kOffBalanceAngleThresholdDegrees = 2.5;
         public static final double kOnBalanceAngleThresholdDegrees = 2.5;
 
-        public static final double kAutoBalanceMultiplier = 2.5;
+        public static final double kAutoBalanceMultiplier = 2.8;
     }
 
     public static final class ArmConstants {
         public static final int kMotorPort = 21;
-        public static final int kCurrentLimit = 30;
+        public static final int kCurrentLimit = 60;
 
         public static final int kPotPort = 0;
 
         //Note: constants marked with "//" are constants we still need to figure out
         public static final double kAngleTolerance = 8;//
 
-        public static final double kMaxAngle = 180;
+        public static final double kMaxAngle = 160;
         public static final double kMinAngle = 0;
 
         //Position: the angle to set the arm to
         public static final double kBottomPosition = 5;
-        public static final double kMiddlePosition = 128;
-        public static final double kTopPosition = 151;
+        public static final double kMiddlePosition = 110;
+        //cones:145
+        //cubes:125
+        public static final double kTopPositionCube = 125;
+        public static final double kTopPositionCone = 145;
         //public static final double kLoadingPosition = 45;//
 
         //speed: the speed at which to move the arm at when going to a level
         public static final double kBottomSpeed = -0.3;
-        public static final double kMiddleSpeed = 0.7;//
-        public static final double kTopSpeed = 0.7;//
+        public static final double kMiddleSpeed = 0.5;//
+        public static final double kTopSpeed = 0.6;//
         //public static final double kLoadingSpeed = 0.6;//
     }
 
     public static final class ClawConstants {
-        public static final int kModuleID = 10; //The ID for the PCM in the canbus.
+        public static final int kModuleID = 17; //The ID for the PCM in the canbus.
         public static final int kClawPistonChannel = 6;
         public static final int kWristPistonChannel = 7;
     }
@@ -96,5 +103,7 @@ public final class Constants {
         /**
         * STUB: Put AutoAlign speeds in here
         */
+        public static final double kForwardSpeed = 0.8;
+        public static final double kRotationSpeed = 0.6;
     }
 }

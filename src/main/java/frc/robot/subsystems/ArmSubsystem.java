@@ -21,7 +21,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final CANSparkMax m_armMotor = new CANSparkMax(ArmConstants.kMotorPort, MotorType.kBrushed);
 
     //Set with a range of angles so we don't have to deal with long decimels, even though the output won't be the same as real-world angles
-    private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort , 333, -92);
+    private AnalogPotentiometer pot = new AnalogPotentiometer(ArmConstants.kPotPort , 333, -88);
     
     /**These variables were originally used to try to make the arm gradually move up or down until the arm reaches a certain position, but 
      * that doesn't work. I'm still keeping them in for testing purposes - Noah
@@ -34,22 +34,23 @@ public class ArmSubsystem extends SubsystemBase {
         m_armMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
         m_armMotor.setIdleMode(IdleMode.kBrake);
         m_armMotor.setInverted(false);
-        setSafe(-0.2);
+        stop();
+        //setSafe(-0.2);
     }
     
 
     //This helps ensure the arm safely lowers and raises to prevent itself from breaking
     public void setSafe(double speed){
         //Stop the arm from going too high
-        if(pot.get() > ArmConstants.kMaxAngle){
-            m_armMotor.set(0.2); //setting it to zero will make it fall
-        }
+        /*if((pot.get() > ArmConstants.kMaxAngle) && (speed>0)){
+            m_armMotor.set(0.3); //setting it to zero will make it fall
+        }*/
         //Stop the motor from recieving any voltage higher than 0.8
-        else if(speed < -0.8){
-            m_armMotor.set(-0.8);
+        if(speed < -0.9){
+            m_armMotor.set(-0.9);
         }
-        else if(speed > 0.8){
-            m_armMotor.set(0.8);
+        else if(speed > 0.9){
+            m_armMotor.set(0.9);
         }
 
         else{
@@ -80,13 +81,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void down(){
         m_armMotor.setIdleMode(IdleMode.kCoast);
-        setSafe(-0.3);
+        setSafe(-0.1);
     }
 
     public void stop(){
         m_armMotor.setIdleMode(IdleMode.kBrake);
-        if(pot.get() < 10){
-            setSafe(-0.2);  
+        if(pot.get() < 20){
+            setSafe(-0.1);  
         }
         else{
             // Setting the arm to 0.2 seems to be strong enough to stop the arm from falling back down,
@@ -135,7 +136,8 @@ public class ArmSubsystem extends SubsystemBase {
         
         //SmartDashboard.putNumber("Gravity Offset", gravityOffset); 
         //SmartDashboard.putNumber("Desired angle", desiredAngle);
-        SmartDashboard.putNumber("Motor speed", m_armMotor.get());  
+        SmartDashboard.putNumber("Arm Motor speed", m_armMotor.get());  
         SmartDashboard.putNumber("pot position", pot.get());
+        SmartDashboard.putNumber("Arm Temp", m_armMotor.getMotorTemperature());
     }
 }

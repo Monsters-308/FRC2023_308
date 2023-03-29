@@ -9,13 +9,18 @@ package frc.robot.commands.auton;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 //import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.chassis.AutoTurnRotations;
+//import frc.robot.commands.chassis.AutoTurnRotations;
+
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;
 import frc.robot.commands.chassis.DriveDistanceRotations;
+import frc.robot.commands.chassis.BrakeDrive;
 import frc.robot.commands.arm.ArmGotoAngle;
+import frc.robot.commands.chassis.AutoBalance;
+import com.kauailabs.navx.frc.AHRS;
 
 //Constants
 import frc.robot.Constants.ArmConstants;
@@ -25,9 +30,9 @@ import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class AutonOnePieceSide extends SequentialCommandGroup{
+public class AutonOnePieceMiddle extends SequentialCommandGroup{
 
-    public AutonOnePieceSide(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem){
+    public AutonOnePieceMiddle(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs){
         addCommands(
             new SequentialCommandGroup(
                 //Startup processes:
@@ -45,21 +50,24 @@ public class AutonOnePieceSide extends SequentialCommandGroup{
                 //open claw 
                 new InstantCommand(clawSubsystem::openClaw, clawSubsystem),
                 new WaitCommand(0.2),
-
-                new DriveDistanceRotations(15, -0.7, chassisSubsystem),
-
-                //backup away from loading zone
+                
                 new ParallelCommandGroup(
-                    new DriveDistanceRotations(84, -0.8, chassisSubsystem),
+                    new DriveDistanceRotations(120, -0.9, chassisSubsystem),
                     new InstantCommand(clawSubsystem::wristUp, clawSubsystem),
-                    new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomSpeed, armSubsystem)
+                    new WaitCommand(2)
+                    .andThen(new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomPosition, armSubsystem))
                 ),
+                new DriveDistanceRotations(49, 0.7, chassisSubsystem),
                 new WaitCommand(0.25),
-                
-                //backup out of community zone
-                new AutoTurnRotations(chassisSubsystem, 64, 0.8)
-                
-
+                //engage autobalance
+                new RepeatCommand(
+                    new AutoBalance(chassisSubsystem, ahrs, 0).withTimeout(0.7)
+                    .andThen(
+                    new BrakeDrive(chassisSubsystem,
+                        () -> 0,
+                        () -> 0).withTimeout(0.5)
+                  )
+                )
             )
         );
     }

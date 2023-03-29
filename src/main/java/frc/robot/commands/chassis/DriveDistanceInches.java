@@ -1,10 +1,10 @@
 package frc.robot.commands.chassis;
 
+import frc.robot.Constants.ChassisConstants;
 import frc.robot.subsystems.ChassisSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
-//TODO: Get a conversion factor between encoder rotations and inches traveled that's at least somewhat accurate
 public class DriveDistanceInches extends CommandBase{
     private final ChassisSubsystem m_drive;
     private double m_distance;
@@ -14,7 +14,7 @@ public class DriveDistanceInches extends CommandBase{
     
     //inches must be positive; if you want to go in reverse, set speed to negative number.
     public DriveDistanceInches(double inches, double speed, ChassisSubsystem subsystem){
-        m_distance = inches;
+        m_distance = inches * ChassisConstants.kInchesToRotationsConversionFactor;
         m_speed = speed;
         m_drive = subsystem;
         addRequirements(m_drive);
@@ -24,12 +24,12 @@ public class DriveDistanceInches extends CommandBase{
     public void initialize(){
         m_complete = false;
         m_drive.setBrakeMode();
-        start_encoders = m_drive.getAverageEncoderDistanceInches();
+        start_encoders = m_drive.getAverageEncoderPosition();
     }
 
     @Override
     public void execute(){
-        if(Math.abs(m_drive.getAverageEncoderDistanceInches()-start_encoders)>=m_distance){
+        if(Math.abs(m_drive.getAverageEncoderPosition()-start_encoders)>=m_distance){
             m_drive.drive(0.0,0.0);
             m_complete = true;
         }

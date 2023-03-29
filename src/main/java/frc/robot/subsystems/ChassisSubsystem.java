@@ -47,6 +47,13 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear1.restoreFactoryDefaults();
         m_leftRear2.restoreFactoryDefaults();
 
+        /*m_leftFront.setOpenLoopRampRate(0.25);
+        m_rightFront.setOpenLoopRampRate(0.25);
+        m_rightRear1.setOpenLoopRampRate(0.25);
+        m_rightRear2.setOpenLoopRampRate(0.25);
+        m_leftRear1.setOpenLoopRampRate(0.25);
+        m_leftRear2.setOpenLoopRampRate(0.25);*/
+
         m_leftFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightRear1.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
@@ -89,8 +96,8 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear2.setIdleMode(IdleMode.kCoast);
     }
 
+    //Called by autonomous commands
     public void drive(double xSpeed, double zRotation){
-
         //Safety mode
         /*if(xSpeed>0.5){
             xSpeed = 0.5;
@@ -117,30 +124,33 @@ public class ChassisSubsystem extends SubsystemBase {
         m_drive.arcadeDrive(xSpeed*.60, -zRotation * .60);
     }
 
+    //Called by Default drive
     public void drive(double xSpeed, double zRotation, boolean turbo){
         if(turbo){
             m_drive.arcadeDrive(xSpeed, -zRotation);
         }
         else{
-            m_drive.arcadeDrive(xSpeed*.80, -zRotation * .80);
+            m_drive.arcadeDrive(xSpeed*.75, -zRotation * .75);
         }
     }
 
-    //Returns the average encoder rotation of the 3 encoders converted to inches
-    public double getAverageEncoderDistanceInches(){
-        return ChassisConstants.kEncoderConversionFactor * getAverageEncoderPosition();
-    }
-
-    //Returns the average encoder rotation of the 3 encoders
+    //Returns the average encoder rotation of the 6 encoders
     public double getAverageEncoderPosition(){
         return (m_leftFrontEncoder.getPosition() + m_leftRearEncoder1.getPosition() + m_leftRearEncoder2.getPosition() + 
         m_rightFrontEncoder.getPosition() + m_rightRearEncoder1.getPosition() + m_rightRearEncoder2.getPosition()) / 6;
     }
 
+    //Returns the average encoder rotation of the 6 encoders converted to inches
+    public double getAverageEncoderDistanceInches(){
+        return getAverageEncoderPosition() / ChassisConstants.kInchesToRotationsConversionFactor;
+    }
+
     //Returns the average rotation of the robot by subtracting the average of the right side from the average of the left side
     public double getAverageEncoderRotation(){
-        return (((m_leftFrontEncoder.getPosition() + m_leftRearEncoder1.getPosition() + m_leftRearEncoder2.getPosition())/3) - 
-        ((m_rightFrontEncoder.getPosition() + m_rightRearEncoder1.getPosition() + m_rightRearEncoder2.getPosition())/3));
+        return (
+            ((m_leftFrontEncoder.getPosition() + m_leftRearEncoder1.getPosition() + m_leftRearEncoder2.getPosition())/3) - 
+            ((m_rightFrontEncoder.getPosition() + m_rightRearEncoder1.getPosition() + m_rightRearEncoder2.getPosition())/3)
+            );
     }
 
     //Might cause DifferentialDrive errors if called

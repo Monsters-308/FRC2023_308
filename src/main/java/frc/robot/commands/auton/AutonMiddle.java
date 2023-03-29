@@ -8,14 +8,15 @@ package frc.robot.commands.auton;
 //Command libraries
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+//import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+//import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;
 import frc.robot.commands.chassis.DriveDistanceRotations;
 import frc.robot.commands.chassis.AutoBalance;
+import frc.robot.commands.chassis.BrakeDrive;
 import com.kauailabs.navx.frc.AHRS;
 
 
@@ -39,8 +40,12 @@ public class AutonMiddle extends SequentialCommandGroup{
                 //engage autobalance
                 new RepeatCommand(
                     new AutoBalance(chassisSubsystem, ahrs, 0).withTimeout(0.5)
-                    .andThen(new WaitCommand(0.5))
-                    )
+                    .andThen(
+                    new BrakeDrive(chassisSubsystem,
+                        () -> 0,
+                        () -> 0).withTimeout(0.5)
+                  )
+                )
             )
         );
     }
