@@ -100,10 +100,12 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        /**
-        * STUB: Put AutoAlign speeds in here
-        */
-        public static final double kForwardSpeed = 0.8;
+        public static final double kTopPoleDesiredDistance = 55;
+        public static final double kDistanceTolerance = 2;
+        public static final double kMaxForwardSpeed = 0.7;
+        public static final double kForwardSpeedPConstant = 0.1;
+
         public static final double kRotationSpeed = 0.6;
+        public static final double kRotationTolerance = 2;
     }
 }

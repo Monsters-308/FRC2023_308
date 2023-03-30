@@ -57,7 +57,7 @@ public class VisionSubsystem extends SubsystemBase {
 
 
         // how many degrees back is your limelight rotated from perfectly vertical?
-        double limelightMountAngleDegrees = 4;
+        double limelightMountAngleDegrees = 4; //NOTE: we should really take into account the rotation of the robot using the pitch of the NavX - Noah
 
         // distance from the center of the Limelight lens to the floor
         double limelightLensHeightInches = 28.5;
@@ -78,6 +78,6 @@ public class VisionSubsystem extends SubsystemBase {
 
         //calculate distance
         distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
-        SmartDashboard.putNumber("Distence from limelight",distanceFromLimelightToGoalInches);
+        SmartDashboard.putNumber("Distance from limelight",distanceFromLimelightToGoalInches);
     }
 }

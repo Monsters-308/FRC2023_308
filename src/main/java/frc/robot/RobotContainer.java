@@ -42,7 +42,7 @@ import frc.robot.commands.auton.AutonMiddle;
 import frc.robot.commands.auton.AutonOnePieceSide;
 import frc.robot.commands.auton.AutonOnePieceMiddle;
 import frc.robot.commands.arm.ArmGotoAngle;
-import frc.robot.commands.vision.AutoAlign;
+import frc.robot.commands.vision.AutoAlignTop;
 
 //Subsystems
 import frc.robot.subsystems.ChassisSubsystem;
@@ -178,7 +178,7 @@ public class RobotContainer {
     //Y button: auto aim (high pole)
     new JoystickButton(m_driverController, Button.kY.value)
       .whileTrue(
-        new AutoAlign(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
+        new AutoAlignTop(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
       );
     
     //A button: auto aim (mide pole)
@@ -288,6 +288,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //TODO: add a shuffleboard selector that doesn't break the robot
     //return m_autonChooser.getSelected();
-    return new AutonOnePieceMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs);
+    return new AutonOnePieceMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs, kInitialPitchOffset);
   }
 }

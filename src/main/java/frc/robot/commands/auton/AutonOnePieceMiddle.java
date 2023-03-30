@@ -1,6 +1,5 @@
 /**
- * This auton will be used for the sides of the field. It will place a cube on the top level and then back out of the community zone.
- * Before running this auton, we need to test the arm code once they get the arm fixed.
+ * This auton will be used for the middle of the field. It will place a cube on the top level, back out of the community zone, and then move forward and balance.
  * Line robot up with the edge of the charge pad and in front of the cube column of the loading zone.
  * The robot should be about 27 inches away from the goal.
  */
@@ -32,36 +31,43 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class AutonOnePieceMiddle extends SequentialCommandGroup{
 
-    public AutonOnePieceMiddle(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs){
+    public AutonOnePieceMiddle(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs, double kInitialPitchOffset){
         addCommands(
             new SequentialCommandGroup(
                 //Startup processes:
                 //close claw
-                //wrist down
                 new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
                 new WaitCommand(0.2),
-                new InstantCommand(clawSubsystem::wristDown, clawSubsystem),
 
-                //move arm to high level
-                new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
+                //move arm to high level and put wrist down
+                new ParallelCommandGroup(
+                    new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
+                    new WaitCommand(0.5).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
+                ),
+
                 //move forward
                 new DriveDistanceRotations(15, 0.7, chassisSubsystem),
                 new WaitCommand(0.25),
+
                 //open claw 
                 new InstantCommand(clawSubsystem::openClaw, clawSubsystem),
                 new WaitCommand(0.2),
                 
+                //move backwards, put wrist up, and lower arm while moving backwards.
                 new ParallelCommandGroup(
                     new DriveDistanceRotations(120, -0.9, chassisSubsystem),
                     new InstantCommand(clawSubsystem::wristUp, clawSubsystem),
                     new WaitCommand(2)
                     .andThen(new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomPosition, armSubsystem))
                 ),
-                new DriveDistanceRotations(49, 0.7, chassisSubsystem),
+
+                //move forwards
+                new DriveDistanceRotations(48, 0.7, chassisSubsystem),
                 new WaitCommand(0.25),
+
                 //engage autobalance
                 new RepeatCommand(
-                    new AutoBalance(chassisSubsystem, ahrs, 0).withTimeout(0.7)
+                    new AutoBalance(chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.7)
                     .andThen(
                     new BrakeDrive(chassisSubsystem,
                         () -> 0,

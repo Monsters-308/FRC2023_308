@@ -14,7 +14,7 @@ import frc.robot.Constants.VisionConstants;
 //Import this so you can make this class a command
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class AutoAlign extends CommandBase {
+public class AutoAlignTop extends CommandBase {
 
     //Import any instance variables that are passed into the file below here, such as the subsystem(s) your command interacts with.
     final VisionSubsystem m_visionSubsystem;
@@ -26,7 +26,7 @@ public class AutoAlign extends CommandBase {
     private boolean m_complete = false;
 
     //Class Constructor
-    public AutoAlign(VisionSubsystem visionSubsystem, ChassisSubsystem chassisSubsystem, LEDSubsystem ledSubsystem){
+    public AutoAlignTop(VisionSubsystem visionSubsystem, ChassisSubsystem chassisSubsystem, LEDSubsystem ledSubsystem){
         m_chassisSubsystem = chassisSubsystem;
         m_visionSubsystem = visionSubsystem;
         m_ledSubsystem = ledSubsystem;
@@ -56,46 +56,44 @@ public class AutoAlign extends CommandBase {
     /*This function is called repeatedly when the schedueler's "run()" function is called.
      * Once you want the function to end, you should set m_complete to true.
      */
-    //When not overridden, this function is blank.
     @Override
     public void execute(){
-        //int greenAmmount = 0;
         double y = m_visionSubsystem.getY();
         double x = m_visionSubsystem.getX();
         double targets = m_visionSubsystem.getTV();
         double forwardSpeed = 0;
         double rotation = 0;
-        SmartDashboard.putNumber("motor speed align targets", x);
+        //SmartDashboard.putNumber("motor speed align targets", x);
 
-        if (targets == 0){
+        if ((targets == 0) || (y < 0)){
             rotation = 0;
             forwardSpeed = 0;
             m_ledSubsystem.changeLEDState(LEDState.YELLOW);
+            m_complete = true;
         }
+
         //if targets 
         else{
-            //top level
-            if (y > 0){
-            
-            
             //Rotate so target is in center
-            if (x+1 > 2){
-                rotation = VisionConstants.kRotationSpeed;//.5
+            if (x+1 > VisionConstants.kRotationTolerance){
+                rotation = VisionConstants.kRotationSpeed;//.6
             }
-            else if (x+1 < -2){
+            else if (x+1 < -VisionConstants.kRotationTolerance){
                 rotation = -VisionConstants.kRotationSpeed;
             }
 
             //Move forwards/backwards
             double distanceFromTarget = m_visionSubsystem.getDistance();
-            if (distanceFromTarget < 54.5){
-                forwardSpeed = (m_visionSubsystem.getDistance() - 55) * 0.2;
+
+            //P controller for distance (fred)
+            //forwardSpeed = (currentPosition - desiredPosition) * Pconstant
+            if ((distanceFromTarget < VisionConstants.kTopPoleDesiredDistance - VisionConstants.kDistanceTolerance) 
+            || (distanceFromTarget > VisionConstants.kTopPoleDesiredDistance + VisionConstants.kDistanceTolerance)){
+                forwardSpeed = (m_visionSubsystem.getDistance() - VisionConstants.kTopPoleDesiredDistance) * VisionConstants.kForwardSpeedPConstant;
             }
-          
-            else if (distanceFromTarget > 56){
-                forwardSpeed = (m_visionSubsystem.getDistance() - 55) * 0.2;
+            else{
+                forwardSpeed = 0;
             }
-            //forwardSpeed = (m_visionSubsystem.getDistance() - 55) * 0.05;
 
             //Change LED state
             if(((distanceFromTarget > 54.5) && (distanceFromTarget < 56.5))){
@@ -105,12 +103,15 @@ public class AutoAlign extends CommandBase {
                 m_ledSubsystem.changeLEDState(LEDState.RED);
             }
         }
-
         //bottom level
-        if (y<0){
+            /*
+            * For now we're only going to do the top level. In the future we should make a separate file for auto aligning to the lower pole and have 
+            * it on a separate button press. - Noah
+            */
+
             //Rotate so target is in center
-            if (x+1 > 1){
-                rotation = VisionConstants.kRotationSpeed;//.5
+            /*if (x+1 > 1){
+                rotation = VisionConstants.kRotationSpeed;//.6
             }
             else if (x+1 < -1){
                 rotation = -VisionConstants.kRotationSpeed;
@@ -134,17 +135,16 @@ public class AutoAlign extends CommandBase {
             }
             else{
                 m_ledSubsystem.changeLEDState(LEDState.RED);
-            }
-        }
-        }
+            }*/
+
         SmartDashboard.putNumber("motor speed align forwardspeed", forwardSpeed);
         SmartDashboard.putNumber("motor speed align rotation", rotation);
 
-        if (forwardSpeed > 0.7){
-            forwardSpeed = 0.7;
+        if (forwardSpeed > VisionConstants.kMaxForwardSpeed){
+            forwardSpeed = VisionConstants.kMaxForwardSpeed;
         }
-        else if (forwardSpeed < -0.7){
-            forwardSpeed = -0.7;
+        else if (forwardSpeed < -VisionConstants.kMaxForwardSpeed){
+            forwardSpeed = -VisionConstants.kMaxForwardSpeed;
         }
         
         m_chassisSubsystem.drive(forwardSpeed, rotation);
@@ -155,10 +155,14 @@ public class AutoAlign extends CommandBase {
      * Whether a command is interrupted or not is determined by "boolean interrupted."
      * Things initialized in "initialize()" should be closed here.
      */
-    //When not overridden, this function is blank.
     @Override
     public void end(boolean interrupted){
         m_chassisSubsystem.drive(0, 0);
         m_ledSubsystem.changeLEDState(LEDState.RAINBOW);
+    }
+
+    @Override
+    public boolean isFinished(){
+        return m_complete;
     }
 }
