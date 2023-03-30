@@ -34,10 +34,9 @@ public class ArmSubsystem extends SubsystemBase {
         m_armMotor.setSmartCurrentLimit(ArmConstants.kCurrentLimit);
         m_armMotor.setIdleMode(IdleMode.kBrake);
         m_armMotor.setInverted(false);
+        m_armMotor.setOpenLoopRampRate(0.2);
         stop();
-        //setSafe(-0.2);
     }
-    
 
     //This helps ensure the arm safely lowers and raises to prevent itself from breaking
     public void setSafe(double speed){
@@ -57,21 +56,6 @@ public class ArmSubsystem extends SubsystemBase {
             m_armMotor.set(speed);
         }
     }
-    
-    //This has been turned into a command
-    /*public void gotoAngle(double degrees, double speed, double offset){
-        while((pot.get() > degrees+ArmConstants.kAngleTolerance) || (pot.get() < degrees-ArmConstants.kAngleTolerance)){
-            
-            if(pot.get() > degrees+ArmConstants.kAngleTolerance){
-                setSafe(-0.3);
-            }
-            else if(pot.get() < degrees-ArmConstants.kAngleTolerance){
-                setSafe(speed);
-            }
-        }
-
-        stop();
-    }*/
 
     //These three are used for manual control of the arm
     public void up(){
@@ -90,8 +74,7 @@ public class ArmSubsystem extends SubsystemBase {
             setSafe(-0.1);  
         }
         else{
-            // Setting the arm to 0.2 seems to be strong enough to stop the arm from falling back down,
-            // so I'm thinking about no longer using a "gravity offset" parameter in the gotoAngle function.
+            // Setting the arm to 0.3 seems to be strong enough to stop the arm from falling back down
             setSafe(0.3);            
         }
     }
@@ -138,6 +121,8 @@ public class ArmSubsystem extends SubsystemBase {
         //SmartDashboard.putNumber("Desired angle", desiredAngle);
         SmartDashboard.putNumber("Arm Motor speed", m_armMotor.get());  
         SmartDashboard.putNumber("pot position", pot.get());
-        SmartDashboard.putNumber("Arm Temp", m_armMotor.getMotorTemperature());
+        SmartDashboard.putNumber("Arm Motor applied output", m_armMotor.getAppliedOutput());
+        SmartDashboard.putNumber("Spark Max bus voltage", m_armMotor.getBusVoltage());
+        SmartDashboard.putNumber("Arm motor current", m_armMotor.getOutputCurrent());
     }
 }

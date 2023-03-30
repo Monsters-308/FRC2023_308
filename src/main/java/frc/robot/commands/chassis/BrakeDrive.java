@@ -4,7 +4,6 @@ import frc.robot.subsystems.ChassisSubsystem;
 
 //Suppliers (for lambda functions)
 import java.util.function.DoubleSupplier;
-import java.util.function.BooleanSupplier;
 
 
 import edu.wpi.first.wpilibj2.command.CommandBase;

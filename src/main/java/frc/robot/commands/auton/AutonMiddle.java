@@ -19,7 +19,6 @@ import frc.robot.commands.chassis.AutoBalance;
 import frc.robot.commands.chassis.BrakeDrive;
 import com.kauailabs.navx.frc.AHRS;
 
-
 //Subsystems
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
@@ -30,16 +29,17 @@ public class AutonMiddle extends SequentialCommandGroup{
     public AutonMiddle(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs){
         addCommands(
             new SequentialCommandGroup(
-
                 //move backwards
                 new DriveDistanceRotations(120, -0.8, chassisSubsystem),
                 new WaitCommand(0.25),
+
                 //move forwards
                 new DriveDistanceRotations(55, 0.6, chassisSubsystem),
                 new WaitCommand(0.25),
+
                 //engage autobalance
                 new RepeatCommand(
-                    new AutoBalance(chassisSubsystem, ahrs, 0).withTimeout(0.5)
+                    new AutoBalance(chassisSubsystem, ahrs, 1.6).withTimeout(0.7)
                     .andThen(
                     new BrakeDrive(chassisSubsystem,
                         () -> 0,

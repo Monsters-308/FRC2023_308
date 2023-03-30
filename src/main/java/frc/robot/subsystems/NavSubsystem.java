@@ -24,6 +24,7 @@ public class NavSubsystem extends SubsystemBase {
         double offsetPitch = NavX2.getPitch() - kInitialPitchOffset;
 
         double pitchChange = offsetPitch-previousPitch;
+        previousPitch = offsetPitch;
         
         SmartDashboard.putNumber("Pitch with initial offset:", offsetPitch);
         SmartDashboard.putNumber("Change in pitch:", pitchChange);
@@ -32,14 +33,14 @@ public class NavSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Roll", NavX2.getRoll());
         SmartDashboard.putNumber("Yaw", NavX2.getYaw());
 
-        SmartDashboard.putNumber("XAcceleration", NavX2.getWorldLinearAccelX());
+        /*SmartDashboard.putNumber("XAcceleration", NavX2.getWorldLinearAccelX());
         SmartDashboard.putNumber("YAcceleration", NavX2.getWorldLinearAccelY());
         SmartDashboard.putNumber("ZAcceleration", NavX2.getWorldLinearAccelZ());
 
         SmartDashboard.putNumber("XVelocity", NavX2.getVelocityX());
         SmartDashboard.putNumber("YVelocity", NavX2.getVelocityY());
-        SmartDashboard.putNumber("ZVelocity", NavX2.getVelocityZ());
+        SmartDashboard.putNumber("ZVelocity", NavX2.getVelocityZ());*/
 
-        previousPitch = offsetPitch;
+        
     }
 }

@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClawSubsystem extends SubsystemBase {
     //Defining the compressor might not be necessary for using it. It's also not giving out values when calling getPressure() on it
-    Compressor m_compressor = new Compressor(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM);
+    //Compressor m_compressor = new Compressor(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM);
     Solenoid m_claw = new Solenoid(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM, ClawConstants.kClawPistonChannel);
     Solenoid m_wrist = new Solenoid(ClawConstants.kModuleID, PneumaticsModuleType.CTREPCM, ClawConstants.kWristPistonChannel);
 
@@ -47,6 +47,6 @@ public class ClawSubsystem extends SubsystemBase {
     public void periodic(){
         SmartDashboard.putBoolean("Claw Acitvated", m_claw.get());
         SmartDashboard.putBoolean("Wrist Acitvated", m_wrist.get());
-        SmartDashboard.putNumber("Pressure",m_compressor.getPressure());
+        //SmartDashboard.putNumber("Pressure",m_compressor.getPressure());
     }
 }
