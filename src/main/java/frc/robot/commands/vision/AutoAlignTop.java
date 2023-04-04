@@ -69,7 +69,6 @@ public class AutoAlignTop extends CommandBase {
             rotation = 0;
             forwardSpeed = 0;
             m_ledSubsystem.changeLEDState(LEDState.YELLOW);
-            m_complete = true;
         }
 
         //if targets 
@@ -96,7 +95,7 @@ public class AutoAlignTop extends CommandBase {
             }
 
             //Change LED state
-            if(((distanceFromTarget > 54.5) && (distanceFromTarget < 56.5))){
+            if(((distanceFromTarget > 54.5) && (distanceFromTarget < 56.5))&&((x+1 < VisionConstants.kRotationTolerance)&&(x+1 > -VisionConstants.kRotationTolerance))){
                 m_ledSubsystem.changeLEDState(LEDState.GREEN);
             }
             else{
@@ -147,7 +146,8 @@ public class AutoAlignTop extends CommandBase {
             forwardSpeed = -VisionConstants.kMaxForwardSpeed;
         }
         
-        m_chassisSubsystem.drive(forwardSpeed, rotation);
+        //m_chassisSubsystem.drive(forwardSpeed, rotation);
+        m_chassisSubsystem.drive(0, rotation);
     }
 
     /*This function is called once when the command ends.

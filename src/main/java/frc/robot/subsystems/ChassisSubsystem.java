@@ -61,12 +61,12 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear1.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear2.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         
-        m_leftFront.setIdleMode(IdleMode.kBrake);
-        m_rightFront.setIdleMode(IdleMode.kBrake);
-        m_rightRear1.setIdleMode(IdleMode.kBrake);
-        m_rightRear2.setIdleMode(IdleMode.kBrake);
-        m_leftRear1.setIdleMode(IdleMode.kBrake);
-        m_leftRear2.setIdleMode(IdleMode.kBrake);
+        m_leftFront.setIdleMode(IdleMode.kCoast);
+        m_rightFront.setIdleMode(IdleMode.kCoast);
+        m_rightRear1.setIdleMode(IdleMode.kCoast);
+        m_rightRear2.setIdleMode(IdleMode.kCoast);
+        m_leftRear1.setIdleMode(IdleMode.kCoast);
+        m_leftRear2.setIdleMode(IdleMode.kCoast);
         
         m_leftFront.setInverted(false);
         m_rightFront.setInverted(true);
@@ -74,6 +74,13 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear2.setInverted(false);
         m_rightRear1.setInverted(true);
         m_rightRear2.setInverted(true);
+
+        /*m_leftFront.burnFlash();
+        m_rightFront.burnFlash();
+        m_leftRear1.burnFlash();
+        m_leftRear2.burnFlash();
+        m_rightRear1.burnFlash();
+        m_rightRear2.burnFlash();*/
 
         resetEncoders();
     }

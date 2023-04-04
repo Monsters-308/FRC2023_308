@@ -56,7 +56,7 @@ public final class Constants {
         public static final double kOffBalanceAngleThresholdDegrees = 2.5;
         public static final double kOnBalanceAngleThresholdDegrees = 2.5;
 
-        public static final double kAutoBalanceMultiplier = 2.8;
+        public static final double kAutoBalanceMultiplier = 2.5;
     }
 
     public static final class ArmConstants {
@@ -76,7 +76,7 @@ public final class Constants {
         public static final double kMiddlePosition = 110;
         //cones:145
         //cubes:125
-        public static final double kTopPositionCube = 125;
+        public static final double kTopPositionCube = 130;
         public static final double kTopPositionCone = 145;
         //public static final double kLoadingPosition = 45;//
 
@@ -100,7 +100,7 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        public static final double kTopPoleDesiredDistance = 55;
+        public static final double kTopPoleDesiredDistance = 51;
         public static final double kDistanceTolerance = 2;
         public static final double kMaxForwardSpeed = 0.7;
         public static final double kForwardSpeedPConstant = 0.1;

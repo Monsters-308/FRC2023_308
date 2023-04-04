@@ -65,6 +65,10 @@ public class AutoBalance extends CommandBase {
             //If we go too slow, the robot will struggle to get over the charge pad since the ramp will make it slide downwards.
             //We might want to consider using a cubic function instead of a sine function.
             xAxisSpeed *= ChassisConstants.kAutoBalanceMultiplier;
+
+            if(Math.abs(pitchAngleDegrees) > 30){
+                xAxisSpeed = 0;
+            }
             
             m_drive.drive(xAxisSpeed, 0);
 

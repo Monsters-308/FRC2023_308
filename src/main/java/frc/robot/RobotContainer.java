@@ -41,6 +41,8 @@ import frc.robot.commands.auton.AutonStartup;
 import frc.robot.commands.auton.AutonMiddle;
 import frc.robot.commands.auton.AutonOnePieceSide;
 import frc.robot.commands.auton.AutonOnePieceMiddle;
+import frc.robot.commands.auton.AutonOnePieceMiddle180;
+import frc.robot.commands.auton.AutonOnePieceMiddleNoCommunity;
 import frc.robot.commands.arm.ArmGotoAngle;
 import frc.robot.commands.vision.AutoAlignTop;
 
@@ -95,7 +97,7 @@ public class RobotContainer {
   public AHRS ahrs;
   public double kInitialPitchOffset = 0;
 
-  //SendableChooser<Command> m_autonChooser = new SendableChooser<>();
+  //SendableChooser<Command> m_autonChooser = new SendableChooser<Command>();
 
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
@@ -210,16 +212,23 @@ public class RobotContainer {
           )
     );
 
-
-
     //Right trigger: Change LED mode for turbo mode (the actual code for turbo mode is handled within DefaultDrive itself).
-    /*new Trigger(() -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
+    new Trigger(() -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
       .onTrue(
-        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.BLACKWHITE)) 
+        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.TURBO)) 
       )
       .onFalse(
         new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.RAINBOW)) 
-    );*/
+    );
+
+    //Left trigger: Change LED mode for Brake mode (the actual code for brake mode is handled within BrakeDrive).
+    new Trigger(() -> m_driverController.getLeftTriggerAxis() > IOConstants.kTriggerThreshold)
+      .onTrue(
+        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.TEAL)) 
+      )
+      .onFalse(
+        new InstantCommand(() -> m_LEDSubsystem.changeLEDState(LEDState.RAINBOW)) 
+    );
 
 
 
@@ -288,6 +297,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //TODO: add a shuffleboard selector that doesn't break the robot
     //return m_autonChooser.getSelected();
-    return new AutonOnePieceMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs, kInitialPitchOffset);
+    //return new AutonOnePieceMiddleNoCommunity(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs, kInitialPitchOffset);
+    return new AutonOnePieceSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
   }
 }

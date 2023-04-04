@@ -19,6 +19,8 @@ import frc.robot.commands.chassis.DriveDistanceRotations;
 import frc.robot.commands.chassis.BrakeDrive;
 import frc.robot.commands.arm.ArmGotoAngle;
 import frc.robot.commands.chassis.AutoBalance;
+import frc.robot.commands.chassis.AutoTurnRotations;
+
 import com.kauailabs.navx.frc.AHRS;
 
 //Constants
@@ -29,9 +31,9 @@ import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class AutonOnePieceMiddle extends SequentialCommandGroup{
+public class AutonOnePieceMiddle180 extends SequentialCommandGroup{
 
-    public AutonOnePieceMiddle(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs, double kInitialPitchOffset){
+    public AutonOnePieceMiddle180(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs, double kInitialPitchOffset){
         addCommands(
             new SequentialCommandGroup(
                 //Startup processes:
@@ -43,11 +45,11 @@ public class AutonOnePieceMiddle extends SequentialCommandGroup{
                 //move arm to high level and put wrist down
                 new ParallelCommandGroup(
                     new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
-                    new WaitCommand(0.3).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
+                    new WaitCommand(0.1).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
                 ),
 
                 //move forward
-                new DriveDistanceRotations(15, 0.8, chassisSubsystem),
+                new DriveDistanceRotations(15, 0.7, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //open claw 
@@ -61,10 +63,14 @@ public class AutonOnePieceMiddle extends SequentialCommandGroup{
                     new WaitCommand(2)
                     .andThen(new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomPosition, armSubsystem))
                 ),
-                new WaitCommand(0.7),
+                new WaitCommand(0.25),
+
+                //turn 180 degrees
+                new AutoTurnRotations(chassisSubsystem, 63, 0.9),
+                new WaitCommand(0.25),
 
                 //move forwards
-                new DriveDistanceRotations(49, 0.75, chassisSubsystem),
+                new DriveDistanceRotations(47, -1, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //engage autobalance
