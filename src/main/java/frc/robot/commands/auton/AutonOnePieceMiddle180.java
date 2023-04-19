@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;
-import frc.robot.commands.chassis.DriveDistanceRotations;
+import frc.robot.commands.chassis.DriveDistance;
 import frc.robot.commands.chassis.BrakeDrive;
 import frc.robot.commands.arm.ArmGotoAngle;
 import frc.robot.commands.chassis.AutoBalance;
-import frc.robot.commands.chassis.AutoTurnRotations;
+import frc.robot.commands.chassis.AutoTurn;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -49,7 +49,7 @@ public class AutonOnePieceMiddle180 extends SequentialCommandGroup{
                 ),
 
                 //move forward
-                new DriveDistanceRotations(15, 0.7, chassisSubsystem),
+                new DriveDistance(15, 0.7, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //open claw 
@@ -58,7 +58,7 @@ public class AutonOnePieceMiddle180 extends SequentialCommandGroup{
                 
                 //move backwards, put wrist up, and lower arm while moving backwards.
                 new ParallelCommandGroup(
-                    new DriveDistanceRotations(123, -1, chassisSubsystem),
+                    new DriveDistance(123, -1, chassisSubsystem),
                     new InstantCommand(clawSubsystem::wristUp, clawSubsystem),
                     new WaitCommand(2)
                     .andThen(new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomPosition, armSubsystem))
@@ -66,11 +66,11 @@ public class AutonOnePieceMiddle180 extends SequentialCommandGroup{
                 new WaitCommand(0.25),
 
                 //turn 180 degrees
-                new AutoTurnRotations(chassisSubsystem, 63, 0.9),
+                new AutoTurn(chassisSubsystem, 63, 0.9),
                 new WaitCommand(0.25),
 
                 //move forwards
-                new DriveDistanceRotations(47, -1, chassisSubsystem),
+                new DriveDistance(47, -1, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //engage autobalance

@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;
-import frc.robot.commands.chassis.DriveDistanceRotations;
+import frc.robot.commands.chassis.DriveDistance;
 import frc.robot.commands.chassis.AutoBalance;
 import frc.robot.commands.chassis.BrakeDrive;
 import com.kauailabs.navx.frc.AHRS;
@@ -30,11 +30,11 @@ public class AutonMiddle extends SequentialCommandGroup{
         addCommands(
             new SequentialCommandGroup(
                 //move backwards
-                new DriveDistanceRotations(120, -0.8, chassisSubsystem),
+                new DriveDistance(120, -0.8, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //move forwards
-                new DriveDistanceRotations(55, 0.6, chassisSubsystem),
+                new DriveDistance(55, 0.6, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //engage autobalance

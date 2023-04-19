@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;
-import frc.robot.commands.chassis.DriveDistanceRotations;
+import frc.robot.commands.chassis.DriveDistance;
 import frc.robot.commands.chassis.BrakeDrive;
 import frc.robot.commands.arm.ArmGotoAngle;
 import frc.robot.commands.chassis.AutoBalance;
@@ -48,7 +48,7 @@ public class AutonOnePieceMiddleNoCommunity extends SequentialCommandGroup{
                 ),
 
                 //move forward
-                new DriveDistanceRotations(15, 0.65, chassisSubsystem),
+                new DriveDistance(15, 0.65, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //open claw 
@@ -57,7 +57,7 @@ public class AutonOnePieceMiddleNoCommunity extends SequentialCommandGroup{
                 
                 //move backwards, put wrist up, and lower arm while moving backwards.
                 new ParallelCommandGroup(
-                    new DriveDistanceRotations(62, -1, chassisSubsystem),
+                    new DriveDistance(62, -1, chassisSubsystem),
                     new InstantCommand(clawSubsystem::wristUp, clawSubsystem),
                     new WaitCommand(2)
                     .andThen(new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomPosition, armSubsystem))

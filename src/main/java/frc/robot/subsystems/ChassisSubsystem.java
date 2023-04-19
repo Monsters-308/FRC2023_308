@@ -47,12 +47,12 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear1.restoreFactoryDefaults();
         m_leftRear2.restoreFactoryDefaults();
 
-        /*m_leftFront.setOpenLoopRampRate(0.25);
+        m_leftFront.setOpenLoopRampRate(0.25);
         m_rightFront.setOpenLoopRampRate(0.25);
         m_rightRear1.setOpenLoopRampRate(0.25);
         m_rightRear2.setOpenLoopRampRate(0.25);
         m_leftRear1.setOpenLoopRampRate(0.25);
-        m_leftRear2.setOpenLoopRampRate(0.25);*/
+        m_leftRear2.setOpenLoopRampRate(0.25);
 
         m_leftFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
@@ -75,12 +75,12 @@ public class ChassisSubsystem extends SubsystemBase {
         m_rightRear1.setInverted(true);
         m_rightRear2.setInverted(true);
 
-        /*m_leftFront.burnFlash();
+        m_leftFront.burnFlash();
         m_rightFront.burnFlash();
         m_leftRear1.burnFlash();
         m_leftRear2.burnFlash();
         m_rightRear1.burnFlash();
-        m_rightRear2.burnFlash();*/
+        m_rightRear2.burnFlash();
 
         resetEncoders();
     }

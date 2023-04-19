@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 //import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.chassis.AutoTurnRotations;
+import frc.robot.commands.chassis.AutoTurn;
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;
-import frc.robot.commands.chassis.DriveDistanceRotations;
+import frc.robot.commands.chassis.DriveDistance;
 import frc.robot.commands.arm.ArmGotoAngle;
 
 //Constants
@@ -41,7 +41,7 @@ public class AutonOnePieceSide extends SequentialCommandGroup{
                 ),
 
                 //move forward
-                new DriveDistanceRotations(15, 0.7, chassisSubsystem),
+                new DriveDistance(15, 0.7, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //open claw 
@@ -49,18 +49,18 @@ public class AutonOnePieceSide extends SequentialCommandGroup{
                 new WaitCommand(0.2),
 
                 //backup so the arm won't hit the goal
-                new DriveDistanceRotations(15, -0.7, chassisSubsystem),
+                new DriveDistance(15, -0.7, chassisSubsystem),
 
                 //backup out of community zone while lowering arm and putting the claw up
                 new ParallelCommandGroup(
-                    new DriveDistanceRotations(85, -0.8, chassisSubsystem),
+                    new DriveDistance(85, -0.8, chassisSubsystem),
                     new InstantCommand(clawSubsystem::wristUp, clawSubsystem),
                     new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomSpeed, armSubsystem)
                 ),
                 new WaitCommand(0.25),
                 
                 //rotate towards game pieces
-                new AutoTurnRotations(chassisSubsystem, 64, 0.8)
+                new AutoTurn(chassisSubsystem, 64, 0.8)
             )
         );
     }

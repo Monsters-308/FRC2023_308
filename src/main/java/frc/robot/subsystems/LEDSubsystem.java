@@ -23,6 +23,7 @@ public class LEDSubsystem extends SubsystemBase {
     YELLOW,
     TEAL,
     TURBO,
+    ORANGE,
     RED
   }
 
@@ -79,6 +80,9 @@ public class LEDSubsystem extends SubsystemBase {
       case TURBO:
         turbo();
         break;
+      case ORANGE:
+        orange();
+        break;
       default:
         rainbow();;
         break;
@@ -109,14 +113,23 @@ public class LEDSubsystem extends SubsystemBase {
   public void green(int[] RGB) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         //m_ledBuffer.setRGB(i, RGB[0], 255, 30);
-        m_ledBuffer.setRGB(i, RGB[0], 100, 30);
+        m_ledBuffer.setRGB(i, 0, 255, 0);
     }
 
 
 
     m_led.setData(m_ledBuffer);
   }
-  
+  public void orange() {
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        //m_ledBuffer.setRGB(i, RGB[0], 255, 30);
+        m_ledBuffer.setRGB(i, 255, 255, 0);
+    }
+
+
+
+    m_led.setData(m_ledBuffer);
+  }
   public void greenAlign(int ammountGreen) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         m_ledBuffer.setRGB(i, 0, ammountGreen, 30);
@@ -127,14 +140,14 @@ public class LEDSubsystem extends SubsystemBase {
   public void red(int[] RGB) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         //m_ledBuffer.setRGB(i, 255, 0, RGB[2]);
-        m_ledBuffer.setRGB(i, 100, 0, RGB[2]);
+        m_ledBuffer.setRGB(i, 255, 0, 0);
     }
 
     m_led.setData(m_ledBuffer);
   }
   public void yellow(int[] RGB) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-        m_ledBuffer.setRGB(i, 255, 255, RGB[2]);
+        m_ledBuffer.setRGB(i, 255, 255, 0);
     }
 
     m_led.setData(m_ledBuffer);
@@ -167,7 +180,7 @@ public class LEDSubsystem extends SubsystemBase {
       // shape is a circle so only one value needs to precess
       final var hue = (m_TurboFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
       // Set the value
-      m_ledBuffer.setHSV(i, hue, 255, 255);
+      m_ledBuffer.setRGB(i, 200, hue, 0);
     }
     // Increase by to make the rainbow "move"
     m_TurboFirstPixelHue += 3;

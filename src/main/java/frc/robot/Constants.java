@@ -53,10 +53,11 @@ public final class Constants {
 
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
         //NOTE2: idk what the difference between these 2 variables is we just copied this off the internet
-        public static final double kOffBalanceAngleThresholdDegrees = 2.5;
-        public static final double kOnBalanceAngleThresholdDegrees = 2.5;
+        public static final double kOffBalanceAngleThresholdDegrees = 3;
+        public static final double kOnBalanceAngleThresholdDegrees = 3;
+        public static final double kChangeInPitchTolerance = 0.2;
 
-        public static final double kAutoBalanceMultiplier = 2.5;
+        public static final double kAutoBalanceMultiplier = 2.4;
     }
 
     public static final class ArmConstants {

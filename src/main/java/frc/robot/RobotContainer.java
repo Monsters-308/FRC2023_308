@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 //Shuffleboard libraries
-//import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -34,17 +34,21 @@ import frc.robot.Constants.ArmConstants;
 //Commands
 import frc.robot.commands.chassis.DefaultDrive;
 import frc.robot.commands.chassis.AutoBalance;
+import frc.robot.commands.chassis.AutoBalanceSmooth;
 import frc.robot.commands.chassis.BrakeDrive;
 import frc.robot.commands.auton.AutonTest;
 import frc.robot.commands.auton.AutonSide;
 import frc.robot.commands.auton.AutonStartup;
+import frc.robot.commands.auton.AutonDoNothing;
 import frc.robot.commands.auton.AutonMiddle;
 import frc.robot.commands.auton.AutonOnePieceSide;
 import frc.robot.commands.auton.AutonOnePieceMiddle;
 import frc.robot.commands.auton.AutonOnePieceMiddle180;
 import frc.robot.commands.auton.AutonOnePieceMiddleNoCommunity;
 import frc.robot.commands.arm.ArmGotoAngle;
+import frc.robot.commands.vision.AutoAlignBottom;
 import frc.robot.commands.vision.AutoAlignTop;
+import frc.robot.commands.vision.DefaultLimelightPipeline;
 
 //Subsystems
 import frc.robot.subsystems.ChassisSubsystem;
@@ -97,7 +101,7 @@ public class RobotContainer {
   public AHRS ahrs;
   public double kInitialPitchOffset = 0;
 
-  //SendableChooser<Command> m_autonChooser = new SendableChooser<Command>();
+  SendableChooser<Command> m_autonChooser = new SendableChooser<>();
 
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
@@ -139,14 +143,16 @@ public class RobotContainer {
       () -> m_driverController.getRightX(),
       () -> m_driverController.getRightTriggerAxis() > IOConstants.kTriggerThreshold)
     );
+
+    m_visionSubsystem.setDefaultCommand(new DefaultLimelightPipeline(m_visionSubsystem));
     
     //Make it so we can select the auton mode from shuffleboard
-    /*m_autonChooser.addOption("AutonMiddle",new AutonMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
-    m_autonChooser.addOption("AutonSide",new AutonSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
+    m_autonChooser.setDefaultOption("AutonDoNothing",new AutonDoNothing());
+    m_autonChooser.addOption("AutonMiddle",new AutonOnePieceMiddleNoCommunity(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs, kInitialPitchOffset));
+    m_autonChooser.addOption("AutonSide",new AutonOnePieceSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
     m_autonChooser.addOption("AutonTest",new AutonTest(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
-     */
 
-    //Shuffleboard.getTab("Autonomous").add(m_autonChooser).withSize(2,1);
+    Shuffleboard.getTab("Autonomous").add(m_autonChooser).withSize(2,1);
   }
 
   /**
@@ -177,17 +183,17 @@ public class RobotContainer {
         () -> m_driverController.getRightX())
       );
 
-    //Y button: auto aim (high pole)
+    //Y button: auto aim (high pole) (i set it to be on a button press, not held)
     new JoystickButton(m_driverController, Button.kY.value)
-      .whileTrue(
-        new AutoAlignTop(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
-      );
-    
+    .whileTrue(
+      new AutoAlignTop(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
+    );
+
     //A button: auto aim (mide pole)
-    /*new JoystickButton(m_driverController, Button.kA.value)
-      .whileTrue(
-        new AutoAlign(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
-      );*/
+    new JoystickButton(m_driverController, Button.kA.value)
+    .whileTrue(
+      new AutoAlignBottom(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
+    );
 
     //Dpad up: reset encoders (for testing purposes)
     new POVButton(m_driverController, 0)
@@ -197,19 +203,21 @@ public class RobotContainer {
         );
     
     //Dpad down: auto balance (for testing purposes)
-    new POVButton(m_driverController, 180)
+    //new POVButton(m_driverController, 180)
+    new JoystickButton(m_driverController, Button.kB.value)
       .whileTrue(
         //I think if we create a command similar to an autonomous command, we could shove this entire composition into a single file.
         //However, autobalancing is the last thing we do in autonomous, so that probably wont be necessary.
         //Even though it's a repeating command, all autonomous commands should automatically be canceled once teleop is enabled.
-        new RepeatCommand(
+        /*new RepeatCommand(
           new AutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.7)
           .andThen(
             new BrakeDrive(m_chassisSubsystem,
             () -> 0,
             () -> 0).withTimeout(0.5)
             )
-          )
+          )*/
+          new AutoBalanceSmooth(m_chassisSubsystem, ahrs, kInitialPitchOffset)
     );
 
     //Right trigger: Change LED mode for turbo mode (the actual code for turbo mode is handled within DefaultDrive itself).
@@ -286,6 +294,12 @@ public class RobotContainer {
       .onTrue(
         new InstantCommand(m_clawSubsystem::toggleWrist, m_clawSubsystem)
       );
+
+    //Y button: emergency stop for arm (set arm power to 0)
+    new JoystickButton(m_coDriverController,Button.kY.value)
+      .onTrue(
+        new InstantCommand(m_armSubsystem::emergencyStop, m_armSubsystem)
+      );
   }
 
 
@@ -296,8 +310,8 @@ public class RobotContainer {
      */
   public Command getAutonomousCommand() {
     //TODO: add a shuffleboard selector that doesn't break the robot
-    //return m_autonChooser.getSelected();
+    return m_autonChooser.getSelected();
     //return new AutonOnePieceMiddleNoCommunity(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs, kInitialPitchOffset);
-    return new AutonOnePieceSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
+    //return new AutonOnePieceSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem);
   }
 }

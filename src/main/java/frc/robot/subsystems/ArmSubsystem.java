@@ -79,6 +79,11 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
+    public void emergencyStop(){
+        m_armMotor.setIdleMode(IdleMode.kBrake);
+        m_armMotor.set(0);
+    }
+
     //These three are getters/setters for commands
     public void setCoast(){
         m_armMotor.setIdleMode(IdleMode.kCoast);

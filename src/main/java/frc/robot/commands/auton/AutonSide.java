@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 //Commands
 //import frc.robot.commands.chassis.DriveDistanceInches;
-import frc.robot.commands.chassis.DriveDistanceRotations;
+import frc.robot.commands.chassis.DriveDistance;
 //import frc.robot.commands.chassis.AutoTurn;
 
 //subsystems
@@ -34,12 +34,12 @@ public class AutonSide extends SequentialCommandGroup{
                 new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
                 new WaitCommand(1),
                 
-                new DriveDistanceRotations(15, 0.4, chassisSubsystem),
+                new DriveDistance(15, 0.4, chassisSubsystem),
                 new WaitCommand(1),
                 new InstantCommand(clawSubsystem::openClaw, clawSubsystem),
                 new WaitCommand(0.5),
 
-                new DriveDistanceRotations(117, -0.6, chassisSubsystem)
+                new DriveDistance(117, -0.6, chassisSubsystem)
             )
         );
     }
