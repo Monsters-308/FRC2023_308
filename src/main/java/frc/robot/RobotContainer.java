@@ -46,6 +46,8 @@ import frc.robot.commands.auton.AutonOnePieceMiddle;
 import frc.robot.commands.auton.AutonOnePieceMiddle180;
 import frc.robot.commands.auton.AutonOnePieceMiddleNoCommunity;
 import frc.robot.commands.arm.ArmGotoAngle;
+import frc.robot.commands.arm.DefaultArmState;
+
 import frc.robot.commands.vision.AutoAlignBottom;
 import frc.robot.commands.vision.AutoAlignTop;
 import frc.robot.commands.vision.DefaultLimelightPipeline;
@@ -145,12 +147,17 @@ public class RobotContainer {
     );
 
     m_visionSubsystem.setDefaultCommand(new DefaultLimelightPipeline(m_visionSubsystem));
+
+    /*m_armSubsystem.setDefaultCommand(new DefaultArmState(m_armSubsystem, 
+    () -> -m_driverController.getLeftY(),
+    () -> m_driverController.getRightX()));*/
     
     //Make it so we can select the auton mode from shuffleboard
     m_autonChooser.setDefaultOption("AutonDoNothing",new AutonDoNothing());
     m_autonChooser.addOption("AutonMiddle",new AutonOnePieceMiddleNoCommunity(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs, kInitialPitchOffset));
     m_autonChooser.addOption("AutonSide",new AutonOnePieceSide(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
     m_autonChooser.addOption("AutonTest",new AutonTest(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem));
+    m_autonChooser.addOption("AutonMiddleLeaveCommunity",new AutonOnePieceMiddle(m_chassisSubsystem, m_clawSubsystem, m_armSubsystem, ahrs, kInitialPitchOffset));
 
     Shuffleboard.getTab("Autonomous").add(m_autonChooser).withSize(2,1);
   }
@@ -184,8 +191,8 @@ public class RobotContainer {
       );
 
     //Y button: auto aim (high pole) (i set it to be on a button press, not held)
-    new JoystickButton(m_driverController, Button.kY.value)
-    .whileTrue(
+    new JoystickButton(m_coDriverController, Button.kB.value)
+    .toggleOnTrue(
       new AutoAlignTop(m_visionSubsystem, m_chassisSubsystem, m_LEDSubsystem)
     );
 
@@ -209,15 +216,15 @@ public class RobotContainer {
         //I think if we create a command similar to an autonomous command, we could shove this entire composition into a single file.
         //However, autobalancing is the last thing we do in autonomous, so that probably wont be necessary.
         //Even though it's a repeating command, all autonomous commands should automatically be canceled once teleop is enabled.
-        /*new RepeatCommand(
+        new RepeatCommand(
           new AutoBalance(m_chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.7)
           .andThen(
             new BrakeDrive(m_chassisSubsystem,
             () -> 0,
             () -> 0).withTimeout(0.5)
             )
-          )*/
-          new AutoBalanceSmooth(m_chassisSubsystem, ahrs, kInitialPitchOffset)
+          )
+          //new AutoBalanceSmooth(m_chassisSubsystem, ahrs, kInitialPitchOffset)
     );
 
     //Right trigger: Change LED mode for turbo mode (the actual code for turbo mode is handled within DefaultDrive itself).

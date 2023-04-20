@@ -37,15 +37,16 @@ public class AutonOnePieceMiddleNoCommunity extends SequentialCommandGroup{
             new SequentialCommandGroup(
                 //Startup processes:
                 //close claw
-                new WaitCommand(0.4),
                 new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
-               
+                new WaitCommand(0.2),
 
                 //move arm to high level and put wrist down
                 new ParallelCommandGroup(
-                    new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
-                    new WaitCommand(0.3).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
+                    new ArmGotoAngle(80, 0.9, armSubsystem),
+                    new WaitCommand(0.18).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
                 ),
+                new WaitCommand(0.3),
+                new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
 
                 //move forward
                 new DriveDistance(15, 0.65, chassisSubsystem),
@@ -57,7 +58,7 @@ public class AutonOnePieceMiddleNoCommunity extends SequentialCommandGroup{
                 
                 //move backwards, put wrist up, and lower arm while moving backwards.
                 new ParallelCommandGroup(
-                    new DriveDistance(62, -1, chassisSubsystem),
+                    new DriveDistance(66, -1, chassisSubsystem),
                     new InstantCommand(clawSubsystem::wristUp, clawSubsystem),
                     new WaitCommand(2)
                     .andThen(new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomPosition, armSubsystem))

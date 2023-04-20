@@ -57,7 +57,10 @@ public final class Constants {
         public static final double kOnBalanceAngleThresholdDegrees = 3;
         public static final double kChangeInPitchTolerance = 0.2;
 
-        public static final double kAutoBalanceMultiplier = 2.4;
+        //Leaving community: 2.9
+        //not leaving community: 2.4
+        public static final double kAutoBalanceBackMultiplier = 2.4;
+        public static final double kAutoBalanceFrontMultiplier = 2.9;
     }
 
     public static final class ArmConstants {
@@ -77,14 +80,14 @@ public final class Constants {
         public static final double kMiddlePosition = 110;
         //cones:145
         //cubes:125
-        public static final double kTopPositionCube = 130;
+        public static final double kTopPositionCube = 125;
         public static final double kTopPositionCone = 145;
         //public static final double kLoadingPosition = 45;//
 
         //speed: the speed at which to move the arm at when going to a level
         public static final double kBottomSpeed = -0.3;
         public static final double kMiddleSpeed = 0.5;//
-        public static final double kTopSpeed = 0.6;//
+        public static final double kTopSpeed = 0.65;//
         //public static final double kLoadingSpeed = 0.6;//
     }
 

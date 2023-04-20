@@ -137,7 +137,7 @@ public class ChassisSubsystem extends SubsystemBase {
             m_drive.arcadeDrive(xSpeed, -zRotation);
         }
         else{
-            m_drive.arcadeDrive(xSpeed*.75, -zRotation * .75);
+            m_drive.arcadeDrive(xSpeed*.8, -zRotation * .8);
         }
     }
 

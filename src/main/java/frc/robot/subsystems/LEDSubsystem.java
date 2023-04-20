@@ -24,6 +24,7 @@ public class LEDSubsystem extends SubsystemBase {
     TEAL,
     TURBO,
     ORANGE,
+    TEST,
     RED
   }
 
@@ -34,6 +35,7 @@ public class LEDSubsystem extends SubsystemBase {
   private int m_rainbowFirstPixelHue = 0;
   private AHRS ahrs; 
   private int m_TurboFirstPixelHue = 0;
+  private int rainbowSunshine = 0;
 
   public LEDSubsystem(AHRS navx2){
     ahrs = navx2;
@@ -83,12 +85,15 @@ public class LEDSubsystem extends SubsystemBase {
       case ORANGE:
         orange();
         break;
+      case TEST:
+        test();
+        break;
       default:
-        rainbow();;
+        rainbow();
         break;
       
     }
-    m_rainbowFirstPixelHue = Math.abs((int)ahrs.getYaw());
+    m_rainbowFirstPixelHue = Math.abs((int)ahrs.getYaw()) + m_TurboFirstPixelHue;
   }
     
   public void changeLEDState(LEDState mode) {
@@ -158,17 +163,44 @@ public class LEDSubsystem extends SubsystemBase {
   private void rainbow() {
     // For every pixel
 
+    // For every pixel
+
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
-      final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())+ (rainbowSunshine + (i * 180 / m_ledBuffer.getLength()))) % 360;
       // Set the value
-      m_ledBuffer.setHSV(i, hue, 255, 120);
+      m_ledBuffer.setRGB(i, hue*3, hue*10, rainbowSunshine*5);
     }
     // Increase by to make the rainbow "move"
     m_rainbowFirstPixelHue += 3;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
+    m_led.setData(m_ledBuffer);
+  }
+
+  private void test() {
+    // For every pixel
+
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      // Calculate the hue - hue is easier for rainbows because the color
+      // shape is a circle so only one value needs to precess
+      final var hue = (m_TurboFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+      
+      // Set the value
+      if (hue > 100){
+        m_ledBuffer.setRGB(i, hue, 0, 255);
+      }
+      else{
+        m_ledBuffer.setRGB(i, 255, 0, hue);
+      }
+
+      
+    }
+    // Increase by to make the rainbow "move"
+    m_TurboFirstPixelHue += 3;
+    // Check bounds
+    m_TurboFirstPixelHue %= 180;
     m_led.setData(m_ledBuffer);
   }
 

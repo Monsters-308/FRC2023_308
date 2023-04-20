@@ -40,6 +40,7 @@ public class AutoBalance extends CommandBase {
 
     @Override
     public void execute() {
+        //NOTE: when the robot lifts upwards by the front, the pitch is negative
         double pitchAngleDegrees = -NavX2.getPitch() - kInitialPitchOffset;
 
         if ( !autoBalanceXMode && 
@@ -64,7 +65,12 @@ public class AutoBalance extends CommandBase {
             //If we go too fast, the robot will go over the center of the pad and keep rocking back and forth.
             //If we go too slow, the robot will struggle to get over the charge pad since the ramp will make it slide downwards.
             //We might want to consider using a cubic function instead of a sine function.
-            xAxisSpeed *= ChassisConstants.kAutoBalanceMultiplier;
+            /*if(pitchAngleDegrees<0){
+                xAxisSpeed *=ChassisConstants.kAutoBalanceFrontMultiplier;
+            }
+            else if(pitchAngleDegrees>0){*/
+                xAxisSpeed *= ChassisConstants.kAutoBalanceBackMultiplier;
+            //}
 
             if(Math.abs(pitchAngleDegrees) > 30){
                 xAxisSpeed = 0;

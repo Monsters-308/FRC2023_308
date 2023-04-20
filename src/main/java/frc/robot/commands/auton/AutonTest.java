@@ -22,8 +22,30 @@ public class AutonTest extends SequentialCommandGroup{
 
     public AutonTest(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem){
         addCommands(
+            /* 
             new SequentialCommandGroup(
-                new AutoTurn(chassisSubsystem, 30, 0.6)
+                //Startup processes:
+                //close claw
+                new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
+                new WaitCommand(0.2),
+
+                //move arm to high level and put wrist down
+                new ParallelCommandGroup(
+                    new ArmGotoAngle(80, 0.9, armSubsystem),
+                    new WaitCommand(0.18).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
+                ),
+                new WaitCommand(0.3),
+                new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem)
+
+                */
+                new SequentialCommandGroup(
+                    //Startup processes:
+                    //close claw
+                    new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
+
+                    new AutoTurn(chassisSubsystem, 64, 0.8)
+
+
             )
         );
     }

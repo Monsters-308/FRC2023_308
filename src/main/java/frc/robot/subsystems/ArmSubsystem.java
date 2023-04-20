@@ -35,7 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
         m_armMotor.setIdleMode(IdleMode.kBrake);
         m_armMotor.setInverted(false);
         m_armMotor.setOpenLoopRampRate(0.2);
-        stop();
+        //setSafe(0);
     }
 
     //This helps ensure the arm safely lowers and raises to prevent itself from breaking

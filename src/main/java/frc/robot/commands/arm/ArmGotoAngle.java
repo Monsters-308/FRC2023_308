@@ -42,7 +42,7 @@ public class ArmGotoAngle extends CommandBase {
         }
         
         else if(m_armSubsystem.getPot() > m_degrees+ArmConstants.kAngleTolerance){
-            m_armSubsystem.setSafe(-0.2);
+            m_armSubsystem.setSafe(-0.15);
         }
     }
 

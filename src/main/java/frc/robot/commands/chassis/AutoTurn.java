@@ -43,16 +43,15 @@ public class AutoTurn extends CommandBase {
     public void initialize(){
         m_complete = false;
         m_drive.setBrakeMode();
-        m_drive.resetEncoders();
-        start_encoders = m_drive.getAverageEncoderPosition();
+        start_encoders = m_drive.getAverageEncoderRotation();
     }
 
     @Override
     public void execute(){
-        if((m_rotations > 0) && (Math.abs(m_drive.getAverageEncoderPosition()-start_encoders) <= m_rotations)){
+        if((m_rotations > 0) && (Math.abs(m_drive.getAverageEncoderRotation()-start_encoders) <= m_rotations)){
             m_drive.drive(0.0, m_speed);
         }
-        else if((m_rotations < 0) && (Math.abs(m_drive.getAverageEncoderPosition()-start_encoders) >= m_rotations)){
+        else if((m_rotations < 0) && (Math.abs(m_drive.getAverageEncoderRotation()-start_encoders) >= m_rotations)){
             m_drive.drive(0.0, -m_speed);
         }
         else{

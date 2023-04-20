@@ -36,15 +36,17 @@ public class AutonOnePieceMiddle extends SequentialCommandGroup{
             new SequentialCommandGroup(
                 //Startup processes:
                 //close claw
-                new WaitCommand(0.4),
+                //-
                 new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
-               
+                new WaitCommand(0.2),
 
                 //move arm to high level and put wrist down
                 new ParallelCommandGroup(
-                    new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
-                    new WaitCommand(0.3).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
+                    new ArmGotoAngle(80, 0.9, armSubsystem),
+                    new WaitCommand(0.18).andThen(new InstantCommand(clawSubsystem::wristDown, clawSubsystem))
                 ),
+                new WaitCommand(0.3),
+                new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
 
                 //move forward
                 new DriveDistance(15, 0.8, chassisSubsystem),
@@ -64,7 +66,7 @@ public class AutonOnePieceMiddle extends SequentialCommandGroup{
                 new WaitCommand(0.7),
 
                 //move forwards
-                new DriveDistance(49, 0.75, chassisSubsystem),
+                new DriveDistance(47, 0.75, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //engage autobalance
