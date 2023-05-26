@@ -19,13 +19,14 @@ import frc.robot.Constants.ChassisConstants;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class AutoBalance extends CommandBase {
+public class AutoBalanceSmooth extends CommandBase {
     private final ChassisSubsystem m_drive;
     private AHRS NavX2;
     private final double kInitialPitchOffset;
-    boolean autoBalanceXMode = false;
+    boolean autoBalanceMode = false;
+    private double previousPitch = 0;
 
-    public AutoBalance(ChassisSubsystem subsystem, AHRS Nav, double pitchOffset){
+    public AutoBalanceSmooth(ChassisSubsystem subsystem, AHRS Nav, double pitchOffset){
         this.m_drive = subsystem;
         this.NavX2 = Nav;
         this.kInitialPitchOffset = pitchOffset; 
@@ -36,41 +37,70 @@ public class AutoBalance extends CommandBase {
     @Override
     public void initialize(){
         m_drive.setBrakeMode();
+        previousPitch = -NavX2.getPitch() - kInitialPitchOffset;
     }
 
     @Override
     public void execute() {
-        //NOTE: when the robot lifts upwards by the front, the pitch is negative
         double pitchAngleDegrees = -NavX2.getPitch() - kInitialPitchOffset;
 
-        if ( !autoBalanceXMode && 
-            (Math.abs(pitchAngleDegrees) >= 
-            Math.abs(ChassisConstants.kOffBalanceAngleThresholdDegrees))) {
-            autoBalanceXMode = true;
+        double changeInPitch = pitchAngleDegrees-previousPitch;
+        previousPitch = pitchAngleDegrees;
+
+        //This pseudocode relies on the idea that the sign of the pitch and the sign of the changeinpitch will be the same
+
+        //if the pitch is out of the desired range
+            //if the pitch is positive
+                //if the changeInPitch is positive and greater than a certain amount, don't move. otherwise keep moving
+            //if the pitch is negative
+                //if the changeInPitch is negative and greater than a certain amount, don't move. otherwise keep moving
+        //else stop moving
+
+        if(Math.abs(pitchAngleDegrees) >= Math.abs(ChassisConstants.kOffBalanceAngleThresholdDegrees)){
+            if(pitchAngleDegrees>0){
+                if((changeInPitch>0) && (changeInPitch>ChassisConstants.kChangeInPitchTolerance)){
+                    autoBalanceMode = false;
+                }
+                else{
+                    autoBalanceMode = true;
+                }
+            }
+            else{
+                if((changeInPitch<0) && (changeInPitch<-ChassisConstants.kChangeInPitchTolerance)){
+                    autoBalanceMode = false;
+                }
+                else{
+                    autoBalanceMode = true;
+                }
+            }
         }
-        else if ( autoBalanceXMode && 
-                (Math.abs(pitchAngleDegrees) <= 
-                Math.abs(ChassisConstants.kOnBalanceAngleThresholdDegrees))) {
-            autoBalanceXMode = false;
+        else{
+            autoBalanceMode = false;
         }
+        SmartDashboard.putBoolean("IsAutobalancing?", autoBalanceMode);
+        
+
+        /*if (!autoBalanceXMode && 
+            (Math.abs(pitchAngleDegrees) >= Math.abs(ChassisConstants.kOffBalanceAngleThresholdDegrees))) {
+                autoBalanceXMode = true;
+        }
+        else if (autoBalanceXMode && 
+            (Math.abs(pitchAngleDegrees) <= Math.abs(ChassisConstants.kOnBalanceAngleThresholdDegrees))) {
+                autoBalanceXMode = false;
+        }*/
         
         // Control drive system automatically, 
         // driving in direction of pitch angle,
         // with a magnitude based upon the angle
         
-        if ( autoBalanceXMode ) {
+        if ( autoBalanceMode ) {
             double pitchAngleRadians = pitchAngleDegrees * (Math.PI / 180.0);
             double xAxisSpeed = Math.sin(pitchAngleRadians) ;
             
             //If we go too fast, the robot will go over the center of the pad and keep rocking back and forth.
             //If we go too slow, the robot will struggle to get over the charge pad since the ramp will make it slide downwards.
             //We might want to consider using a cubic function instead of a sine function.
-            /*if(pitchAngleDegrees<0){
-                xAxisSpeed *=ChassisConstants.kAutoBalanceFrontMultiplier;
-            }
-            else if(pitchAngleDegrees>0){*/
-                xAxisSpeed *= ChassisConstants.kAutoBalanceBackMultiplier;
-            //}
+            xAxisSpeed *= ChassisConstants.kAutoBalanceBackMultiplier;
 
             if(Math.abs(pitchAngleDegrees) > 30){
                 xAxisSpeed = 0;

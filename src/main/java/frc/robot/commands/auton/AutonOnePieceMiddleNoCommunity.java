@@ -19,6 +19,7 @@ import frc.robot.commands.chassis.DriveDistance;
 import frc.robot.commands.chassis.BrakeDrive;
 import frc.robot.commands.arm.ArmGotoAngle;
 import frc.robot.commands.chassis.AutoBalance;
+
 import com.kauailabs.navx.frc.AHRS;
 
 //Constants
@@ -29,14 +30,13 @@ import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class AutonOnePieceMiddle extends SequentialCommandGroup{
+public class AutonOnePieceMiddleNoCommunity extends SequentialCommandGroup{
 
-    public AutonOnePieceMiddle(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs, double kInitialPitchOffset){
+    public AutonOnePieceMiddleNoCommunity(ChassisSubsystem chassisSubsystem, ClawSubsystem clawSubsystem, ArmSubsystem armSubsystem, AHRS ahrs, double kInitialPitchOffset){
         addCommands(
             new SequentialCommandGroup(
                 //Startup processes:
                 //close claw
-                //-
                 new InstantCommand(clawSubsystem::closeClaw, clawSubsystem),
                 new WaitCommand(0.2),
 
@@ -49,7 +49,7 @@ public class AutonOnePieceMiddle extends SequentialCommandGroup{
                 new ArmGotoAngle(ArmConstants.kTopPositionCube, ArmConstants.kTopSpeed, armSubsystem),
 
                 //move forward
-                new DriveDistance(15, 0.8, chassisSubsystem),
+                new DriveDistance(15, 0.65, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //open claw 
@@ -58,20 +58,16 @@ public class AutonOnePieceMiddle extends SequentialCommandGroup{
                 
                 //move backwards, put wrist up, and lower arm while moving backwards.
                 new ParallelCommandGroup(
-                    new DriveDistance(123, -1, chassisSubsystem),
+                    new DriveDistance(66, -1, chassisSubsystem),
                     new InstantCommand(clawSubsystem::wristUp, clawSubsystem),
                     new WaitCommand(2)
                     .andThen(new ArmGotoAngle(ArmConstants.kBottomPosition, ArmConstants.kBottomPosition, armSubsystem))
                 ),
-                new WaitCommand(0.7),
-
-                //move forwards
-                new DriveDistance(47, 0.75, chassisSubsystem),
                 new WaitCommand(0.25),
 
                 //engage autobalance
                 new RepeatCommand(
-                    new AutoBalance(chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.7)
+                    new AutoBalance(chassisSubsystem, ahrs, kInitialPitchOffset).withTimeout(0.6)
                     .andThen(
                     new BrakeDrive(chassisSubsystem,
                         () -> 0,

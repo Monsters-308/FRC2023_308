@@ -14,7 +14,7 @@ import frc.robot.Constants.VisionConstants;
 //Import this so you can make this class a command
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class AutoAlignTop extends CommandBase {
+public class AutoAlignBottom extends CommandBase {
 
     //Import any instance variables that are passed into the file below here, such as the subsystem(s) your command interacts with.
     final VisionSubsystem m_visionSubsystem;
@@ -29,7 +29,7 @@ public class AutoAlignTop extends CommandBase {
     private boolean m_complete = false;
 
     //Class Constructor
-    public AutoAlignTop(VisionSubsystem visionSubsystem, ChassisSubsystem chassisSubsystem, LEDSubsystem ledSubsystem){
+    public AutoAlignBottom(VisionSubsystem visionSubsystem, ChassisSubsystem chassisSubsystem, LEDSubsystem ledSubsystem){
         m_chassisSubsystem = chassisSubsystem;
         m_visionSubsystem = visionSubsystem;
         m_ledSubsystem = ledSubsystem;
@@ -53,10 +53,8 @@ public class AutoAlignTop extends CommandBase {
     @Override
     public void initialize(){
         m_chassisSubsystem.setBrakeMode();
-        m_visionSubsystem.setPipeline(0);
+        m_visionSubsystem.setPipeline(4);
         m_complete = false;
-
-        
     }
 
     /*This function is called repeatedly when the schedueler's "run()" function is called.
@@ -71,13 +69,14 @@ public class AutoAlignTop extends CommandBase {
         double rotation = 0;
         //SmartDashboard.putNumber("motor speed align targets", x);
 
-        if ((targets == 0) || (y < 0)){
+        if ((targets == 0) || (y > 0)){
             rotation = 0;
             forwardSpeed = 0;
             m_ledSubsystem.changeLEDState(LEDState.RED);
         }
 
         //if targets 
+        //bottom level
         else{
             //Rotate so target is in center
             if (x+1 > VisionConstants.kRotationTolerance){
@@ -101,7 +100,7 @@ public class AutoAlignTop extends CommandBase {
             }
 
             //Change LED state
-            if((distanceFromTarget > 54.5) && (distanceFromTarget < 56.5)){
+            if((distanceFromTarget > 39) && (distanceFromTarget < 41)){
                 isAlignDistacne = true;
             }
             else{
@@ -114,74 +113,32 @@ public class AutoAlignTop extends CommandBase {
                 isAlignRotation = false;
             }
         }
-        //bottom level
-            /*
-            * For now we're only going to do the top level. In the future we should make a separate file for auto aligning to the lower pole and have 
-            * it on a separate button press. - Noah
-            */
-
-            //Rotate so target is in center
-            /*if (x+1 > 1){
-                rotation = VisionConstants.kRotationSpeed;//.6
-            }
-            else if (x+1 < -1){
-                rotation = -VisionConstants.kRotationSpeed;
-            }
-
-            //Move forwards/backwards
-            double distanceFromTarget = m_visionSubsystem.getDistance();
-            if (distanceFromTarget < 40){
-                //forwardSpeed = -VisionConstants.kForwardSpeed; //.8
-                forwardSpeed = (m_visionSubsystem.getDistance() - 40) * 0.2;
-            }
-
-            else if (distanceFromTarget > 43){
-                //forwardSpeed = VisionConstants.kForwardSpeed;
-                forwardSpeed = (m_visionSubsystem.getDistance() - 40) * 0.2;
-            }
-
-            //Change LED state
-            if(((distanceFromTarget > 39) && (distanceFromTarget < 43))){
-                m_ledSubsystem.changeLEDState(LEDState.GREEN);
-            }
-            else{
-                m_ledSubsystem.changeLEDState(LEDState.RED);
-            }*/
+        
 
         SmartDashboard.putNumber("motor speed align forwardspeed", forwardSpeed);
         SmartDashboard.putNumber("motor speed align rotation", rotation);
 
-        if (forwardSpeed > VisionConstants.kMaxForwardSpeed){
-            forwardSpeed = VisionConstants.kMaxForwardSpeed;
-        }
-        else if (forwardSpeed < -VisionConstants.kMaxForwardSpeed){
-            forwardSpeed = -VisionConstants.kMaxForwardSpeed;
-        }
-        
-        //m_chassisSubsystem.drive(forwardSpeed, rotation);
-      //  m_chassisSubsystem.drive(0, 0);
-
-        //if only distance is correct turn orange
-        if(isAlignDistacne && isAlignRotation){
-            m_ledSubsystem.changeLEDState(LEDState.GREEN);
-        }
-        else if (isAlignDistacne && !isAlignRotation){
-            m_ledSubsystem.changeLEDState(LEDState.ORANGE);
-        }
-        else if  (!isAlignDistacne&&  !isAlignRotation){
-            m_ledSubsystem.changeLEDState(LEDState.YELLOW);
-        }
-        //if only rotation is correct turn yellow
-        else if (!isAlignDistacne && isAlignRotation){
-            m_ledSubsystem.changeLEDState(LEDState.TEAL);
-        }
-        else if  (!isAlignDistacne &&  !isAlignRotation){
-            m_ledSubsystem.changeLEDState(LEDState.YELLOW);
-        }
-        //if aligned, turn green
-        else if  (!isAlignDistacne &&  !isAlignRotation ){
-            m_ledSubsystem.changeLEDState(LEDState.YELLOW);
-        }
+       //if only distance is correct turn orange
+       if(isAlignDistacne && isAlignRotation){
+        m_ledSubsystem.changeLEDState(LEDState.GREEN);
+    }
+    else if (isAlignDistacne && !isAlignRotation){
+        m_ledSubsystem.changeLEDState(LEDState.ORANGE);
+    }
+    else if  (!isAlignDistacne&&  !isAlignRotation){
+        m_ledSubsystem.changeLEDState(LEDState.YELLOW);
+    }
+    //if only rotation is correct turn yellow
+    else if (!isAlignDistacne && isAlignRotation){
+        m_ledSubsystem.changeLEDState(LEDState.TEAL);
+    }
+    else if  (!isAlignDistacne &&  !isAlignRotation){
+        m_ledSubsystem.changeLEDState(LEDState.YELLOW);
+    }
+    //if aligned, turn green
+    else if  (!isAlignDistacne &&  !isAlignRotation ){
+        m_ledSubsystem.changeLEDState(LEDState.YELLOW);
+    }
 
         
     }

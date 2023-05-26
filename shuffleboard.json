@@ -456,6 +456,21 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "5,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/IsAutobalancing?",
+              "_title": "IsAutobalancing?",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
           }
         }
       }
@@ -1018,6 +1033,34 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/IsAutobalancing?",
+              "_title": "/SmartDashboard/IsAutobalancing?",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "1,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/AutoBalanceSpeed",
+              "_title": "/SmartDashboard/AutoBalanceSpeed",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }
@@ -1189,9 +1232,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.199999809265137,
-    "y": -7.199999809265137,
-    "width": 1550.4000244140625,
-    "height": 838.4000244140625
+    "x": -4.0,
+    "y": 220.8000030517578,
+    "width": 1548.800048828125,
+    "height": 628.7999877929688
   }
 }

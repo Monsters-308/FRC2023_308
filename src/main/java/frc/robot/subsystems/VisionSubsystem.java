@@ -19,7 +19,16 @@ public class VisionSubsystem extends SubsystemBase {
         tx = table.getEntry("tx");
         tl = table.getEntry("ty");
         tv = table.getEntry("tv");
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(3);
     }
+    /**
+     * Pipe number - purpose
+     * 0           - top reflective tape
+     * 1           - Apriltags (unused)
+     * 2           - Cones (unused)
+     * 3           - Default camera
+     * 4           - bottom reflective tape  
+     */
 
     //tv = valid targets
     //tx horizontal offest from crosshair to target
@@ -28,6 +37,14 @@ public class VisionSubsystem extends SubsystemBase {
 
     public double getX(){
         return tx.getDouble(0.0);
+    }
+
+    public void setPipeline(int pipeline){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
+    }
+
+    public double getPipeline(){
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").getDouble(0);
     }
 
     public double getY(){

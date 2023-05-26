@@ -47,12 +47,12 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear1.restoreFactoryDefaults();
         m_leftRear2.restoreFactoryDefaults();
 
-        /*m_leftFront.setOpenLoopRampRate(0.25);
+        m_leftFront.setOpenLoopRampRate(0.25);
         m_rightFront.setOpenLoopRampRate(0.25);
         m_rightRear1.setOpenLoopRampRate(0.25);
         m_rightRear2.setOpenLoopRampRate(0.25);
         m_leftRear1.setOpenLoopRampRate(0.25);
-        m_leftRear2.setOpenLoopRampRate(0.25);*/
+        m_leftRear2.setOpenLoopRampRate(0.25);
 
         m_leftFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_rightFront.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
@@ -61,12 +61,12 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear1.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         m_leftRear2.setSmartCurrentLimit(ChassisConstants.kCurrentLimit);
         
-        m_leftFront.setIdleMode(IdleMode.kBrake);
-        m_rightFront.setIdleMode(IdleMode.kBrake);
-        m_rightRear1.setIdleMode(IdleMode.kBrake);
-        m_rightRear2.setIdleMode(IdleMode.kBrake);
-        m_leftRear1.setIdleMode(IdleMode.kBrake);
-        m_leftRear2.setIdleMode(IdleMode.kBrake);
+        m_leftFront.setIdleMode(IdleMode.kCoast);
+        m_rightFront.setIdleMode(IdleMode.kCoast);
+        m_rightRear1.setIdleMode(IdleMode.kCoast);
+        m_rightRear2.setIdleMode(IdleMode.kCoast);
+        m_leftRear1.setIdleMode(IdleMode.kCoast);
+        m_leftRear2.setIdleMode(IdleMode.kCoast);
         
         m_leftFront.setInverted(false);
         m_rightFront.setInverted(true);
@@ -74,6 +74,13 @@ public class ChassisSubsystem extends SubsystemBase {
         m_leftRear2.setInverted(false);
         m_rightRear1.setInverted(true);
         m_rightRear2.setInverted(true);
+
+        m_leftFront.burnFlash();
+        m_rightFront.burnFlash();
+        m_leftRear1.burnFlash();
+        m_leftRear2.burnFlash();
+        m_rightRear1.burnFlash();
+        m_rightRear2.burnFlash();
 
         resetEncoders();
     }
@@ -130,7 +137,7 @@ public class ChassisSubsystem extends SubsystemBase {
             m_drive.arcadeDrive(xSpeed, -zRotation);
         }
         else{
-            m_drive.arcadeDrive(xSpeed*.75, -zRotation * .75);
+            m_drive.arcadeDrive(xSpeed*.8, -zRotation * .8);
         }
     }
 

@@ -53,10 +53,14 @@ public final class Constants {
 
         //NOTE: the rulebook says that the robot is considered balanced if it's within 2.5 degrees of being balanced.
         //NOTE2: idk what the difference between these 2 variables is we just copied this off the internet
-        public static final double kOffBalanceAngleThresholdDegrees = 2.5;
-        public static final double kOnBalanceAngleThresholdDegrees = 2.5;
+        public static final double kOffBalanceAngleThresholdDegrees = 3;
+        public static final double kOnBalanceAngleThresholdDegrees = 3;
+        public static final double kChangeInPitchTolerance = 0.2;
 
-        public static final double kAutoBalanceMultiplier = 2.8;
+        //Leaving community: 2.9
+        //not leaving community: 2.4
+        public static final double kAutoBalanceBackMultiplier = 2.4;
+        public static final double kAutoBalanceFrontMultiplier = 2.9;
     }
 
     public static final class ArmConstants {
@@ -83,7 +87,7 @@ public final class Constants {
         //speed: the speed at which to move the arm at when going to a level
         public static final double kBottomSpeed = -0.3;
         public static final double kMiddleSpeed = 0.5;//
-        public static final double kTopSpeed = 0.6;//
+        public static final double kTopSpeed = 0.65;//
         //public static final double kLoadingSpeed = 0.6;//
     }
 
@@ -100,7 +104,7 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        public static final double kTopPoleDesiredDistance = 55;
+        public static final double kTopPoleDesiredDistance = 51;
         public static final double kDistanceTolerance = 2;
         public static final double kMaxForwardSpeed = 0.7;
         public static final double kForwardSpeedPConstant = 0.1;
